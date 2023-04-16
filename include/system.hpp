@@ -26,6 +26,7 @@ public:
      */
     virtual void Update(EntityManager& entities, TimeDelta dt) = 0;
 
+protected:
     static Family family_counter_;
 };
 
@@ -58,12 +59,7 @@ private:
 class SystemManager {
 public:
     SystemManager(EntityManager& entity_manager);
-
-private:
-    bool is_initialized_;
-    EntityManager& entity_manager_;
-
-    std::unordered_map<BaseSystem::Family, BaseSystem*> systems_;
+    ~SystemManager();
 
     /**
      * Add a System to the SystemManager.
@@ -139,6 +135,12 @@ private:
      * This is typically used to set up event handlers.
      */
     void Configure();
+
+private:
+    bool is_initialized_;
+    EntityManager& entity_manager_;
+
+    std::unordered_map<BaseSystem::Family, BaseSystem*> systems_;
 };
 
 };  // namespace ecs

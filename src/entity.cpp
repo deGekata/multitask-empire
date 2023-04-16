@@ -21,7 +21,7 @@ uint32_t Entity::Id::GetIndex() const {
 }
 
 uint32_t Entity::Id::GetGeneration() const {
-    return id_ >> 32;
+    return static_cast<uint32_t>(id_ >> 32);
 }
 
 Entity::Entity() : manager_(nullptr), id_(INVALID_ID) {
@@ -43,7 +43,7 @@ Entity::Id Entity::GetId() const {
     return id_;
 }
 
-EntityManager::EntityManager() {
+EntityManager::EntityManager() : component_pools_(), component_helpers_(), entity_component_mask_(),  entity_generations_(), free_list_() {
 }
 
 EntityManager::~EntityManager() {
@@ -187,11 +187,11 @@ void EntityManager::AccomodateEntity(const uint32_t index) {
     }
 }
 
-void BaseComponent::operator delete(void* p) {
+void BaseComponent::operator delete(void*) {
     std::abort();
 }
 
-void BaseComponent::operator delete[](void* p) {
+void BaseComponent::operator delete[](void*) {
     std::abort();
 }
 

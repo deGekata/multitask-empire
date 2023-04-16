@@ -14,7 +14,7 @@
 
 namespace ecs {
 
-class EntityManager;
+struct EntityManager;
 
 template <typename Component>
 class ComponentHandle;
@@ -114,7 +114,7 @@ public:
     using ConstHandle = ComponentHandle<const Derived>;
 
 private:
-    friend class EntityManager;
+    friend struct EntityManager;
     /// Used internally for registration.
     static Family GetFamily() {
         static Family family = family_counter_++;
@@ -155,7 +155,7 @@ public:
     Entity GetEntity();
 
 private:
-    friend class EntityManager;
+    friend struct EntityManager;
 
     ComponentHandle(EntityManager* manager, Entity::Id id) : manager_(manager), id_(id) {
     }
@@ -168,7 +168,7 @@ struct BaseComponentHelper {
     virtual ~BaseComponentHelper() {
     }
     virtual void RemoveComponent(Entity enity) = 0;
-    virtual void CopyComponentTo(Entity from, Entity to);
+    virtual void CopyComponentTo(Entity from, Entity to) = 0;
 };
 
 template <typename Component>
@@ -177,7 +177,7 @@ struct ComponentHelper : public BaseComponentHelper {
         entity.Remove<Component>();
     }
 
-    void CopyComponentTo(Entity from, Entity to) {
+    void CopyComponentTo(Entity from, Entity to) override {
         to.AssignFromCopy(*from.GetComponent<Component>().Get());
     }
 };
@@ -196,7 +196,9 @@ public:
         using value_type = Entity::Id;
 
         Delegate& operator++() {
-            index_++;
+            ++index_;
+            Next();
+            return *static_cast<Delegate*>(this);
         }
 
         bool operator==(const Delegate& rhs) const {
@@ -270,7 +272,7 @@ public:
         public:
             Iterator(EntityManager* manager, const ComponentMask mask, uint32_t index)
                 : ViewIterator<Iterator, ShowAll>(manager, mask, index) {
-                ViewIterator<Iterator, ShowAll>::next();
+                ViewIterator<Iterator, ShowAll>::Next();
             }
         };
 
@@ -291,7 +293,7 @@ public:
         }
 
     private:
-        friend class EntityManager;
+        friend struct EntityManager;
 
         explicit BaseViewer(EntityManager* manager) : manager_(manager) {
             mask_.set();
@@ -307,7 +309,7 @@ public:
     template <bool ShowAll, typename... Components>
     class TypedViewer : public BaseViewer<ShowAll> {
     public:
-        using FunctionT = std::function<void(Components&...)>;
+        using FunctionT = std::function<void(Entity, Components&...)>;
 
         void Each(FunctionT f) {
             for (auto it : *this) {
@@ -316,7 +318,7 @@ public:
         }
 
     private:
-        friend class EntityManager;
+        friend struct EntityManager;
 
         explicit TypedViewer(EntityManager* manager) : BaseViewer<ShowAll>(manager) {
         }
@@ -444,13 +446,17 @@ public:
         return TypedViewer<false, Components...>(this, mask);
     }
 
+    template <typename T> struct identity { typedef T type; };
+
     template <typename... Components>
-    void Each(std::function<void(Entity entity, Components&...)> f) {
-        GetEntitiesWithComponents().Each(std::move(f));
+    void Each(typename identity<std::function<void(Entity entity, Components&...)>>::type f) {
+        GetEntitiesWithComponents<Components ...>().Each(std::move(f));
     }
 
 private:
     friend class Entity;
+    template <typename C>
+    friend class ComponentHandle;
 
     void AssertId(const Entity::Id entity) const;
 
@@ -487,12 +493,12 @@ private:
     }
 
     template <typename C>
-    ComponentMask GetComponentMask(const ComponentHandle<C>& c) {
+    ComponentMask GetComponentMask(const ComponentHandle<C>&) {
         return GetComponentMask<C>();
     }
 
     template <typename C1, typename... Components>
-    ComponentMask GetComponentMask(const ComponentHandle<C1>& c1, const ComponentHandle<Components>&... args) {
+    ComponentMask GetComponentMask(const ComponentHandle<C1>&, const ComponentHandle<Components>&...) {
         return GetComponentMask<C1, Components...>();
     }
 

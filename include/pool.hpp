@@ -36,6 +36,7 @@ protected:
 
 template <typename T, uint64_t ChunkSize = BasePool::kDefaultChunkSize>
 class Pool : public BasePool {
+public:
     Pool() : BasePool(sizeof(T), ChunkSize) {
     }
 
