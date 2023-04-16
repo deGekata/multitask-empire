@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cstdint>
+
 #include <vector>
 
 namespace ecs {
@@ -38,14 +39,7 @@ class Pool : public BasePool {
     Pool() : BasePool(sizeof(T), ChunkSize) {
     }
 
-    virtual ~Pool {
-        for (uint64_t idx = 0; idx < size_; idx++) {
-            DestroyElement(idx);
-        }
-
-        for (auto& ptr : blocks_) {
-            delete[] ptr;
-        }
+    virtual ~Pool() {
     }
 
     virtual void DestroyElement(const uint64_t idx) override {

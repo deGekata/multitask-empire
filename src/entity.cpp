@@ -1,4 +1,4 @@
-#include <include/entity.hpp>
+#include "../include/entity.hpp"
 
 namespace ecs {
 
@@ -43,6 +43,43 @@ Entity::Id Entity::GetId() const {
     return id_;
 }
 
+EntityManager::EntityManager() {
+}
+
+EntityManager::~EntityManager() {
+    Reset();
+}
+
+void EntityManager::Reset() {
+    for (Entity entity : GetAllEntities()) {
+        entity.Destroy();
+    }
+
+    for (BasePool* pool : component_pools_) {
+        if (pool) {
+            delete pool;
+        }
+    }
+
+    for (BaseComponentHelper* helper : component_helpers_) {
+        if (helper) {
+            delete helper;
+        }
+    }
+
+    component_pools_.clear();
+    component_helpers_.clear();
+    entity_component_mask_.clear();
+    entity_generations_.clear();
+    free_list_.clear();
+
+    index_counter_ = 0;
+}
+
+uint64_t EntityManager::GetCapacity() const {
+    return entity_component_mask_.size();
+}
+
 bool EntityManager::IsValid(const Entity::Id& id) const {
     return id.GetIndex() < entity_generations_.size() && entity_generations_[id.GetIndex()] == id.GetGeneration();
 }
@@ -53,7 +90,7 @@ void Entity::Destroy() {
     Invalidate();
 }
 
-EntityManager::ComponentMask Entity::GetComponentMask() const {
+ComponentMask Entity::GetComponentMask() const {
     return manager_->GetComponentMask(id_);
 }
 
@@ -113,6 +150,10 @@ void EntityManager::Destroy(const Entity::Id entity) {
     entity_generations_[index]++;
 
     free_list_.push_back(index);
+}
+
+EntityManager::BaseViewer<true> EntityManager::GetAllEntities() {
+    return BaseViewer<true>{this};
 }
 
 Entity EntityManager::GetEntity(Entity::Id id) {
