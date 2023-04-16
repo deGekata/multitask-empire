@@ -201,10 +201,6 @@ public:
             return *static_cast<Delegate*>(this);
         }
 
-        bool operator==(const Delegate& rhs) const {
-            return index_ == rhs.index_;
-        }
-
         bool operator!=(const Delegate& rhs) const {
             return index_ != rhs.index_;
         }
