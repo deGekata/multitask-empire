@@ -37,7 +37,7 @@ template <typename Type>
 void Swap(Type& lhs, Type& rhs) noexcept {
 	Type temp = Move(lhs);
 	lhs = Move(rhs);
-	rhs = Move(lhs);
+	rhs = Move(temp);
 }
 
 } // namespace stdlike

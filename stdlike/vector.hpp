@@ -2,26 +2,39 @@
 #define STDLIKE_VECTOR_HPP
 
 #include <cassert>
+#include <cstdint>
 
-#include <stdlike/utility.hpp>
-#include <stdlike/allocator.hpp>
+#include "utility.hpp"
+#include "allocator.hpp"
 
 namespace stdlike {
 
 template <typename Type, class Alloc = stdlike::Allocator<Type>>
 class Vector {
 public:
-    /* Iterator */
-
-    class Iterator : public std::iterator<std::contiguous_iterator_tag, Type> {
+    class Iterator {
     public:
-        Iterator() : ptr_(nullptr), container_(nullptr) {
+        using iterator = Iterator;
+        using iterator_category = std::random_access_iterator_tag;
+        using difference_type = ptrdiff_t;
+
+        using value_type = Type;
+        using pointer    = Type*;
+        using reference  = Type&;
+
+        Iterator()
+            : ptr_(nullptr)
+            , container_(nullptr) {
         }
 
-        Iterator(Type* ptr, Vector* container = nullptr) : ptr_(ptr), container_(container) {
+        Iterator(pointer ptr, Vector* container = nullptr)
+            : ptr_(ptr)
+            , container_(container) {
         }
 
-        Iterator(const Iterator& other) : ptr_(other.ptr_), container_(other.container_) {
+        Iterator(const Iterator& other)
+            : ptr_(other.ptr_)
+            , container_(other.container_) {
         }
 
         ~Iterator() {
@@ -35,12 +48,12 @@ public:
             return *this;
         }
 
-        Type& operator*() const {
+        reference operator*() const {
             assert(ptr_ && container_ && ptr_ < container_->End().ptr_);
             return *ptr_;
         }
 
-        Type* operator->() const {
+        pointer operator->() const {
             assert(ptr_ && container_ && ptr_ < container_->End().ptr_);
             return ptr_;
         }
@@ -67,7 +80,7 @@ public:
             return temp;
         }
 
-        Iterator& operator+=(ptrdiff_t diff) {
+        Iterator& operator+=(difference_type diff) {
             if (diff >= 0) {
                 while (diff--) {
                     ++(*this);
@@ -80,29 +93,29 @@ public:
             return *this;
         }
 
-        Iterator& operator-=(ptrdiff_t diff) {
+        Iterator& operator-=(difference_type diff) {
             return *this += -diff;
         }
 
-        Type& operator[](ptrdiff_t diff) const {
+        reference operator[](difference_type diff) const {
             return ptr_[diff];
         }
 
-        friend Iterator operator+(const Iterator& iter, ptrdiff_t diff) {
+        friend Iterator operator+(const Iterator& iter, difference_type diff) {
             Iterator temp = iter;
             return temp += diff;
         }
 
-        friend Iterator operator+(ptrdiff_t diff, const Iterator& iter) {
+        friend Iterator operator+(difference_type diff, const Iterator& iter) {
             return iter + diff;
         }
 
-        friend Iterator operator-(const Iterator& iter, ptrdiff_t diff) {
+        friend Iterator operator-(const Iterator& iter, difference_type diff) {
             Iterator temp = iter;
             return temp -= diff;
         }
 
-        friend ptrdiff_t operator-(const Iterator& lhs, const Iterator& rhs) {
+        friend difference_type operator-(const Iterator& lhs, const Iterator& rhs) {
             return lhs.ptr_ - rhs.ptr_;
         }
 
@@ -131,8 +144,8 @@ public:
         }
 
     private:
-        Type* ptr_ = nullptr;
-        Vector* container_ = nullptr;
+        value_type* ptr_;
+        Vector* container_;
     };
 
     Iterator Begin() {
@@ -143,6 +156,8 @@ public:
         return Iterator(data_ + size_, this);
     }
 
+    // Compatability
+
     Iterator begin() {
         return Begin();
     }
@@ -151,17 +166,29 @@ public:
         return End();
     }
 
-    /* ConstIterator */
-
-    class ConstIterator : public std::iterator<std::contiguous_iterator_tag, Type> { // ! template
+    class ConstIterator { // ! template
     public:
-        ConstIterator() : ptr_(nullptr), container_(nullptr) {
+        using iterator = Iterator;
+        using iterator_category = std::random_access_iterator_tag;
+        using difference_type = ptrdiff_t;
+
+        using value_type = const Type;
+        using pointer    = const Type*;
+        using reference  = const Type&;
+
+        ConstIterator()
+            : ptr_(nullptr)
+            , container_(nullptr) {
         }
 
-        ConstIterator(Type* ptr, const Vector* container) : ptr_(ptr), container_(container) {
+        ConstIterator(pointer ptr, const Vector* container)
+            : ptr_(ptr)
+            , container_(container) {
         }
 
-        ConstIterator(const ConstIterator& other) : ptr_(other.ptr_), container_(other.container) {
+        ConstIterator(const ConstIterator& other)
+            : ptr_(other.ptr_)
+            , container_(other.container) {
         }
 
         ~ConstIterator() {
@@ -174,13 +201,13 @@ public:
             container_ = other.container_;
         }
 
-        const Type& operator*() const {
-            assert(ptr_ && container_ && ptr_ < End().ptr_);
+        reference operator*() const {
+            assert(ptr_ && container_ && ptr_ < container_->End().ptr_);
             return *ptr_;
         }
 
-        const Type* operator->() const {
-            assert(ptr_ && container_ && ptr_ < End().ptr_);
+        pointer operator->() const {
+            assert(ptr_ && container_ && ptr_ < container_->End().ptr_);
             return ptr_;
         }
 
@@ -206,7 +233,7 @@ public:
             return temp;
         }
 
-        ConstIterator& operator+=(ptrdiff_t diff) {
+        ConstIterator& operator+=(difference_type diff) {
             if (diff >= 0) {
                 while (diff--) {
                     ++(*this);
@@ -218,24 +245,24 @@ public:
             }
         }
 
-        ConstIterator& operator-=(ptrdiff_t diff) {
+        ConstIterator& operator-=(difference_type diff) {
             return *this += -diff;
         }
 
-        const Type& operator[](ptrdiff_t diff) const {
+        const value_type& operator[](difference_type diff) const {
             return ptr_[diff];
         }
 
-        friend ConstIterator operator+(const ConstIterator& iter, ptrdiff_t diff) {
+        friend ConstIterator operator+(const ConstIterator& iter, difference_type diff) {
             ConstIterator temp = iter;
             return temp += diff;
         }
 
-        friend ConstIterator operator+(ptrdiff_t diff, const ConstIterator& iter) {
+        friend ConstIterator operator+(difference_type diff, const ConstIterator& iter) {
             return iter + diff;
         }
 
-        friend ConstIterator operator-(const ConstIterator& iter, ptrdiff_t diff) {
+        friend ConstIterator operator-(const ConstIterator& iter, difference_type diff) {
             ConstIterator temp = iter;
             return temp -= diff;
         }
@@ -269,8 +296,8 @@ public:
         }
 
     private:
-        const Type* ptr_ = nullptr;
-        const Vector* container_ = nullptr;
+        pointer ptr_;
+        const Vector* container_;
     };
 
     ConstIterator Begin() const {
@@ -281,6 +308,8 @@ public:
         return ConstIterator(data_ + size_, this);
     }
 
+    // Compatability
+
     ConstIterator begin() const {
         return Begin();
     }
@@ -289,25 +318,28 @@ public:
         return End();
     }
 
-    /*
-     * For ReverseIterator and ConstReverseIterator
-     * use std::make_reverse_iterator()
-     */
+    // For ReverseIterator and ConstReverseIterator
+    // use std::make_reverse_iterator()
 
 public:
-    /* Vector<Type> */
-
-    Vector() : size_(0), capacity_(0), data_(nullptr) {
+    Vector()
+        : allocator_()
+        , size_(0)
+        , capacity_(0)
+        , data_(nullptr) {
     }
 
     explicit Vector(size_t init_size, const Type& value = Type())
-        : allocator_(Alloc()), size_(init_size), capacity_(init_size), data_(allocator_.allocate(capacity_)) {
+        : allocator_()
+        , size_(init_size)
+        , capacity_(init_size)
+        , data_(allocator_.allocate(capacity_)) {
 
         this->Initialize(data_, 0, size_, value);
     }
 
     Vector(const Vector& other)
-        : allocator_(Alloc())
+        : allocator_()
         , size_(other.Size())
         , capacity_(other.Capacity())
         , data_(allocator_.allocate(other.Capacity())) {
@@ -315,20 +347,23 @@ public:
         this->Copy(data_, 0, other.Size(), other.Data());
     }
 
-    Vector(Vector&& temp) {
-        *this = std::move(temp);
+    Vector(Vector&& temp)
+        : allocator_()
+        , size_(0)
+        , capacity_(0)
+        , data_(nullptr) {
+
+        stdlike::Swap(size_, temp.size_);
+        stdlike::Swap(capacity_, temp.capacity_);
+        stdlike::Swap(data_, temp.data_);
     }
 
     ~Vector() {
-        this->Release(data_, 0, size_);
-        allocator_.deallocate(data_, capacity_);
-        size_ = 0;
-        capacity_ = 0;
-        data_ = nullptr;
+        Destroy();
     }
 
     Vector& operator=(const Vector& other) {
-        this->~Vector();
+        Destroy();
         size_ = other.Size();
         capacity_ = other.Capacity();
         data_ = allocator_.allocate(other.Capacity());
@@ -339,16 +374,16 @@ public:
     }
 
     Vector& operator=(Vector&& temp) {
-        std::swap(temp.size_, size_);
-        std::swap(temp.capacity_, capacity_);
-        std::swap(temp.data_, data_);
+        stdlike::Swap(temp.size_, size_);
+        stdlike::Swap(temp.capacity_, capacity_);
+        stdlike::Swap(temp.data_, data_);
 
         return *this;
     }
 
     bool operator==(const Vector&) const = delete;
 
-    /* Capacity */
+    // Capacity
 
     bool Empty() const {
         return size_ == 0;
@@ -374,7 +409,7 @@ public:
         }
     }
 
-    /* Element access */
+    // Element access
 
     const Type& At(size_t pos) const {
         Type& ret = const_cast<Vector*>(this)->At(pos);
@@ -422,7 +457,7 @@ public:
         return data_;
     }
 
-    /* Modifiers */
+    // Modifiers
 
     void Clear() {
         this->Release(data_, 0, size_);
@@ -430,8 +465,10 @@ public:
     }
 
     Iterator Insert(Iterator pos, const Type& value) {
+        assert(pos <= End());
+
         ptrdiff_t offset = pos - Begin();
-        /* Invalidates Iterators */
+        // Invalidates Iterators
         if (size_ >= capacity_) {
             this->Reserve(size_ ? size_ * 2 : 1);
         }
@@ -439,20 +476,17 @@ public:
         pos = Begin() + offset;
         allocator_.construct(data_ + size_++, value);
         for (Iterator it = End() - 1; it > pos; it--) {
-            std::swap(*it, *(it - 1));
+            stdlike::Swap(*it, *(it - 1));
         }
 
-        *pos = value;
         return pos;
     }
 
     Iterator Erase(Iterator pos) {
-        if (pos >= End()) {
-            return End();
-        }
+        assert(pos < End());
 
         for (Iterator it = pos; it < End() - 1; it++) {
-            std::swap(*it, *(it + 1));
+            stdlike::Swap(*it, *(it + 1));
         }
 
         allocator_.destroy(data_ + --size_);
@@ -486,12 +520,20 @@ public:
     }
 
 private:
-    /* Helper functions */
+    // Helper functions
+
+    void Destroy() {
+        this->Release(data_, 0, size_);
+        allocator_.deallocate(data_, capacity_);
+        size_ = 0;
+        capacity_ = 0;
+        data_ = nullptr;
+    }
 
     void ChangeCapacity(size_t new_capacity) {
         Type* new_data = allocator_.allocate(new_capacity);
         size_t new_size = this->Copy(new_data, 0, std::min(size_, new_capacity), data_);
-        this->~Vector();
+        Destroy();
 
         size_ = new_size;
         capacity_ = new_capacity;
@@ -538,26 +580,30 @@ private:
     }
 
 private:
-    Alloc allocator_ = {};
-    size_t size_ = 0;
-    size_t capacity_ = 0;
-    Type* data_ = nullptr;
+    Alloc allocator_;
+    size_t size_;
+    size_t capacity_;
+    Type* data_;
 };
 
 template <>
-class Vector<bool, Allocator<bool>> {
+class Vector<bool, Allocator<uint32_t>> {
 public:
-    /* BitReference */
-
     class BitReference {
     public:
-        BitReference() : source_(nullptr), mask_(0) {
+        BitReference()
+            : source_(nullptr)
+            , mask_(0) {
         }
 
-        BitReference(uint32_t* source, uint32_t mask) : source_(source), mask_(mask) {
+        BitReference(uint32_t* source, uint32_t mask)
+            : source_(source)
+            , mask_(mask) {
         }
 
-        BitReference(const BitReference& other) : source_(other.source_), mask_(other.mask_) {
+        BitReference(const BitReference& other)
+            : source_(other.source_)
+            , mask_(other.mask_) {
         }
 
         ~BitReference() {
@@ -576,12 +622,18 @@ public:
         }
 
         BitReference& operator=(const BitReference& other) {
-            return *this = bool(other);
+            return *this = static_cast<bool>(other);
         }
 
         operator bool() const {
             assert(source_);
             return mask_ & *source_;
+        }
+
+        friend void Swap(BitReference lhs, BitReference rhs) {
+            bool temp = lhs;
+            lhs = rhs;
+            rhs = temp;
         }
 
         friend void swap(BitReference lhs, BitReference rhs) {
@@ -620,26 +672,32 @@ public:
     };
 
 public:
-    /* Iterator */
-
     class Iterator {
     public:
+        using iterator = Iterator;
         using iterator_category = std::random_access_iterator_tag;
         using difference_type = ptrdiff_t;
-        using iterator = Iterator;
 
         using value_type = bool;
-        using pointer = BitReference*;
-        using reference = BitReference;
+        using pointer    = BitReference*;
+        using reference  = BitReference;
 
-        Iterator() : data_(nullptr), shift_(0), container_(nullptr) {
+        Iterator()
+            : data_(nullptr)
+            , shift_(0)
+            , container_(nullptr) {
         }
 
         Iterator(uint32_t* data, uint32_t shift, Vector* container = nullptr)
-            : data_(data), shift_(shift), container_(container) {
+            : data_(data)
+            , shift_(shift)
+            , container_(container) {
         }
 
-        Iterator(const Iterator& other) : data_(other.data_), shift_(other.shift_), container_(other.container_) {
+        Iterator(const Iterator& other)
+            : data_(other.data_)
+            , shift_(other.shift_)
+            , container_(other.container_) {
         }
 
         ~Iterator() {
@@ -754,9 +812,9 @@ public:
         }
 
     private:
-        uint32_t* data_ = nullptr;
-        uint32_t shift_ = 0;
-        Vector* container_ = nullptr;
+        uint32_t* data_;
+        uint32_t shift_;
+        Vector* container_;
     };
 
     Iterator Begin() {
@@ -775,27 +833,32 @@ public:
         return End();
     }
 
-    /* ConstIterator */
-
     class ConstIterator {
     public:
+        using const_iterator = ConstIterator;
         using iterator_category = std::random_access_iterator_tag;
         using difference_type = ptrdiff_t;
-        using const_iterator = ConstIterator;
 
         using value_type = bool;
-        using pointer = BitReference*;
-        using reference = BitReference;
+        using pointer    = BitReference*;
+        using reference  = BitReference;
 
-        ConstIterator() : data_(nullptr), shift_(0), container_(nullptr) {
+        ConstIterator()
+            : data_(nullptr)
+            , shift_(0)
+            , container_(nullptr) {
         }
 
         ConstIterator(uint32_t* data, uint32_t shift, const Vector* container = nullptr)
-            : data_(data), shift_(shift), container_(container) {
+            : data_(data)
+            , shift_(shift)
+            , container_(container) {
         }
 
         ConstIterator(const ConstIterator& other)
-            : data_(other.data_), shift_(other.shift_), container_(other.container_) {
+            : data_(other.data_)
+            , shift_(other.shift_)
+            , container_(other.container_) {
         }
 
         ~ConstIterator() {
@@ -910,9 +973,9 @@ public:
         }
 
     private:
-        uint32_t* data_ = nullptr;
-        uint32_t shift_ = 0;
-        const Vector* container_ = nullptr;
+        uint32_t* data_;
+        uint32_t shift_;
+        const Vector* container_;
     };
 
     ConstIterator Begin() const {
@@ -931,47 +994,51 @@ public:
         return End();
     }
 
-    /*
-     * For ReverseIterator and ConstReverseIterator
-     * use std::make_reverse_iterator()
-     */
+    // For ReverseIterator and ConstReverseIterator
+    // use std::make_reverse_iterator()
 
 public:
-    /* Vector<bool> */
-
-    Vector() : size_(0), capacity_(0), data_(nullptr) {
+    Vector()
+        : allocator_()
+        , size_(0)
+        , capacity_(0)
+        , data_(nullptr) {
     }
 
     explicit Vector(size_t init_size, bool value = false)
-        : size_(init_size)
+        : allocator_()
+        , size_(init_size)
         , capacity_(RoundUpToThirtyTwoMultiple(init_size))
-        , data_(new uint32_t[BitsToBytes(capacity_)]()) {
+        , data_(allocator_.allocate(DivideByThirtyTwo(capacity_))) {
 
         this->Initialize(data_, 0, size_, value);
     }
 
     Vector(const Vector& other)
-        : size_(other.Size()), capacity_(other.Capacity()), data_(new uint32_t[BitsToBytes(other.Capacity())]()) {
+        : allocator_(other.allocator_)
+        , size_(other.Size())
+        , capacity_(other.Capacity())
+        , data_(allocator_.allocate(DivideByThirtyTwo(other.Capacity()))) {
 
         this->Copy(data_, 0, other.Size(), other.Data());
     }
 
-    Vector(Vector&& temp) {
-        *this = std::move(temp);
+    Vector(Vector&& temp)
+        : allocator_(stdlike::Move(temp.allocator_))
+        , size_(stdlike::Move(temp.size_))
+        , capacity_(stdlike::Move(temp.capacity_))
+        , data_(stdlike::Move(temp.data_)) {
     }
 
     ~Vector() {
-        delete[] data_;
-        size_ = 0;
-        capacity_ = 0;
-        data_ = nullptr;
+        Destroy();
     }
 
     Vector& operator=(const Vector& other) {
-        this->~Vector();
+        Destroy();
         size_ = other.Size();
         capacity_ = other.Capacity();
-        data_ = new uint32_t[BitsToBytes(other.Capacity())]();
+        data_ = allocator_.allocate(DivideByThirtyTwo(other.Capacity()));
 
         this->Copy(data_, 0, other.Size(), other.Data());
 
@@ -979,16 +1046,16 @@ public:
     }
 
     Vector& operator=(Vector&& temp) {
-        std::swap(temp.size_, size_);
-        std::swap(temp.capacity_, capacity_);
-        std::swap(temp.data_, data_);
+        stdlike::Swap(temp.size_, size_);
+        stdlike::Swap(temp.capacity_, capacity_);
+        stdlike::Swap(temp.data_, data_);
 
         return *this;
     }
 
     bool operator==(const Vector&) const = delete;
 
-    /* Capacity */
+    // Capacity
 
     bool Empty() const {
         return size_ == 0;
@@ -1014,7 +1081,7 @@ public:
         }
     }
 
-    /* Element access */
+    // Element access
 
     const BitReference At(size_t pos) const {
         BitReference ret = const_cast<Vector*>(this)->At(pos);
@@ -1062,7 +1129,7 @@ public:
         return data_;
     }
 
-    /* Modifiers */
+    // Modifiers
 
     void Clear() {
         size_ = 0;
@@ -1070,7 +1137,8 @@ public:
 
     Iterator Insert(Iterator pos, bool value) {
         ptrdiff_t offset = pos - Begin();
-        if (size_ >= capacity_) { /* Invalidates Iterators */
+        // Invalidates iterators
+        if (size_ >= capacity_) {
             this->Reserve(size_ ? size_ * 2 : 1);
         }
 
@@ -1109,7 +1177,7 @@ public:
 
     void Resize(size_t new_size, bool value = false) {
         if (size_ < new_size) {
-            this->Reserve(RoundUpToThirtyTwoMultiple(new_size));
+            this->Reserve(new_size);
             this->Initialize(data_, size_, new_size, value);
             size_ = new_size;
         }
@@ -1122,13 +1190,19 @@ public:
     }
 
 private:
-    /* Helper functions */
+    // Helper functions
+
+    void Destroy() {
+        allocator_.deallocate(data_, DivideByThirtyTwo(capacity_));
+        size_ = 0;
+        capacity_ = 0;
+        data_ = nullptr;
+    }
 
     void ChangeCapacity(size_t new_capacity) {
-        new_capacity = RoundUpToThirtyTwoMultiple(new_capacity);
-        uint32_t* new_data = new uint32_t[BitsToBytes(new_capacity)];
+        uint32_t* new_data = allocator_.allocate(DivideByThirtyTwo(new_capacity));
         size_t new_size = this->Copy(new_data, 0, std::min(size_, new_capacity), data_);
-        this->~Vector();
+        Destroy();
 
         size_ = new_size;
         capacity_ = new_capacity;
@@ -1140,7 +1214,6 @@ private:
         for (size_t cur_pos = start; cur_pos < end; cur_pos++) {
             SetValue(data, cur_pos, value);
         }
-
         return end - start;
     }
 
@@ -1149,7 +1222,6 @@ private:
         for (size_t cur_pos = start; cur_pos < end; cur_pos++) {
             SetValue(dest, cur_pos, GetValue(src, cur_pos));
         }
-
         return end - start;
     }
 
@@ -1163,11 +1235,7 @@ private:
         bit_ref = value;
     }
 
-    /* Utility functions */
-
-    static inline uint64_t BitsToBytes(uint64_t bits) {
-        return bits >> 3;
-    }
+    // Utility functions
 
     static inline uint32_t RoundUpToThirtyTwoMultiple(uint64_t num) {
         return (num + 31) & ~31u;
@@ -1182,9 +1250,10 @@ private:
     }
 
 private:
-    size_t size_ = 0;     /* in bits */
-    size_t capacity_ = 0; /* in bits, always == 0 (mod 8), at least 8 */
-    uint32_t* data_ = nullptr;
+    Allocator<uint32_t> allocator_;
+    size_t size_;     // in bits
+    size_t capacity_; // in bits
+    uint32_t* data_;
 };
 
 template <class Type>
@@ -1195,7 +1264,6 @@ std::ostream& operator<<(std::ostream& stream, const Vector<Type>& vec) {
             stream << " ";
         }
     }
-
     return stream;
 }
 
