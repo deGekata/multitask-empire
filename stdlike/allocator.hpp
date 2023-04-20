@@ -1,19 +1,22 @@
-#include <cstddef>
+#include <limits>
+#include <memory>
 #include <new>
 #include <numeric>
+
+#include "utility.hpp"
 
 namespace stdlike {
 
 template <typename Type>
 class Allocator {
 public:
+    using size_type  = size_t;
     using value_type = Type;
-    using size_type = size_t;
     using difference_type = ptrdiff_t;
 
-    using pointer = Type*;
-    using const_pointer = const Type*;
+    using pointer   = Type*;
     using reference = Type&;
+    using const_pointer   = const Type*;
     using const_reference = const Type&;
 
     Allocator() {
@@ -22,15 +25,15 @@ public:
     Allocator([[maybe_unused]] const Allocator& other) {
     }
 
-    template <typename U>
-    Allocator([[maybe_unused]] const Allocator<U>& other) {
+    template <typename OtherType>
+    Allocator([[maybe_unused]] const Allocator<OtherType>& other) {
     }
 
     ~Allocator() {
     }
 
     pointer Address(reference value) {
-        pointer addr = Address(value);
+        return std::__addressof(value);
     }
 
     const_pointer Address(reference value) const {
@@ -45,7 +48,7 @@ public:
 
     void Deallocate(pointer ptr, size_type elems_n) {
         std::align_val_t align = std::align_val_t(alignof(value_type));
-        ::operator delete(ptr, elems_n * sizeof(value_type), align);
+        operator delete (ptr, elems_n * sizeof(value_type), align);
     }
 
     size_type MaxSize() const {
@@ -53,12 +56,12 @@ public:
     }
 
     void Construct(pointer ptr, const_reference value) {
-        ::new (ptr) Type(value);
+        new (ptr) Type(value);
     }
 
     template <class Other, class... Args>
     void Construct(Other* ptr, Args&&... args) {
-        ::new (static_cast<void*>(ptr)) Other(std::forward<Args>(args)...);
+        new (static_cast<void*>(ptr)) Other(stdlike::Forward<Args>(args)...);
     }
 
     void Destroy(pointer ptr) {
@@ -70,7 +73,7 @@ public:
         ptr->~Other();
     }
 
-    /* Compatability */
+    // Compatability
 
     pointer address(reference value) {
         return Address(value);
@@ -80,8 +83,8 @@ public:
         return address(value);
     }
 
-    [[nodiscard]] constexpr pointer allocate(size_type elems_n, [[maybe_unused]] const void* hint = nullptr) {
-        return Allocate(elems_n);
+    [[nodiscard]] constexpr pointer allocate(size_type elems_n, const void* hint = nullptr) {
+        return Allocate(elems_n, hint);
     }
 
     void deallocate(pointer ptr, size_type elems_n) {
@@ -98,7 +101,7 @@ public:
 
     template <class Other, class... Args>
     void construct(Other* ptr, Args&&... args) {
-        Construct(ptr, std::forward<Args>(args)...);
+        Construct(ptr, stdlike::Forward<Args>(args)...);
     }
 
     void destroy(pointer ptr) {
@@ -109,10 +112,6 @@ public:
     void destroy(Other* ptr) {
         Destroy(ptr);
     }
-};
-
-template <>
-class Allocator<bool> {
 };
 
 }  // namespace stdlike
