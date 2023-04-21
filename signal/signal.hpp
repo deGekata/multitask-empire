@@ -278,11 +278,11 @@ template <typename Signature, typename Collector = CollectorLast<typename std::f
 class Signal final
 	: public SignalBase<Signature, Collector> {
 public:
-	using BaseSignal = SignalBase<Signature, Collector>;
-	using CallBack = typename BaseSignal::CallBack;
+	using Base = SignalBase<Signature, Collector>;
+	using CallBack = typename Base::CallBack;
 
 	Signal(const CallBack& callback = CallBack())
-		: BaseSignal(callback) {
+		: Base(callback) {
 	}
 };
 

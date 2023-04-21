@@ -1,7 +1,7 @@
 SRC_DIRS := src targets ecs signal
 VPATH += $(SRC_DIRS)
 
-INC_DIRS := . include stdlike
+INC_DIRS := . include stdlike utility
 BIN_DIR := bin
 BUILD_DIR := build
 

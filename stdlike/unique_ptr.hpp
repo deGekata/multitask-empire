@@ -49,7 +49,7 @@ public:
 	}
 
 	void Swap(UniquePtr& other) noexcept {
-		Swap(pointer_, other.pointer_);
+		stdlike::Swap(pointer_, other.pointer_);
 	}
 
 	Type* Get() const noexcept {
