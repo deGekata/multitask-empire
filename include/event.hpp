@@ -21,6 +21,7 @@
 
 // Containers
 #include <unordered_map>
+#include <vector>
 
 // This project
 #include "signal/signal.hpp"
@@ -73,7 +74,10 @@ public:
     size_t SignalsCount() const;
 
 private:
-    std::unordered_map<EventBase::FamilyType, std::pair<std::weak_ptr<EventSignal>, size_t>> connections_;
+    auto ConnectionsList();
+
+private:
+    std::unordered_map<EventBase::FamilyType, std::pair<std::weak_ptr<EventSignal>, signal::CallBackId>> connections_;
 };
 
 template <typename Derived>
@@ -90,6 +94,28 @@ public:
 
 class EventManager
     : public utility::NonCopiable {
+private:
+    /**
+     * @brief      This class describes an event callback wrapper.
+     *
+     * @tparam     EventType  Type of the event.
+     */
+    template <typename EventType>
+    class EventCallbackWrapper {
+    public:
+        explicit EventCallbackWrapper(std::function<void (const EventType&)> callback)
+            : callback_(callback) {
+        }
+
+        void operator()(const void* event) {
+            auto event_arg = static_cast<const EventType*>(event);
+            callback_(*event_arg);
+        }
+
+    private:
+        std::function<void (const EventType&)> callback_;
+    };
+
 public:
     EventManager();
     virtual ~EventManager();
@@ -112,18 +138,7 @@ public:
     size_t RecieversCount() const;
 
 private:
-    template <typename EventType>
-    class EventCallbackWrapper {
-    public:
-        explicit EventCallbackWrapper(std::function<void (const EventType&)> callback);
-        void operator()(const void* event);
-
-    private:
-        std::function<void (const EventType&)> callback;
-    };
-
-private:
-    std::shared_ptr<EventSignal>& SignalFor(size_t pos);
+    std::shared_ptr<EventSignal>& SignalFromFamily(EventBase::FamilyType family);
 
 private:
     std::vector<std::shared_ptr<EventSignal>> handlers_;

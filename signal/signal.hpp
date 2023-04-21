@@ -22,6 +22,7 @@
 
 namespace signal {
 
+using CallBackId = uintptr_t;
 
 /**
  * @brief      Collects callback results and yields back
@@ -212,7 +213,6 @@ class SignalBase<ReturnType (ArgTypes...), Collector>
 public:
 	using CollectorResult = typename Collector::CollectorResult;
 	using CallBack = std::function<ReturnType (ArgTypes...)>;
-	using CallBackId = uintptr_t;
 
 	SignalBase()
 		: CollectorInvoker<Collector, ReturnType (ArgTypes...)>()
@@ -259,7 +259,7 @@ public:
 		return collector.Result();
 	}
 
-	size_t Size() const {
+	size_t CallbackCount() const {
 		return callback_list_.size();
 	}
 
