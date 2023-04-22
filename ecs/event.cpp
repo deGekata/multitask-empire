@@ -1,4 +1,4 @@
-#include "event.hpp"
+#include <ecs/event.hpp>
 
 namespace ecs {
 

@@ -140,7 +140,7 @@ public:
 private:
     bool is_initialized_;
     EntityManager& entity_manager_;
-
+    
     std::map<BaseSystem::Family, BaseSystem*> systems_;
 };
 

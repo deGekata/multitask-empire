@@ -24,8 +24,8 @@
 #include <vector>
 
 // This project
-#include "signal/signal.hpp"
-#include "utility/non_copiable.hpp"
+#include <signal/signal.hpp>
+#include <utility/non_copiable.hpp>
 
 namespace ecs {
 
