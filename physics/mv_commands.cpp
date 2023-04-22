@@ -5,27 +5,39 @@
 #include <components/player_components.hpp>
 #include <components/movement_components.hpp>
 
-void MovementCommandsSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
-    entities.Each<PendingMovementCommand, Position, Velocity>(
-        [](ecs::Entity entity, PendingMovementCommand& cmd, Position& pos, Velocity& vel) {
-            switch (cmd) {
+void MovementCommandsSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+    events.Subscribe<PendingMovementEvent>(*this);
+}
 
-                // TODO Emit jump event
-                case PendingMovementCommand::Jump:
-                    if (pos.y_ == 0) {
-                        vel.vy_ = kJumpSpeed;
-                    }
-                    break;
-
-                case PendingMovementCommand::Left:
-                    vel.vx_ = -kMoveSpeed;
-                    break;
-
-                case PendingMovementCommand::Right:
-                    vel.vx_ = kMoveSpeed;
-                    break;
+void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
+    for (auto event = events_queue_.front(); !events_queue_.empty(); events_queue_.pop_front()) {
+        switch (event.type_) {
+            case MovementCommand::Jump: {
+                auto position = event.target_.GetComponent<Position>();
+                if (position->y_ == 0) {
+                    auto velocity = event.target_.GetComponent<Velocity>();
+                    velocity->vy_ = kJumpSpeed;
+                }
+                break;
             }
 
-            entity.Remove<PendingMovementCommand>();
-        });
+            case MovementCommand::Left: {
+                auto velocity = event.target_.GetComponent<Velocity>();
+                velocity->vx_ = -kMoveSpeed;
+
+                break;
+            }
+
+            case MovementCommand::Right: {
+                auto velocity = event.target_.GetComponent<Velocity>();
+                velocity->vx_ = kMoveSpeed;
+
+                break;
+            }
+        }
+    }
+}
+
+void MovementCommandsSystem::Recieve(const PendingMovementEvent& event) {
+    events_queue_.push_back(event);
 }
