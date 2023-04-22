@@ -1,4 +1,4 @@
-#include "../include/pool.hpp"
+#include <ecs/pool.hpp>
 
 namespace ecs {
 

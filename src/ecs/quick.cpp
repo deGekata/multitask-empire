@@ -1,4 +1,4 @@
-#include "../include/quick.hpp"
+#include <ecs/quick.hpp>
 
 namespace ecs {
 ECS::ECS() : entities_(), systems_(entities_) {

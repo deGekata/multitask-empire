@@ -1,4 +1,4 @@
-#include "../include/system.hpp"
+#include <ecs/system.hpp>
 
 namespace ecs {
 

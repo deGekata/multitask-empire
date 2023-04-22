@@ -1,3 +1,6 @@
+#ifndef H_POOL
+#define H_POOL
+
 #pragma once
 
 #include <cassert>
@@ -40,7 +43,7 @@ public:
     Pool() : BasePool(sizeof(T), ChunkSize) {
     }
 
-    virtual ~Pool() {
+    virtual ~Pool() override {
     }
 
     virtual void DestroyElement(const uint64_t idx) override {
@@ -51,3 +54,5 @@ public:
 };
 
 };  // namespace ecs
+
+#endif

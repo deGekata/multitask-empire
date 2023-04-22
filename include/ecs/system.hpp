@@ -1,9 +1,10 @@
-#pragma once
+#ifndef H_SYSTEM
+#define H_SYSTEM
 
-#include <unordered_map>
+#include <map>
 
-#include "config.hpp"
-#include "entity.hpp"
+#include <ecs/config.hpp>
+#include <ecs/entity.hpp>
 
 namespace ecs {
 class BaseSystem {
@@ -43,7 +44,7 @@ protected:
 template <typename Derived>
 class System : public BaseSystem {
 public:
-    virtual ~System() {
+    virtual ~System() override {
     }
 
 private:
@@ -140,7 +141,9 @@ private:
     bool is_initialized_;
     EntityManager& entity_manager_;
 
-    std::unordered_map<BaseSystem::Family, BaseSystem*> systems_;
+    std::map<BaseSystem::Family, BaseSystem*> systems_;
 };
 
 };  // namespace ecs
+
+#endif

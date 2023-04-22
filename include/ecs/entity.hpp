@@ -1,4 +1,5 @@
-#pragma once
+#ifndef H_ENTITY
+#define H_ENTITY
 
 #include <cstdint>
 
@@ -9,8 +10,8 @@
 #include <type_traits>
 #include <vector>
 
-#include "pool.hpp"
-#include "config.hpp"
+#include <ecs/pool.hpp>
+#include <ecs/config.hpp>
 
 namespace ecs {
 
@@ -654,3 +655,5 @@ Entity ComponentHandle<Component>::GetEntity() {
 }
 
 };  // namespace ecs
+
+#endif
