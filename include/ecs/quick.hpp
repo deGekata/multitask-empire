@@ -10,6 +10,7 @@ class ECS {
 public:
     ECS();
 
+    EventManager events_;
     EntityManager entities_;
     SystemManager systems_;
 };

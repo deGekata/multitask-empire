@@ -8,7 +8,7 @@
 DispatcherSystem::DispatcherSystem(bool& flag) : running_(flag) {
 }
 
-void DispatcherSystem::Update(ecs::EntityManager& entities, ecs::TimeDelta) {
+void DispatcherSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
     entities.Each<PlayerTag, PendingPlayerCommand>([this](ecs::Entity entity, PlayerTag&, PendingPlayerCommand& cmd) {
         if (cmd.command_ == "JUMP") {
             entity.Remove<PendingPlayerCommand>();

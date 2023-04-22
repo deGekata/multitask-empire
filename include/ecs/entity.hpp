@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <vector>
 
+#include <ecs/event.hpp>
 #include <ecs/pool.hpp>
 #include <ecs/config.hpp>
 
@@ -92,8 +93,8 @@ struct BaseComponent {
 public:
     using Family = uint64_t;
 
-    void operator delete(void* p);
-    void operator delete[](void* p);
+    [[ noreturn ]] void operator delete(void* p);
+    [[ noreturn ]] void operator delete[](void* p);
 
 protected:
     static Family family_counter_;
@@ -183,9 +184,52 @@ struct ComponentHelper : public BaseComponentHelper {
     }
 };
 
+/**
+ * Emitted when an entity is added to the system.
+ */
+struct EntityCreatedEvent : public Event<EntityCreatedEvent> {
+    explicit EntityCreatedEvent(Entity entity) : entity_(entity) {
+    }
+    virtual ~EntityCreatedEvent() override;
+
+    Entity entity_;
+};
+
+/**
+ * Called just prior to an entity being destroyed.
+ */
+struct EntityDestroyedEvent : public Event<EntityDestroyedEvent> {
+    explicit EntityDestroyedEvent(Entity entity) : entity_(entity) {
+    }
+    virtual ~EntityDestroyedEvent() override;
+
+    Entity entity_;
+};
+
+template <typename C>
+struct ComponentAddedEvent : public Event<ComponentAddedEvent<C>> {
+    ComponentAddedEvent(Entity entity, ComponentHandle<C> component) : entity_(entity), component_(component) {
+    }
+
+    Entity entity_;
+    ComponentHandle<C> component_;
+};
+
+/**
+ * Emitted when any component is removed from an entity.
+ */
+template <typename C>
+struct ComponentRemovedEvent : public Event<ComponentRemovedEvent<C>> {
+    ComponentRemovedEvent(Entity entity, ComponentHandle<C> component) : entity_(entity), component_(component) {
+    }
+
+    Entity entity_;
+    ComponentHandle<C> component_;
+};
+
 struct EntityManager {
 public:
-    EntityManager();
+    explicit EntityManager(EventManager& event_manager);
     virtual ~EntityManager();
 
     /// An iterator over a view of the entities in an EntityManager.
@@ -365,6 +409,7 @@ public:
         entity_component_mask_[id.GetIndex()].set(family);
 
         ComponentHandle<Component> component{this, id};
+        event_manager_.Emit<ComponentAddedEvent<Component>>(Entity{this, id}, component);
         return component;
     }
 
@@ -379,6 +424,8 @@ public:
         BaseComponent::Family family = Family<Component>();
 
         auto* pool = component_pools_[family];
+        ComponentHandle<Component> component{this, id};
+        event_manager_.Emit<ComponentRemovedEvent<Component>>(Entity{this, id}, component);
 
         entity_component_mask_[id.GetIndex()].reset(family);
         pool->DestroyElement(id.GetIndex());
@@ -443,11 +490,14 @@ public:
         return TypedViewer<false, Components...>(this, mask);
     }
 
-    template <typename T> struct identity { typedef T type; };
+    template <typename T>
+    struct identity {
+        typedef T type;
+    };
 
     template <typename... Components>
     void Each(typename identity<std::function<void(Entity entity, Components&...)>>::type f) {
-        GetEntitiesWithComponents<Components ...>().Each(std::move(f));
+        GetEntitiesWithComponents<Components...>().Each(std::move(f));
     }
 
 private:
@@ -527,8 +577,9 @@ private:
         return static_cast<Pool<Component>*>(component_pools_[family]);
     }
 
-    uint32_t index_counter_ = 0;
+    uint32_t index_counter_;
 
+    EventManager& event_manager_;
     // Each element in component_pools_ corresponds to a Pool for a Component.
     // The index into the vector is the Component::family().
     std::vector<BasePool*> component_pools_;

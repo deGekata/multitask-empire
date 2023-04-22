@@ -8,7 +8,7 @@ const int64_t kMoveSpeed = 100;
 
 class MovementCommandsSystem : public ecs::System<MovementCommandsSystem> {
 public:
-    void Update(ecs::EntityManager& entities, ecs::TimeDelta dt) override;
+    void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 };
 
 #endif

@@ -5,7 +5,7 @@
 
 class MovementSystem : public ecs::System<MovementSystem> {
 public:
-    void Update(ecs::EntityManager& entities, ecs::TimeDelta dt) override;
+    void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 };
 
 #endif
