@@ -4,7 +4,7 @@
 
 #include <components/movement_components.hpp>
 
-void MovementSystem::Update(ecs::EntityManager& entities, ecs::TimeDelta dt) {
+void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta dt) {
     entities.Each<Velocity, Acceleration>([dt](ecs::Entity entity, Velocity& vel, Acceleration& acc) {
         vel.vx_ += acc.ax_ * dt;
         vel.vy_ += acc.ay_ * dt;

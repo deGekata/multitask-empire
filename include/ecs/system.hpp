@@ -5,6 +5,7 @@
 
 #include <ecs/config.hpp>
 #include <ecs/entity.hpp>
+#include <ecs/event.hpp>
 
 namespace ecs {
 class BaseSystem {
@@ -18,14 +19,14 @@ public:
      *
      * Typically used to set up event handlers.
      */
-    virtual void Configure(EntityManager& entities);
+    virtual void Configure(EntityManager& entities, EventManager& events);
 
     /**
      * Apply System behavior.
      *
      * Called every game step.
      */
-    virtual void Update(EntityManager& entities, TimeDelta dt) = 0;
+    virtual void Update(EntityManager& entities, EventManager& events, TimeDelta dt) = 0;
 
 protected:
     static Family family_counter_;
@@ -59,7 +60,7 @@ private:
 
 class SystemManager {
 public:
-    SystemManager(EntityManager& entity_manager);
+    SystemManager(EntityManager& entity_manager, EventManager& event_manager);
     ~SystemManager();
 
     /**
@@ -122,7 +123,7 @@ public:
         auto* s = GetSystem<System>();
         assert(s);
 
-        s->Update(entity_manager_, dt);
+        s->Update(entity_manager_, event_manager_, dt);
     }
 
     /**
@@ -139,8 +140,10 @@ public:
 
 private:
     bool is_initialized_;
+
     EntityManager& entity_manager_;
-    
+    EventManager& event_manager_;
+
     std::map<BaseSystem::Family, BaseSystem*> systems_;
 };
 

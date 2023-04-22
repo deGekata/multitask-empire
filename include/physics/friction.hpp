@@ -9,7 +9,7 @@ constexpr int64_t kFrictionStopValue = 10;
 
 class FrictionSystem : public ecs::System<FrictionSystem> {
 public:
-    void Update(ecs::EntityManager& entities, ecs::TimeDelta dt) override;
+    void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 };
 
 #endif

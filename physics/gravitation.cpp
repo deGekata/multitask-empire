@@ -2,7 +2,7 @@
 
 #include <components/movement_components.hpp>
 
-void GravitationSystem::Update(ecs::EntityManager& entities, ecs::TimeDelta) {
+void GravitationSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
     entities.Each<Position, Acceleration>([](ecs::Entity, Position& pos, Acceleration& acc) {
         // TODO Change to recieve of Jump event
         if (pos.y_ > 0) {

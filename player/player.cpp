@@ -3,7 +3,7 @@
 #include <components/movement_components.hpp>
 #include <components/player_components.hpp>
 
-void PlayerSystem::Configure(ecs::EntityManager& entities) {
+void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager&) {
     ecs::Entity player = entities.Create();
     player.Assign<PlayerTag>();
 
@@ -14,7 +14,7 @@ void PlayerSystem::Configure(ecs::EntityManager& entities) {
     std::cout << "[*] Created player with index: " << player.GetId().GetIndex() << std::endl;
 }
 
-void PlayerSystem::Update(ecs::EntityManager& entities, ecs::TimeDelta) {
+void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
     std::string command;
     if (std::cin >> command) {
         entities.Each<PlayerTag>([command](ecs::Entity entity, PlayerTag&) {

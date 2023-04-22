@@ -43,7 +43,14 @@ Entity::Id Entity::GetId() const {
     return id_;
 }
 
-EntityManager::EntityManager() : component_pools_(), component_helpers_(), entity_component_mask_(),  entity_generations_(), free_list_() {
+EntityManager::EntityManager(EventManager& event_manager)
+    : index_counter_(0)
+    , event_manager_(event_manager)
+    , component_pools_()
+    , component_helpers_()
+    , entity_component_mask_()
+    , entity_generations_()
+    , free_list_() {
 }
 
 EntityManager::~EntityManager() {
@@ -94,6 +101,12 @@ ComponentMask Entity::GetComponentMask() const {
     return manager_->GetComponentMask(id_);
 }
 
+EntityCreatedEvent::~EntityCreatedEvent() {
+}
+
+EntityDestroyedEvent::~EntityDestroyedEvent() {
+}
+
 Entity EntityManager::Create() {
     uint32_t index = 0;
     uint32_t generation = 0;
@@ -112,6 +125,7 @@ Entity EntityManager::Create() {
     }
 
     Entity new_entity{this, Entity::Id(index, generation)};
+    event_manager_.Emit<EntityCreatedEvent>(new_entity);
     return new_entity;
 }
 
@@ -145,6 +159,8 @@ void EntityManager::Destroy(const Entity::Id entity) {
             helper->RemoveComponent({this, entity});
         }
     }
+
+    event_manager_.Emit<EntityDestroyedEvent>(Entity{this, entity});
 
     entity_component_mask_[index].reset();
     entity_generations_[index]++;

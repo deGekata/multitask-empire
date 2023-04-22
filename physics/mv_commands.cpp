@@ -5,7 +5,7 @@
 #include <components/player_components.hpp>
 #include <components/movement_components.hpp>
 
-void MovementCommandsSystem::Update(ecs::EntityManager& entities, ecs::TimeDelta) {
+void MovementCommandsSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
     entities.Each<PendingMovementCommand, Position, Velocity>(
         [](ecs::Entity entity, PendingMovementCommand& cmd, Position& pos, Velocity& vel) {
             switch (cmd) {
