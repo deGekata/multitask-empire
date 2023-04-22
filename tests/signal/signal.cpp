@@ -1,4 +1,4 @@
-#include "signal.hpp"
+#include <signal/signal.hpp>
 
 // C stdlib
 #include <cassert>

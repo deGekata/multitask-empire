@@ -1,8 +1,8 @@
-#include "utility.hpp"
-#include "function.hpp"
-#include "shared_ptr.hpp"
-#include "unique_ptr.hpp"
-#include "weak_ptr.hpp"
+#include <stdlike/utility.hpp>
+#include <stdlike/function.hpp>
+#include <stdlike/shared_ptr.hpp>
+#include <stdlike/unique_ptr.hpp>
+#include <stdlike/weak_ptr.hpp>
 
 int Func(const int* x, int y) {
 	return (*x) + y;
