@@ -15,6 +15,8 @@
 #include <player/dispatcher.hpp>
 #include <player/player.hpp>
 
+#include "graphics/AWindow.hpp"
+
 class Application : public ecs::ECS {
 public:
     Application() : running_(true) {
@@ -47,6 +49,7 @@ private:
 int main() {
     Application game;
 
+    IGraphicsLib::Window window_(1000, 800, "Simple");
     // auto prev_timer = std::chrono::steady_clock::now();
     while (game.GetState()) {
         // auto new_timer = std::chrono::steady_clock::now();

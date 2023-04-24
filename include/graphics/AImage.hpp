@@ -1,0 +1,39 @@
+#ifndef IGRAPHICS_AIMAGE_HPP
+#define IGRAPHICS_AIMAGE_HPP
+
+#include "graphics/Color.hpp"
+
+namespace IGraphicsLib {
+class Image {
+    class Image_;
+    Image_* ip_ = nullptr;
+    friend class Texture;
+
+public:
+    Image();
+    Image(uint32_t w, uint32_t h, const Color& col = IGraphicsLib::Colors::White) : Image() {
+        create(w, h, col);
+    }
+    Image(const char* filename);
+    Image(const Image& oth);
+    Image& operator=(const Image& oth);
+    ~Image();
+
+    void loadFromFile(const char* filename);
+    void saveToFile(const char* filename);
+    void create(uint32_t w, uint32_t h, const Color& col = IGraphicsLib::Colors::White);
+
+    const Color* getPixels() const;
+    Color getPixel(unsigned int x, unsigned int y) const;
+    void setPixel(unsigned int x, unsigned int y, const Color& color);
+
+    void setScale(double scale);
+
+    uint32_t getW() const;
+    uint32_t getH() const;
+
+    bool isCreated() const;
+};
+}  // namespace IGraphicsLib
+
+#endif /* IGRAPHICS_AIMAGE_HPP */
