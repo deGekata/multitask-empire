@@ -31,11 +31,15 @@ namespace ecs {
 
 template <typename Class, typename EventType>
 concept Receivable = requires(Class object, const EventType& event) {
-                         { object.Recieve(event) } -> std::same_as<void>;
-                     };
+    { object.Recieve(event) } -> std::same_as<void>;
+};
 
 using EventSignal = signal::Signal<void(const void*)>;
 
+/**
+ * @brief      This class describes the ECS Event base class
+ *             holding family counter.
+ */
 class EventBase {
 public:
     using FamilyType = uint64_t;
@@ -47,6 +51,12 @@ protected:
     static FamilyType family_counter_;
 };
 
+/**
+ * @brief      This class describes the main ECS Event class.
+ *             All the custom event should be derived from this class.
+ *
+ * @tparam     Derived  Custom Event class.
+ */
 template <typename Derived>
 class Event : public EventBase {
 public:
@@ -62,6 +72,10 @@ public:
     }
 };
 
+/**
+ * @brief      This class describes the ECS Receiver base class.
+ *             Holds the main receiver logic.
+ */
 class ReceiverBase {
 public:
     friend class EventManager;
@@ -81,6 +95,12 @@ private:
     ConnectionsInfo connections_;
 };
 
+/**
+ * @brief      This class describes the main ECS Receiver class
+ *             to be derived from.
+ *
+ * @tparam     Derived  Custom Receiver class.
+ */
 template <typename Derived>
 class Reciever : public ReceiverBase {
 public:
@@ -91,6 +111,10 @@ public:
     }
 };
 
+/**
+ * @brief      This class describes the ECS Event Manager.
+ *             Manages all the receiver - event communications.
+ */
 class EventManager : public utility::NonCopiable {
 private:
     /**
@@ -124,6 +148,7 @@ public:
         void (RecieverType::*receive)(const EventType& event) = &RecieverType::Recieve;
         EventBase::FamilyType family = Event<EventType>::Family();
 
+        // Prepare subscriber info to insert into connections list
         std::shared_ptr<EventSignal>& signal = SignalFromFamily(family);
         EventCallbackWrapper<EventType> wrapper(std::bind(receive, &reciever, std::placeholders::_1));
         signal::CallBackId id = signal->Connect(wrapper);
@@ -137,7 +162,7 @@ public:
     template <typename EventType, typename RecieverType>
     void Unsubscribe(RecieverType& reciever) {
         ReceiverBase& base = reciever;
-        auto connections = base.ConnectionsList();
+        ConnectionsInfo connections = base.ConnectionsList();
         EventBase::FamilyType family = Event<EventType>::Family();
 
         auto found_connection = connections.find(family);
