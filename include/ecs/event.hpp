@@ -162,7 +162,7 @@ public:
     template <typename EventType, typename RecieverType>
     void Unsubscribe(RecieverType& reciever) {
         ReceiverBase& base = reciever;
-        ConnectionsInfo connections = base.ConnectionsList();
+        auto connections = base.ConnectionsList();
         EventBase::FamilyType family = Event<EventType>::Family();
 
         auto found_connection = connections.find(family);
