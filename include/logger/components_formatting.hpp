@@ -3,6 +3,8 @@
 
 #include <components/player_components.hpp>
 #include <components/movement_components.hpp>
+
+#include <fmt/color.h>
 #include <fmt/format.h>
 
 // parse is inherited from formatter<string_view>.
