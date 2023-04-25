@@ -11,6 +11,8 @@ void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ec
 
         std::cout << "[*] " << entity.GetId().GetIndex() << " had acceleration " << acc.ax_ << " " << acc.ay_ << std::endl;
         std::cout << "[*] " << entity.GetId().GetIndex() << " now has velocity " << vel.vx_ << " " << vel.vy_ << std::endl; 
+    
+        // TODO: event component changed
     });
 
     entities.Each<Position, Velocity>([dt](ecs::Entity entity, Position& pos, Velocity& vel) {

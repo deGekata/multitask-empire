@@ -6,6 +6,8 @@
 #include <ecs/config.hpp>
 #include <ecs/entity.hpp>
 #include <ecs/event.hpp>
+#include <iostream>
+#include <logger/logger.hpp>
 
 namespace ecs {
 class BaseSystem {
@@ -75,6 +77,7 @@ public:
     template <typename System>
     void Add(System* system) {
         systems_.insert(std::make_pair(System::GetFamily(), system));
+        log<INFO>("System {} added\n", type(*system));
     }
 
     /**
@@ -89,7 +92,6 @@ public:
     System* Add(Args&&... args) {
         System* s = new System(std::forward<Args>(args)...);
         Add(s);
-
         return s;
     }
 
@@ -141,8 +143,8 @@ public:
 private:
     bool is_initialized_;
 
-    EntityManager& entity_manager_;
-    EventManager& event_manager_;
+    EntityManager& entity_manager_; 
+    EventManager&  event_manager_;   
 
     std::map<BaseSystem::Family, BaseSystem*> systems_;
 };

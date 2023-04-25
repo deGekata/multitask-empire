@@ -9,4 +9,11 @@ struct PendingPlayerCommand {
     std::string command_;
 };
 
+enum class PlayerActions {
+    Left,
+    Right,
+    Jump,
+};
+
+
 #endif

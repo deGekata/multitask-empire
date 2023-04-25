@@ -13,8 +13,6 @@ void DispatcherSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, 
         if (cmd.command_ == "JUMP") {
             entity.Remove<PendingPlayerCommand>();
             entity.Assign<PendingMovementCommand>(PendingMovementCommand::Jump);
-
-            std::cout << "Caught UP command" << std::endl;
         } else if (cmd.command_ == "LEFT") {
             entity.Remove<PendingPlayerCommand>();
             entity.Assign<PendingMovementCommand>(PendingMovementCommand::Left);
