@@ -40,7 +40,7 @@ void debug_log(const char*, const char*, int, fmt::text_style info_style, fmt::s
 
 
 template<typename... Args>
-void debug_log(const char* file_name, const char* func_name, int n_line, LOG_MODE mode, fmt::string_view format, const Args&... args) {
+void debug_log(const char* file_name, const char* func_name, int n_line, LOG_MODE, fmt::string_view format, const Args&... args) {
     fmt::text_style info_style;
 
 #ifdef LOG_ALL
