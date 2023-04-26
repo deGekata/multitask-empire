@@ -1,7 +1,7 @@
 #ifndef H_SYSTEM
 #define H_SYSTEM
 
-#include <unordered_map>
+#include <map>
 
 #include <ecs/config.hpp>
 #include <ecs/entity.hpp>
@@ -144,7 +144,7 @@ private:
     EntityManager& entity_manager_;
     EventManager& event_manager_;
 
-    std::unordered_map<BaseSystem::Family, BaseSystem*> systems_;
+    std::map<BaseSystem::Family, BaseSystem*> systems_;
 };
 
 };  // namespace ecs
