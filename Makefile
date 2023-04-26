@@ -1,4 +1,4 @@
-SRC_DIRS := src targets ecs signal
+SRC_DIRS := src targets ecs signal player physics renderer
 VPATH += $(SRC_DIRS)
 
 INC_DIRS := . include stdlike utility
@@ -24,7 +24,6 @@ CXX_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 LD_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 -fcheck-new -fsized-deallocation -fstack-protector -fstrict-overflow\
 -fno-omit-frame-pointer -fPIE -fsanitize=address -fsanitize=undefined\
--lsfml-system -lsfml-window -lsfml-graphics
 
 all: prepare $(APPLICATION)
 

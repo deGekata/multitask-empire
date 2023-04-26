@@ -1,60 +1,64 @@
-// #include <cassert>
-// #include <cstdint>
+#include <cassert>
+#include <cstdint>
 
-// #include <iostream>
-// #include <ostream>
-// #include <string>
+#include <iostream>
+#include <ostream>
+#include <string>
 
-// #include <ecs/quick.hpp>
+#include <ecs/quick.hpp>
 
-// #include <physics/movement.hpp>
-// #include <physics/mv_commands.hpp>
-// #include <physics/friction.hpp>
-// #include <physics/gravitation.hpp>
+#include <physics/movement.hpp>
+#include <physics/mv_commands.hpp>
+#include <physics/friction.hpp>
+#include <physics/gravitation.hpp>
 
-// #include <player/dispatcher.hpp>
-// #include <player/player.hpp>
+#include <player/dispatcher.hpp>
+#include <player/player.hpp>
 
-// class Application : public ecs::ECS {
-// public:
-//     Application() : running_(true) {
-//         systems_.Add<PlayerSystem>();
+#include <renderer/renderer.hpp>
 
-//         systems_.Add<DispatcherSystem>(running_);
-//         systems_.Add<MovementCommandsSystem>();
-        
-//         systems_.Add<GravitationSystem>();
-//         systems_.Add<FrictionSystem>();
-//         systems_.Add<MovementSystem>();
+class Application : public ecs::ECS {
+public:
+    Application() : running_(true) {
+        systems_.Add<PlayerSystem>();
 
-//         systems_.Configure();
+        systems_.Add<DispatcherSystem>(running_);
+        systems_.Add<MovementCommandsSystem>();
 
-//         std::cout << "Application sucessfully created" << std::endl;
-//     }
+        systems_.Add<GravitationSystem>();
+        systems_.Add<FrictionSystem>();
+        systems_.Add<MovementSystem>();
 
-//     void Update(ecs::TimeDelta dt) {
-//         systems_.UpdateAll(dt);
-//     }
+        systems_.Add<RendererSystem>();
 
-//     bool GetState() {
-//         return running_;
-//     }
+        systems_.Configure();
 
-// private:
-//     bool running_;
-// };
+        std::cout << "Application sucessfully created" << std::endl;
+    }
 
-// int main() {
-//     Application game;
+    void Update(ecs::TimeDelta dt) {
+        systems_.UpdateAll(dt);
+    }
 
-//     // auto prev_timer = std::chrono::steady_clock::now();
-//     while (game.GetState()) {
-//         // auto new_timer = std::chrono::steady_clock::now();
-//         // auto dt = std::chrono::duration_cast<std::chrono::seconds>(new_timer - prev_timer);
+    bool GetState() {
+        return running_;
+    }
 
-//         // std::cout << "Delta is " << dt.count() << std::endl;
-//         game.Update(1);
+private:
+    bool running_;
+};
 
-//         // prev_timer = new_timer;
-//     }
-// }
+int main() {
+    Application game;
+
+    // auto prev_timer = std::chrono::steady_clock::now();
+    while (game.GetState()) {
+        // auto new_timer = std::chrono::steady_clock::now();
+        // auto dt = std::chrono::duration_cast<std::chrono::seconds>(new_timer - prev_timer);
+
+        // std::cout << "Delta is " << dt.count() << std::endl;
+        game.Update(1);
+
+        // prev_timer = new_timer;
+    }
+}
