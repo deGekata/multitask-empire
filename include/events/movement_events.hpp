@@ -14,4 +14,8 @@ struct PendingMovementEvent {
     MovementCommand type_;
 };
 
+struct MovementStopEvent {
+    ecs::Entity target_;
+};
+
 #endif

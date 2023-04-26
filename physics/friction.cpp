@@ -2,10 +2,14 @@
 
 #include <components/movement_components.hpp>
 
-void FrictionSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
-    entities.Each<Velocity>([](ecs::Entity, Velocity& vel) {
-        if (std::abs(vel.vx_) <= kFrictionStopValue) {
+#include <events/movement_events.hpp>
+
+void FrictionSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
+    entities.Each<Velocity>([&events](ecs::Entity, Velocity& vel) {
+        if ((vel.vx_ != 0) && (std::abs(vel.vx_) <= kFrictionStopValue)) {
             vel.vx_ = 0;
+
+            events.Emit<MovementStopEvent>();
         }
     });
 

@@ -27,18 +27,21 @@
 class Application : public ecs::ECS {
 public:
     Application() : running_(true) {
+        systems_.Add<EcsFullLogger>();
         systems_.Add<PlayerSystem>();
 
         systems_.Add<DispatcherSystem>(running_);
         systems_.Add<MovementCommandsSystem>();
-        
+
         systems_.Add<GravitationSystem>();
         systems_.Add<FrictionSystem>();
         systems_.Add<MovementSystem>();
 
+        systems_.Add<RendererSystem>();
+
         systems_.Configure();
 
-        std::cout << "Application sucessfully created" << std::endl;
+        log(INFO, "Application sucessfully created\n");
     }
 
     void Update(ecs::TimeDelta dt) {

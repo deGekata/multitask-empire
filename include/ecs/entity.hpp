@@ -30,6 +30,10 @@ public:
 
         uint64_t GetId() const;
 
+        bool operator==(const Id& other) const;
+        bool operator!=(const Id& other) const;
+        bool operator<(const Id& other) const;
+
         uint32_t GetIndex() const;
         uint32_t GetGeneration() const;
 
@@ -44,6 +48,10 @@ public:
     Entity& operator=(const Entity& other) = default;
 
     Entity(EntityManager* manager, Id id);
+
+    bool operator==(const Entity& other) const;
+    bool operator!=(const Entity& other) const;
+    bool operator<(const Entity& other) const;
 
     bool IsValid() const;
     void Invalidate();
@@ -93,8 +101,8 @@ struct BaseComponent {
 public:
     using Family = uint64_t;
 
-    [[ noreturn ]] void operator delete(void* p);
-    [[ noreturn ]] void operator delete[](void* p);
+    [[noreturn]] void operator delete(void* p);
+    [[noreturn]] void operator delete[](void* p);
 
 protected:
     static Family family_counter_;
@@ -350,8 +358,8 @@ public:
     template <bool ShowAll, typename... Components>
     class TypedViewer : public BaseViewer<ShowAll> {
     public:
-        using FunctionT = std::function<void(Entity, Components&...)>;
-
+        
+        template<typename FunctionT>
         void Each(FunctionT f) {
             for (auto it : *this) {
                 f(it, *(it.template GetComponent<Components>().Get())...);
@@ -495,7 +503,7 @@ public:
         typedef T type;
     };
 
-    template <typename... Components>
+    template < typename... Components>
     void Each(typename identity<std::function<void(Entity entity, Components&...)>>::type f) {
         GetEntitiesWithComponents<Components...>().Each(std::move(f));
     }
@@ -706,5 +714,21 @@ Entity ComponentHandle<Component>::GetEntity() {
 }
 
 };  // namespace ecs
+
+namespace std {
+template <>
+struct hash<ecs::Entity> {
+    std::size_t operator()(const ecs::Entity& entity) const {
+        return static_cast<std::size_t>(entity.GetId().GetIndex() ^ entity.GetId().GetGeneration());
+    }
+};
+
+template <>
+struct hash<const ecs::Entity> {
+    std::size_t operator()(const ecs::Entity& entity) const {
+        return static_cast<std::size_t>(entity.GetId().GetIndex() ^ entity.GetId().GetGeneration());
+    }
+};
+}  // namespace std
 
 #endif
