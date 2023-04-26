@@ -358,8 +358,8 @@ public:
     template <bool ShowAll, typename... Components>
     class TypedViewer : public BaseViewer<ShowAll> {
     public:
-        using FunctionT = std::function<void(Entity, Components&...)>;
-
+        
+        template<typename FunctionT>
         void Each(FunctionT f) {
             for (auto it : *this) {
                 f(it, *(it.template GetComponent<Components>().Get())...);
@@ -503,7 +503,7 @@ public:
         typedef T type;
     };
 
-    template <typename... Components>
+    template < typename... Components>
     void Each(typename identity<std::function<void(Entity entity, Components&...)>>::type f) {
         GetEntitiesWithComponents<Components...>().Each(std::move(f));
     }
