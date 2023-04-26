@@ -4,6 +4,8 @@
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <thread>
+#include <chrono>
 
 #include <ecs/quick.hpp>
 
@@ -15,10 +17,12 @@
 #include <player/dispatcher.hpp>
 #include <player/player.hpp>
 
-#include <logger/logger.hpp>
-#include <logger/logger_ecs.hpp>
-
-#include <renderer/renderer.hpp>
+#include <graphics/aWindow.hpp>
+#include <graphics/aSprite.hpp>
+#include <graphics/aText.hpp>
+#include <graphics/aTexture.hpp>
+#include <graphics/color.hpp>
+#include <unistd.h>
 
 class Application : public ecs::ECS {
 public:
@@ -52,9 +56,45 @@ private:
     bool running_;
 };
 
+[[noreturn]] void TestWindow() {
+    const char* player_texture_path = "assets/graphics_test/player_sprite.png";
+    igraphicslib::Window window(1000, 800, "Simple");
+    window.Show();
+    igraphicslib::Texture player_texture(player_texture_path);
+    igraphicslib::Sprite player_sprite(player_texture);
+    igraphicslib::Rect first_pos(0u, 0u, 40u, 100u);
+    igraphicslib::Rect second_pos(0u, 120u, 40u, 100u);
+    bool changed = false;
+    while (true) {
+        window.Clear();
+        window.DrawPoint({100, 100}, igraphicslib::colors::kGreen);
+        window.DrawLine({14, 40}, {500, 500}, igraphicslib::colors::kRed);
+        // window.Draw
+        if (changed) {
+            auto tmp = player_sprite.Crop(first_pos);
+            tmp.SetScale(3, 3);
+            window.DrawSprite({100, 100}, tmp);
+            changed = !changed;
+        } else {
+            auto tmp = player_sprite.Crop(second_pos);
+            tmp.SetScale(3, 3);
+            window.DrawSprite({100, 100}, tmp);
+            changed = !changed;
+        }
+
+        window.DrawHolRect({600, 1}, {950, 101}, igraphicslib::colors::kRed);
+        window.DrawRect({700, 2, 250, 97}, igraphicslib::colors::kMagenta);
+        window.Update();
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        
+    }
+
+
+}
+
 int main() {
     Application game;
-
+    TestWindow();
     // auto prev_timer = std::chrono::steady_clock::now();
     while (game.GetState()) {
         // auto new_timer = std::chrono::steady_clock::now();

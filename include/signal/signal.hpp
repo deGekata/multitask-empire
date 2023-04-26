@@ -33,23 +33,23 @@ using CallBackId = uintptr_t;
 template <typename ResultType>
 class CollectorLast {
 public:
-	using CollectorResult = ResultType;
+    using CollectorResult = ResultType;
 
-	CollectorLast()
-		: last_result_() {
-	}
+    CollectorLast()
+        : last_result_() {
+    }
 
-	bool operator()(ResultType result) {
-		last_result_ = result;
-		return true;
-	}
+    bool operator()(ResultType result) {
+        last_result_ = result;
+        return true;
+    }
 
-	CollectorResult Result() {
-		return last_result_;
-	}
+    CollectorResult Result() {
+        return last_result_;
+    }
 
 private:
-	ResultType last_result_;
+    ResultType last_result_;
 };
 
 
@@ -59,17 +59,17 @@ private:
 template <>
 class CollectorLast<void> {
 public:
-	using CollectorResult = void;
+    using CollectorResult = void;
 
-	CollectorLast() {
-	}
+    CollectorLast() {
+    }
 
-	bool operator()() {
-		return true;
-	}
+    bool operator()() {
+        return true;
+    }
 
-	CollectorResult Result() {
-	}
+    CollectorResult Result() {
+    }
 };
 
 /**
@@ -81,23 +81,23 @@ public:
 template <typename ResultType>
 class CollectorWhileFalse {
 public:
-	using CollectorResult = ResultType;
+    using CollectorResult = ResultType;
 
-	CollectorWhileFalse()
-		: result_() {
-	}
+    CollectorWhileFalse()
+        : result_() {
+    }
 
-	CollectorResult Result() {
-		return result_;
-	}
+    CollectorResult Result() {
+        return result_;
+    }
 
-	bool operator()(ResultType result) {
-		result_ = result;
-		return result_ ? false : true;
-	}
+    bool operator()(ResultType result) {
+        result_ = result;
+        return result_ ? false : true;
+    }
 
 private:
-	ResultType result_;
+    ResultType result_;
 };
 
 /**
@@ -109,23 +109,23 @@ private:
 template <typename ResultType>
 class CollectorWhileTrue {
 public:
-	using CollectorResult = ResultType;
+    using CollectorResult = ResultType;
 
-	CollectorWhileTrue()
-		: result_() {
-	}
+    CollectorWhileTrue()
+        : result_() {
+    }
 
-	CollectorResult Result() {
-		return result_;
-	}
+    CollectorResult Result() {
+        return result_;
+    }
 
-	bool operator()(ResultType result) {
-		result_ = result;
-		return result_ ? true : false;
-	}
+    bool operator()(ResultType result) {
+        result_ = result;
+        return result_ ? true : false;
+    }
 
 private:
-	ResultType result_;
+    ResultType result_;
 };
 
 /**
@@ -137,23 +137,23 @@ private:
 template <typename ResultType>
 class CollectorVector {
 public:
-	using CollectorResult = std::vector<ResultType>;
+    using CollectorResult = std::vector<ResultType>;
 
-	CollectorVector()
-		: result_() {
-	}
+    CollectorVector()
+        : result_() {
+    }
 
-	CollectorResult Result() {
-		return result_;
-	}
+    CollectorResult Result() {
+        return result_;
+    }
 
-	bool operator()(ResultType result) {
-		result_.push_back(result);
-		return true;
-	}
+    bool operator()(ResultType result) {
+        result_.push_back(result);
+        return true;
+    }
 
 private:
-	std::vector<ResultType> result_;
+    std::vector<ResultType> result_;
 };
 
 template <typename Collector, typename Signature>
@@ -170,12 +170,12 @@ class CollectorInvoker {
 template <typename Collector, typename ReturnType, typename... ArgTypes>
 class CollectorInvoker<Collector, ReturnType (ArgTypes...)> {
 public:
-	CollectorInvoker() {
-	}
+    CollectorInvoker() {
+    }
 
-	bool Invoke(Collector& collector, const std::function<ReturnType (ArgTypes...)>& func, ArgTypes... args) const {
-		return collector(func(args...));
-	}
+    bool Invoke(Collector& collector, const std::function<ReturnType (ArgTypes...)>& func, ArgTypes... args) const {
+        return collector(func(args...));
+    }
 };
 
 /**
@@ -187,13 +187,13 @@ public:
 template <typename Collector, typename... ArgTypes>
 class CollectorInvoker<Collector, void (ArgTypes...)> {
 public:
-	CollectorInvoker() {
-	}
+    CollectorInvoker() {
+    }
 
-	bool Invoke(Collector& collector, const std::function<void (ArgTypes...)>& func, ArgTypes... args) const {
-		func(args...);
-		return collector();
-	}
+    bool Invoke(Collector& collector, const std::function<void (ArgTypes...)>& func, ArgTypes... args) const {
+        func(args...);
+        return collector();
+    }
 };
 
 template <typename Signature, typename Collector>
@@ -209,62 +209,62 @@ class SignalBase {
  */
 template <typename Collector, typename ReturnType, typename... ArgTypes>
 class SignalBase<ReturnType (ArgTypes...), Collector>
-	: private CollectorInvoker<Collector, ReturnType (ArgTypes...)> {
+    : private CollectorInvoker<Collector, ReturnType (ArgTypes...)> {
 public:
-	using CollectorResult = typename Collector::CollectorResult;
-	using CallBack = std::function<ReturnType (ArgTypes...)>;
+    using CollectorResult = typename Collector::CollectorResult;
+    using CallBack = std::function<ReturnType (ArgTypes...)>;
 
-	SignalBase()
-		: CollectorInvoker<Collector, ReturnType (ArgTypes...)>()
-		, callback_list_() {
-	}
+    SignalBase()
+        : CollectorInvoker<Collector, ReturnType (ArgTypes...)>()
+        , callback_list_() {
+    }
 
-	SignalBase(const CallBack& callback)
-		: CollectorInvoker<Collector, ReturnType (ArgTypes...)>()
-		, callback_list_() {
+    SignalBase(const CallBack& callback)
+        : CollectorInvoker<Collector, ReturnType (ArgTypes...)>()
+        , callback_list_() {
 
-		Connect(callback);
-	}
+        Connect(callback);
+    }
 
-	CallBackId Connect(const CallBack& callback) {
-		// Check whether std::function holds a callable object
-		if (!static_cast<bool>(callback)) {
-			return 0;
-		}
-		callback_list_.emplace_back(std::make_unique<CallBack>(callback));
-		return reinterpret_cast<CallBackId>(callback_list_.back().get());
-	}
+    CallBackId Connect(const CallBack& callback) {
+        // Check whether std::function holds a callable object
+        if (!static_cast<bool>(callback)) {
+            return 0;
+        }
+        callback_list_.emplace_back(std::make_unique<CallBack>(callback));
+        return reinterpret_cast<CallBackId>(callback_list_.back().get());
+    }
 
-	bool Disconnect(CallBackId id) {
-		auto begin = callback_list_.begin();
-		auto end   = callback_list_.end();
+    bool Disconnect(CallBackId id) {
+        auto begin = callback_list_.begin();
+        auto end   = callback_list_.end();
 
-		auto remove = std::remove_if(begin, end, [id](const std::unique_ptr<CallBack>& callback) {
-			return id == reinterpret_cast<CallBackId>(callback.get());
-		});
+        auto remove = std::remove_if(begin, end, [id](const std::unique_ptr<CallBack>& callback) {
+            return id == reinterpret_cast<CallBackId>(callback.get());
+        });
 
-	    bool removed = remove != end;
-    	callback_list_.erase(remove, end);
-	    return removed;
-	}
+        bool removed = remove != end;
+        callback_list_.erase(remove, end);
+        return removed;
+    }
 
-	CollectorResult Emit(ArgTypes... args) const {
-		Collector collector;
-		for (auto& callback : callback_list_) {
-			// Collector policy determines whether to continue emission or not
-			if (!this->Invoke(collector, *callback, args...)) {
-				break;
-			}
-		}
-		return collector.Result();
-	}
+    CollectorResult Emit(ArgTypes... args) const {
+        Collector collector;
+        for (auto& callback : callback_list_) {
+            // Collector policy determines whether to continue emission or not
+            if (!this->Invoke(collector, *callback, args...)) {
+                break;
+            }
+        }
+        return collector.Result();
+    }
 
-	size_t CallbackCount() const {
-		return callback_list_.size();
-	}
+    size_t CallbackCount() const {
+        return callback_list_.size();
+    }
 
 private:
-	std::list<std::unique_ptr<CallBack>> callback_list_;
+    std::list<std::unique_ptr<CallBack>> callback_list_;
 };
 
 /**
@@ -276,14 +276,14 @@ private:
  */
 template <typename Signature, typename Collector = CollectorLast<typename std::function<Signature>::result_type>>
 class Signal final
-	: public SignalBase<Signature, Collector> {
+    : public SignalBase<Signature, Collector> {
 public:
-	using Base = SignalBase<Signature, Collector>;
-	using CallBack = typename Base::CallBack;
+    using Base = SignalBase<Signature, Collector>;
+    using CallBack = typename Base::CallBack;
 
-	Signal(const CallBack& callback = CallBack())
-		: Base(callback) {
-	}
+    Signal(const CallBack& callback = CallBack())
+        : Base(callback) {
+    }
 };
 
 /**
@@ -301,10 +301,10 @@ public:
  */
 template <typename Instance, typename Class, typename ReturnType, class... ArgTypes>
 std::function<ReturnType (ArgTypes...)> Slot(Instance& object, ReturnType (Class::*method)(ArgTypes...)) {
-	auto slot = [&object, method](ArgTypes... args) {
-		return (object.*method)(args...);
-	};
-	return slot;
+    auto slot = [&object, method](ArgTypes... args) {
+        return (object.*method)(args...);
+    };
+    return slot;
 }
 
 /**
@@ -321,10 +321,10 @@ std::function<ReturnType (ArgTypes...)> Slot(Instance& object, ReturnType (Class
  */
 template <typename Class, typename ReturnType, class... ArgTypes>
 std::function<ReturnType (ArgTypes...)> Slot(Class* object, ReturnType (Class::*method)(ArgTypes...)) {
-	auto slot = [object, method](ArgTypes... args) {
-		return (object->*method)(args...);
-	};
-	return slot;
+    auto slot = [object, method](ArgTypes... args) {
+        return (object->*method)(args...);
+    };
+    return slot;
 }
 
 } // namespace signal
