@@ -2,7 +2,7 @@
 #include <cstdint>
 
 namespace igraphicslib {
-extern const char* const systemFont = "/home/gms/progs++/vecplot/FreeMono.otf"; //NOLINT
+// extern const char* const systemFont = "/home/gms/progs++/vecplot/FreeMono.otf"; //NOLINT
 
 Text::Text_::Text_(const char* font_filename, const char* text, uint32_t x, uint32_t y) {
     if (!font_.loadFromFile(font_filename)) {
