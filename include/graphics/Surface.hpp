@@ -3,10 +3,10 @@
 #include "graphics/Color.hpp"
 #include "geometry/Geometry.hpp"
 
-namespace IGraphicsLib {
+namespace igraphicslib {
 class Text;
-using Point = Geometry::Point2i;
-using Rect = Geometry::Rect2<unsigned>;
+using Point = geometry::Point2i;
+using Rect = geometry::Rect2<unsigned>;
 class RenderSurface;
 class Sprite;
 
@@ -17,29 +17,28 @@ struct Vertex {
 
 enum class PrimitiveType { Points, Lines, StripLines, Triangles, StripTriangles, Quads };
 
-class Surface {
+class ISurface {
 public:
-    virtual void drawText(const Text& text) const = 0;
-    virtual void drawLine(Point p1, Point p2, Color color = Colors::Black) const = 0;
-    virtual void drawPoint(Point p, Color color = Colors::Black) const = 0;
-    virtual void drawRect(const Rect& rect, Color color = Colors::Black) const = 0;
-    virtual void drawHolRect(Point p1, Point p2, Color color = Colors::Black) const = 0;
-    virtual void drawSprite(Point pt, const Sprite& sprite) const = 0;
-    virtual void drawSurf(Point pt, const RenderSurface& surf) const = 0;
-    virtual void drawSurf(Point pt, const RenderSurface& surf, const Rect& rect) const = 0;
-    virtual void drawTriang(Vertex pt[3]) const = 0;
-    virtual void drawVert(const Vertex* vert, size_t size, PrimitiveType type) const = 0;
-    virtual void clear(Color color = Colors::Gray) const = 0;
-    virtual void resize(uint32_t width, uint32_t height) = 0;
-    virtual void update() const = 0;
-    virtual void setActive(bool active = true) const = 0;
-    virtual IGraphicsLib::Rect getSurfRect() const = 0;
+    virtual void DrawText(const Text& text) const = 0;
+    virtual void DrawLine(Point p1, Point p2, Color color = colors::kBlack) const = 0;
+    virtual void DrawPoint(Point p, Color color = colors::kBlack) const = 0;
+    virtual void DrawRect(const Rect& rect, Color color = colors::kBlack) const = 0;
+    virtual void DrawHolRect(Point p1, Point p2, Color color = colors::kBlack) const = 0;
+    virtual void DrawSprite(Point pt, const Sprite& sprite) const = 0;
+    virtual void DrawSurf(Point pt, const RenderSurface& surf) const = 0;
+    virtual void DrawSurf(Point pt, const RenderSurface& surf, const Rect& rect) const = 0;
+    virtual void DrawTriang(Vertex pt[3]) const = 0;
+    virtual void DrawVert(const Vertex* vert, size_t size, PrimitiveType type) const = 0;
+    virtual void Clear(Color color = colors::kGray) const = 0;
+    virtual void Resize(uint32_t width, uint32_t height) = 0;
+    virtual void Update() const = 0;
+    virtual void SetActive(bool active = true) const = 0;
+    virtual igraphicslib::Rect GetSurfRect() const = 0;
 
-    void drawHolRect(const Rect& rect, Color color = Colors::Black) const {
-        drawHolRect(rect.getCornerLL(), rect.getCornerGG(), color);
+    void DrawHolRect(const Rect& rect, Color color = colors::kBlack) const {
+        DrawHolRect(rect.GetCornerLL(), rect.GetCornerGG(), color);
     }
-    virtual ~Surface() {
-    }
+    virtual ~ISurface() = default;
 };
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib
 #endif /* IGRAPHICS_SURFACE_HPP */

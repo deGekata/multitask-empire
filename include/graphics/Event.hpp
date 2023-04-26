@@ -3,9 +3,9 @@
 #include "geometry/Geometry.hpp"
 #include <chrono>
 
-namespace IGraphicsLib {
+namespace igraphicslib {
 
-using Point = Geometry::Point2i;
+using Point = geometry::Point2i;
 
 enum class EventType {
     ERROR,
@@ -174,9 +174,9 @@ enum EventHandlerState : bool {
     Accepted = 1,
 };
 
-inline Point getRelPoint(const Point& pt, const Geometry::Rect2u& rect) {
+inline Point getRelPoint(const Point& pt, const geometry::Rect2u& rect) {
     return Point{pt.x - static_cast<int>(rect.x), pt.y - static_cast<int>(rect.y)};
 }
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib
 
 #endif /* IGRAPHICS_EVENT_HPP */

@@ -1,6 +1,6 @@
 #include "graphics/SFML/SFMLSprite.hpp"
 
-namespace IGraphicsLib {
+namespace igraphicslib {
 
 Sprite::Sprite() : sp_(new Sprite_) {
 }
@@ -14,19 +14,19 @@ Sprite::~Sprite() {
     sp_ = nullptr;
 }
 
-void Sprite::setTexture(const Texture& texture) {
+void Sprite::SetTexture(const Texture& texture) {
     sp_->setTexture(*texture.tp_);
 }
 
-void Sprite::setTextureRect(const Rect& rect) {
-    sp_->setTextureRect(getSFMLIntRect(rect));
+void Sprite::SetTextureRect(const Rect& rect) {
+    sp_->setTextureRect(GetSFMLIntRect(rect));
 }
 
 Sprite::Sprite(const Sprite& oth, Rect rect) : sp_(new Sprite::Sprite_(*oth.sp_)) {
-    sf::IntRect sfRect = oth.sp_->getTextureRect();
+    sf::IntRect sf_rect = oth.sp_->getTextureRect();
     sp_->setTextureRect({
-        sfRect.left + static_cast<int>(rect.x),
-        sfRect.top + static_cast<int>(rect.y),
+        sf_rect.left + static_cast<int>(rect.x),
+        sf_rect.top + static_cast<int>(rect.y),
         static_cast<int>(rect.w),
         static_cast<int>(rect.h),
     });
@@ -37,7 +37,7 @@ Sprite& Sprite::operator=(const Sprite& oth) {
     return *this;
 }
 
-Rect Sprite::getTextureRect() const {
+Rect Sprite::GetTextureRect() const {
     const sf::IntRect& rect = sp_->getTextureRect();
     return Rect{
         static_cast<unsigned>(rect.left),
@@ -47,21 +47,21 @@ Rect Sprite::getTextureRect() const {
     };
 }
 
-Sprite Sprite::crop(Rect& rect) {
+Sprite Sprite::Crop(Rect& rect) {
     return Sprite{*this, rect};
 }
 
-void Sprite::rotate(double angle) {
+void Sprite::Rotate(double angle) {
     sp_->rotate(static_cast<float>(180 * angle / std::numbers::pi));
 }
 
-void Sprite::setRotation(double angle) {
+void Sprite::SetRotation(double angle) {
     const sf::IntRect& rect = sp_->getTextureRect();
     sp_->setOrigin(static_cast<float>(rect.width) * 0.5f, static_cast<float>(rect.height) * 0.5f);
     sp_->setRotation(static_cast<float>(180 * angle / std::numbers::pi));
 }
 
-void Sprite::setScale(double scaleX, double scaleY) {
-    sp_->setScale(static_cast<float>(scaleX), static_cast<float>(scaleY));
+void Sprite::SetScale(double scale_x, double scale_y) {
+    sp_->setScale(static_cast<float>(scale_x), static_cast<float>(scale_y));
 }
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib

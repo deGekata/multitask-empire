@@ -3,7 +3,7 @@
 #include "graphics/ATexture.hpp"
 #include <SFML/Graphics.hpp>
 
-namespace IGraphicsLib {
+namespace igraphicslib {
 
 class Texture::Texture_ : public sf::Texture {
 public:
@@ -12,6 +12,6 @@ public:
     Texture_& operator=(const Texture_& t) = default;
     ~Texture_() = default;
 };
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef IGRAPHICS_ATEXTURE_HPP
 #define IGRAPHICS_ATEXTURE_HPP
 
-namespace IGraphicsLib {
+namespace igraphicslib {
 class RenderSurface;
 class Image;
 class Texture {
@@ -15,6 +15,7 @@ class Texture {
 
 public:
     Texture();
+    //NOLINTNEXTLINE
     Texture(const char* filename);
 
     Texture(const Texture& texture);
@@ -22,10 +23,10 @@ public:
 
     ~Texture();
 
-    bool loadFromFile(const char* filename);
-    void loadFromImage(const Image& img);
-    void setRepeated(bool) const;
+    bool LoadFromFile(const char* filename);
+    void LoadFromImage(const Image& img);
+    void SetRepeated(bool) const;
 };
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib
 
 #endif /* IGRAPHICS_ATEXTURE_HPP */

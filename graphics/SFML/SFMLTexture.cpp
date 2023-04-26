@@ -1,7 +1,7 @@
 #include "graphics/SFML/SFMLTexture.hpp"
 #include "graphics/SFML/SFMLImage.hpp"
 #include <SFML/Graphics.hpp>
-namespace IGraphicsLib {
+namespace igraphicslib {
 
 Texture::Texture() : tp_(new Texture::Texture_) {
 }
@@ -14,11 +14,11 @@ Texture::~Texture() {
     delete tp_;
 }
 
-bool Texture::loadFromFile(const char* filename) {
+bool Texture::LoadFromFile(const char* filename) {
     return tp_->loadFromFile(filename);
 }
 
-void Texture::setRepeated(bool b) const {
+void Texture::SetRepeated(bool b) const {
     tp_->setRepeated(b);
 }
 
@@ -33,7 +33,7 @@ Texture& Texture::operator=(const Texture& texture) {
 Texture::Texture(const Texture_& tp) : tp_(new Texture::Texture_(tp)) {
 }
 
-void Texture::loadFromImage(const Image& img) {
+void Texture::LoadFromImage(const Image& img) {
     tp_->loadFromImage(*(img.ip_));
 }
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib

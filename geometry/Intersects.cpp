@@ -2,140 +2,151 @@
 #include "geometry/Operations.hpp"
 #include <iostream>
 
-namespace Geometry {
+namespace geometry {
 
-double distBtw(const Line3f& line, const Point3f& pt) {
-    assert(line.dir().len() > EPS);
-    return ((pt - line.point()) ^ line.dir()).len() / (line.dir().len());
+double DistBtw(const Line3f& line, const Point3f& pt) {
+    assert(line.Dir().Len() > kEPS);
+    return ((pt - line.Point()) ^ line.Dir()).Len() / (line.Dir().Len());
 }
 
-bool intersect1(const Sphere3f& sph, const Line3f& line, Point3f* pt) {
-    double dist = distBtw(line, sph.center());
+bool Intersect1(const Sphere3f& sph, const Line3f& line, Point3f* pt) {
+    double dist = DistBtw(line, sph.Center());
 
-    if (dist > sph.r())
+    if (dist > sph.R()) {
         return false;
-    if (pt == nullptr)
+    }
+    if (pt == nullptr) {
         return true;
+    }
 
-    Vector3f v = normalize(line.dir());
-    Vector3f u = sph.center() - line.point();
+    Vector3f v = Normalize(line.Dir());
+    Vector3f u = sph.Center() - line.Point();
 
     v *= v * u;
 
-    Vector3f h = normalize(v);
-    h *= -std::sqrt(fabs(dist * dist - sph.r() * sph.r()));
+    Vector3f h = Normalize(v);
+    h *= -std::sqrt(fabs(dist * dist - sph.R() * sph.R()));
     v += h;
 
-    *pt = line.point();
+    *pt = line.Point();
     *pt += v;
-    if (!sph.contains(*pt)) {
+    if (!sph.Contains(*pt)) {
         std::cerr << pt->x << ' ' << pt->y << ' ' << pt->z << '\n';
     }
-    assert(sph.contains(*pt));
+    assert(sph.Contains(*pt));
     return true;
 }
 
-bool intersect1(const Sphere3f& sph, const Ray3f& ray, Point3f* pt) {
-    double dist = distBtw(ray, sph.center());
+bool Intersect1(const Sphere3f& sph, const Ray3f& ray, Point3f* pt) {
+    double dist = DistBtw(ray, sph.Center());
 
-    if (dist >= sph.r() - 2 * EPS)
+    if (dist >= sph.R() - 2 * kEPS) {
         return false;
+    }
 
-    Vector3f v = normalize(ray.dir());
-    Vector3f u = sph.center() - ray.point();
+    Vector3f v = Normalize(ray.Dir());
+    Vector3f u = sph.Center() - ray.Point();
 
-    bool isInside = sph.containsB(ray.start());
+    bool is_inside = sph.ContainsB(ray.Start());
 
-    if (v * u <= 0 && !isInside)
+    if (v * u <= 0 && !is_inside) {
         return false;
-    if (pt == nullptr)
+    }
+
+    if (pt == nullptr) {
         return true;
+    }
 
     v *= v * u;
 
-    Vector3f h = normalize(ray.dir());
-    h *= std::sqrt(fabs(dist * dist - sph.r() * sph.r()));
+    Vector3f h = Normalize(ray.Dir());
+    h *= std::sqrt(fabs(dist * dist - sph.R() * sph.R()));
 
-    if (!isInside) {
+    if (!is_inside) {
         h *= -1;
     }
 
     v += h;
 
-    if (!isInside && v * h > 0) {
+    if (!is_inside && v * h > 0) {
         // throw an error
         // FIX:
     }
-    assert(isInside || v * h <= 0);
+    assert(is_inside || v * h <= 0);
 
-    *pt = ray.point();
+    *pt = ray.Point();
     *pt += v;
-    if (!sph.containsB(*pt)) {
+    if (!sph.ContainsB(*pt)) {
         // std::cout << sph.center() << ' ' << sph.r() << ' ' << *pt << ' ' << ((*pt - sph.center()).len() - sph.r()) <<
         // mlg::endl;
         // throw an error
         // FIX:
     }
-    assert(sph.containsB(*pt));
+    assert(sph.ContainsB(*pt));
     return true;
 }
 
-bool intersect1(const Line3f& line, const Sphere3f& sph, Point3f* pt) {
-    return intersect1(sph, line, pt);
+bool Intersect1(const Line3f& line, const Sphere3f& sph, Point3f* pt) {
+    return Intersect1(sph, line, pt);
 }
 
-bool intersect1(const Ray3f& ray, const Sphere3f& sph, Point3f* pt) {
-    return intersect1(sph, ray, pt);
+bool Intersect1(const Ray3f& ray, const Sphere3f& sph, Point3f* pt) {
+    return Intersect1(sph, ray, pt);
 }
 
-Vector3f getReflection(const Vector3f& v, const Vector3f& u) {
-    Vector3f res = normalize(u);
+Vector3f GetReflection(const Vector3f& v, const Vector3f& u) {
+    Vector3f res = Normalize(u);
     res *= 2 * (res * v);
     res -= v;
     return res;
 }
 
-bool intersect1(const Line3f& line, const Plane3f& pln, Point3f* pt) {
-    if (pln || line.dir())
+bool Intersect1(const Line3f& line, const Plane3f& pln, Point3f* pt) {
+    if (pln || line.Dir()) {
         return false;
-    if (pt == nullptr)
+    }
+    if (pt == nullptr) {
         return true;
+    }
 
-    Vector3f v = line.dir();
-    v *= -pln.dist(line.point()) / (pln.normal() * line.dir());
+    Vector3f v = line.Dir();
+    v *= -pln.Dist(line.Point()) / (pln.Normal() * line.Dir());
 
-    *pt = line.point();
+    *pt = line.Point();
     *pt += v;
 
     return true;
 }
 
-bool intersect1(const Ray3f& ray, const Plane3f& pln, Point3f* pt) {
-    if (pln || ray.dir())
+bool Intersect1(const Ray3f& ray, const Plane3f& pln, Point3f* pt) {
+    if (pln || ray.Dir()) {
         return false;
+    }
 
-    Vector3f v = ray.dir();
-    v *= pln.dist(ray.start()) / (pln.normal() * ray.dir());
+    Vector3f v = ray.Dir();
+    v *= pln.Dist(ray.Start()) / (pln.Normal() * ray.Dir());
 
-    if (v * ray.dir() < 0)
+    if (v * ray.Dir() < 0) {
         return false;
-    if (pt == nullptr)
+    }
+    if (pt == nullptr) {
         return true;
+    }
 
-    *pt = ray.start();
+    *pt = ray.Start();
     *pt += v;
 
-    // assert(pln.contains(*pt));
+    // assert(pln.Contains(*pt));
 
     return true;
 }
 
-bool intersect1(const Plane3f& pln, const Ray3f& ray, Point3f* pt) {
-    return intersect1(ray, pln, pt);
+bool Intersect1(const Plane3f& pln, const Ray3f& ray, Point3f* pt) {
+    return Intersect1(ray, pln, pt);
 }
 
-bool intersect1(const Plane3f& sph, const Line3f& pln, Point3f* pt) {
-    return intersect1(pln, sph, pt);
+bool Intersect1(const Plane3f& pln, const Line3f& line, Point3f* pt) {
+    return Intersect1(line, pln, pt);
 }
 
-}  // namespace Geometry
+}  // namespace geometry

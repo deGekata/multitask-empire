@@ -4,10 +4,10 @@
 #include "geometry/Geometry.hpp"
 #include "Color.hpp"
 
-namespace IGraphicsLib {
-extern const char* const systemFont;
-using Rect = Geometry::Rect2u;
-using Point = Geometry::Point2i;
+namespace igraphicslib {
+extern const char* const kSystemFont;
+using Rect = geometry::Rect2u;
+using Point = geometry::Point2i;
 
 class Text {
 
@@ -25,34 +25,34 @@ private:
     Text_* tp_;
 
     Rect rect_;
-    unsigned charSize_ = 30;
-    unsigned styleFlags_ = styleFlags::Normal;
-    Color color_ = Colors::Black;
+    unsigned char_size_ = 30;
+    unsigned style_flags_ = styleFlags::Normal;
+    Color color_ = colors::kBlack;
     const char* text_ = nullptr;
 
     friend class Window;
     friend class RenderSurface;
 
 public:
-    Text(const char* fontName, const char* text, uint32_t x = 0, uint32_t y = 0);
-    Text(const char* text, uint32_t x = 0, uint32_t y = 0, const char* const fontName = systemFont);
-    Text(const uint32_t* text, uint32_t x = 0, uint32_t y = 0, const char* const fontName = systemFont);
+    Text(const char* font_name, const char* text, uint32_t x = 0, uint32_t y = 0);
+    explicit Text(const char* text, uint32_t x = 0, uint32_t y = 0, const char* const font_name = kSystemFont);
+    explicit Text(const uint32_t* text, uint32_t x = 0, uint32_t y = 0, const char* const font_name = kSystemFont);
     ~Text();
 
-    void setPosition(uint32_t x, uint32_t y);
-    void setPosition(const Point& pt);
+    void SetPosition(uint32_t x, uint32_t y);
+    void SetPosition(const Point& pt);
 
-    void setColor(const Color& color);
-    void setStyle(uint32_t style);
-    void setCharacterSize(unsigned size);
+    void SetColor(const Color& color);
+    void SetStyle(uint32_t style);
+    void SetCharacterSize(unsigned size);
 
-    void setFont(const char* font);
+    void SetFont(const char* font);
 
-    void setString(const char* string);
-    void setString(const uint32_t* string);
+    void SetString(const char* string);
+    void SetString(const uint32_t* string);
 
-    Rect getRect() const;
+    Rect GetRect() const;
 };
 
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib
 #endif /* IGRAPHICS_ATEXT_HPP */

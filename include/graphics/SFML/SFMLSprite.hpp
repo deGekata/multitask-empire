@@ -5,8 +5,8 @@
 #include "graphics/ASprite.hpp"
 #include "graphics/SFML/SFMLTexture.hpp"
 
-namespace IGraphicsLib {
-static inline sf::IntRect getSFMLIntRect(const Rect& rect) {
+namespace igraphicslib {
+static inline sf::IntRect GetSFMLIntRect(const Rect& rect) {
     return sf::IntRect{
         static_cast<int>(rect.x),
         static_cast<int>(rect.y),
@@ -21,11 +21,11 @@ public:
     }
     Sprite_(const Sprite_& oth) = default;
     Sprite_& operator=(const Sprite_& oth) = default;
-    Sprite_(const Texture& texture) : sf::Sprite(*texture.tp_) {
+    explicit Sprite_(const Texture& texture) : sf::Sprite(*texture.tp_) {
     }
-    Sprite_(const Texture& texture, const Rect& rect) : sf::Sprite(*texture.tp_, getSFMLIntRect(rect)) {
+    Sprite_(const Texture& texture, const Rect& rect) : sf::Sprite(*texture.tp_, GetSFMLIntRect(rect)) {
     }
 };
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib
 
 #endif

@@ -3,7 +3,7 @@
 #include <geometry/Point.hpp>
 #include <geometry/GeomVector.hpp>
 
-namespace Geometry {
+namespace geometry {
 
 class Sphere3f {
     Point3f center_;
@@ -13,24 +13,24 @@ public:
     Sphere3f(const Point3f& pt, double r) : center_(pt), r_(r) {
     }
 
-    Sphere3f(const Point3f& pt, const Vector3f& v) : center_(pt), r_(v.len()) {
+    Sphere3f(const Point3f& pt, const Vector3f& v) : center_(pt), r_(v.Len()) {
     }
 
-    bool contains(const Point3f& pt) const;
-    bool containsB(const Point3f& pt) const;
-    bool isOnSurface(const Point3f& pt) const;
+    bool Contains(const Point3f& pt) const;
+    bool ContainsB(const Point3f& pt) const;
+    bool IsOnSurface(const Point3f& pt) const;
 
-    const Point3f& center() const {
+    const Point3f& Center() const {
         return center_;
     }
-    double r() const {
+    double R() const {
         return r_;
     }
 
-    void setCenter(const Point3f& c) {
+    void SetCenter(const Point3f& c) {
         center_ = c;
     }
-    void setRadius(double radius) {
+    void SetRadius(double radius) {
         r_ = radius;
     }
 };

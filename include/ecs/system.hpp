@@ -45,9 +45,7 @@ protected:
 template <typename Derived>
 class System : public BaseSystem {
 public:
-    virtual ~System() override {
-    }
-
+    ~System() override = default;
 private:
     friend class SystemManager;
 

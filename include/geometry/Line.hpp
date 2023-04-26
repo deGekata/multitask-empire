@@ -3,7 +3,7 @@
 #include "geometry/Point.hpp"
 #include "geometry/GeomVector.hpp"
 
-namespace Geometry {
+namespace geometry {
 
 class Line3f {
     Point3f point_;
@@ -14,12 +14,12 @@ public:
     }
     Line3f(const Point3f& p1, const Point3f& p2);
 
-    bool contains(const Point3f& pt) const;
+    bool Contains(const Point3f& pt) const;
 
-    const Point3f& point() const {
+    const Point3f& Point() const {
         return point_;
     }
-    const Vector3f& dir() const {
+    const Vector3f& Dir() const {
         return dir_;
     }
 };
@@ -31,12 +31,12 @@ public:
     Ray3f(const Point3f& p1, const Point3f& p2) : Line3f(p1, p2) {
     }
 
-    const Point3f& start() const {
-        return point();
+    const Point3f& Start() const {
+        return Point();
     }
 };
 
-bool isParallel(const Line3f& lhs, const Line3f& rhs);
+bool IsParallel(const Line3f& lhs, const Line3f& rhs);
 bool operator||(const Line3f& lhs, const Line3f& rhs);
 
 bool operator==(const Line3f& lhs, const Line3f& rhs);

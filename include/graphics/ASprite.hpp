@@ -2,8 +2,8 @@
 #define IGRAPHICS_ASPRITE_HPP
 #include "geometry/Rect.hpp"
 
-namespace IGraphicsLib {
-using Rect = Geometry::Rect2u;
+namespace igraphicslib {
+using Rect = geometry::Rect2u;
 class Texture;
 class Sprite {
     class Sprite_;
@@ -13,6 +13,8 @@ class Sprite {
 
 public:
     Sprite();
+    
+    //NOLINTNEXTLINE
     Sprite(const Texture& texture);  // FIX: might mark as explicit
     Sprite(const Texture& texture, Rect rect);
     Sprite(const Sprite& oth);
@@ -21,15 +23,15 @@ public:
 
     ~Sprite();
 
-    void setTexture(const Texture& texture);
-    void setTextureRect(const Rect& rect);
-    Rect getTextureRect() const;
-    void rotate(double angle);
-    void setRotation(double angle);
-    Sprite crop(Rect& rect);
+    void SetTexture(const Texture& texture);
+    void SetTextureRect(const Rect& rect);
+    Rect GetTextureRect() const;
+    void Rotate(double angle);
+    void SetRotation(double angle);
+    Sprite Crop(Rect& rect);
 
-    void setScale(double scaleX, double scaleY);
+    void SetScale(double scale_x, double scale_y);
 };
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib
 
 #endif /* IGRAPHICS_ASPRITE_HPP */

@@ -1,6 +1,6 @@
 #include "graphics/SFML/SFMLImage.hpp"
 
-namespace IGraphicsLib {
+namespace igraphicslib {
 Image::Image() : ip_(new Image_) {
 }
 Image::Image(const char* filename) : ip_(new Image_) {
@@ -17,40 +17,40 @@ Image::~Image() {
     ip_ = nullptr;
 }
 
-void Image::loadFromFile(const char* filename) {
+void Image::LoadFromFile(const char* filename) {
     ip_->loadFromFile(filename);
 }
 
-const Color* Image::getPixels() const {
+const Color* Image::GetPixels() const {
     return reinterpret_cast<const Color*>(ip_->getPixelsPtr());
 }
 
-Color Image::getPixel(unsigned int x, unsigned int y) const {
+Color Image::GetPixel(unsigned int x, unsigned int y) const {
     sf::Color cl = ip_->getPixel(x, y);
     return {cl.r, cl.g, cl.b, cl.a};
 }
 
-void Image::create(uint32_t w, uint32_t h, const Color& col) {
-    ip_->create(w, h, sf::Color(col.r(), col.b(), col.b(), col.a()));
+void Image::Create(uint32_t w, uint32_t h, const Color& col) {
+    ip_->create(w, h, sf::Color(col.R(), col.G(), col.B(), col.A()));
 }
 
-void Image::setPixel(unsigned int x, unsigned int y, const Color& color) {
+void Image::SetPixel(unsigned int x, unsigned int y, const Color& color) {
     ip_->setPixel(x, y, sf::Color(color.color()));
 }
 
-void Image::saveToFile(const char* filename) {
+void Image::SaveToFile(const char* filename) {
     ip_->saveToFile(filename);
 }
 
-uint32_t Image::getW() const {
+uint32_t Image::GetW() const {
     return ip_->getSize().x;
 }
-uint32_t Image::getH() const {
+uint32_t Image::GetH() const {
     return ip_->getSize().y;
 }
 
-bool Image::isCreated() const {
+bool Image::IsCreated() const {
     return ip_->getSize() != sf::Vector2u{0, 0};
 }
 
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib

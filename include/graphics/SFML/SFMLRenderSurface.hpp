@@ -5,7 +5,7 @@
 #include "graphics/ARenderSurface.hpp"
 #include "graphics/SFML/SFMLTexture.hpp"
 
-namespace IGraphicsLib {
+namespace igraphicslib {
 
 class RenderSurface::RenderSurface_ : public sf::RenderTexture {
 public:
@@ -22,5 +22,5 @@ public:
     Texture texture{static_cast<Texture::Texture_*>(nullptr)};
 };
 
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib
 #endif

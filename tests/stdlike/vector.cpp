@@ -49,7 +49,7 @@ int main() {
     std::cout << test1 << std::endl << std::endl;
 
     test1.Clear();
-    std::cout << "Test #8: (clear a vector of vectros of ints)" << std::endl;
+    std::cout << "Test #8: (Clear a vector of vectros of ints)" << std::endl;
     std::cout << test1.Size() << " " << test1.Capacity() << std::endl << std::endl;
 
     test1.ShrinkToFit();

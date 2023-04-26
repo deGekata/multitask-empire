@@ -10,29 +10,29 @@
 #include <geometry/Operations.hpp>
 #include <random>
 
-namespace Geometry {
+namespace geometry {
 
-inline double randomDouble() {
+inline double RandomDouble() {
     static std::uniform_real_distribution<double> distribution(0.0, 1.0);
     static std::mt19937 generator;
     return distribution(generator);
 }
 
-inline double randomDouble(double min, double max) {
-    return min + (max - min) * randomDouble();
+inline double RandomDouble(double min, double max) {
+    return min + (max - min) * RandomDouble();
 }
 
-inline Vector3f randomInSphere() {
+inline Vector3f RandomInSphere() {
     Vector3f v{};
     do {
         v = {
-            randomDouble(-1, 1),
-            randomDouble(-1, 1),
-            randomDouble(-1, 1),
+            RandomDouble(-1, 1),
+            RandomDouble(-1, 1),
+            RandomDouble(-1, 1),
         };
 
-    } while (v.len2() > 1);
-    return normalize(v);
+    } while (v.Len2() > 1);
+    return Normalize(v);
 }
 }  // namespace Geometry
 

@@ -2,23 +2,27 @@
 #define GEOMETRY_POINT_HPP
 #include <cassert>
 #include <cstdint>
-#include <math.h>
+#include <cmath>
 
-namespace Geometry {
+namespace geometry {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Wsign-conversion"
+
 
 /**
  * @brief The Point2 class
  */
-template <typename num_t>
+template <typename NumT>
 struct Point2 {
-    num_t x, y;
+    NumT x, y;
 
     /**
      * @brief Point2 - point on surface
      * @param _x - x coordinate
      * @param _y - y coordinate
      */
-    Point2(num_t _x, num_t _y) : x(_x), y(_y) {
+    Point2(NumT x_new, NumT y_new) : x(x_new), y(y_new) {
     }
 
     /**
@@ -32,12 +36,13 @@ struct Point2 {
      * @param point ------------------^
      */
     template <typename T>
-    Point2(const Point2<T>& point) : x(point.x), y(point.y) {
+    Point2(const Point2<T>& point) : x(point.x), y(point.y) { //NOLINT
     }
 
     std::strong_ordering operator<=>(const Point2& oth) const {
-        if ((x <=> oth.x) != std::strong_ordering::equal)
+        if ((x <=> oth.x) != std::strong_ordering::equal) {
             return x <=> oth.x;
+        }
         return y <=> oth.y;
     }
 
@@ -52,9 +57,9 @@ struct Point2 {
 /**
  * @brief The Point3 class
  */
-template <typename num_t>
+template <typename NumT>
 struct Point3 {
-    num_t x, y, z;
+    NumT x, y, z;
 
     /**
      * @brief Point3
@@ -62,7 +67,7 @@ struct Point3 {
      * @param _y - y coordiante
      * @param _z - z coordiante
      */
-    Point3(num_t _x, num_t _y, num_t _z) : x(_x), y(_y), z(_z) {
+    Point3(NumT x_new, NumT y_new, NumT z_new) : x(x_new), y(y_new), z(z_new) {
     }
 
     /**
@@ -75,7 +80,7 @@ struct Point3 {
      * @brief Point3 constructor from Point2
      * @param pt - Point2 point
      */
-    Point3(const Point2<num_t>& pt, num_t _z = 0) : x(pt.x), y(pt.y), z(_z) {
+    explicit Point3(const Point2<NumT>& pt, NumT z_new = 0) : x(pt.x), y(pt.y), z(z_new) {
     }
 
     /**
@@ -83,7 +88,7 @@ struct Point3 {
      * @param pt ---------------------^
      */
     template <typename T>
-    Point3(const Point3<T>& pt) : x(pt.x), y(pt.y), z(pt.z) {
+    Point3(const Point3<T>& pt) : x(pt.x), y(pt.y), z(pt.z) { //NOLINT
     }
 };
 
@@ -95,25 +100,29 @@ using Point3f = Point3<double>;
 using Point3u = Point3<uint32_t>;
 using Point3i = Point3<int32_t>;
 
-template <typename num_t>
-bool operator==(const Point2<num_t>& lhs, const Point2<num_t>& rhs) {
+template <typename NumT>
+bool operator==(const Point2<NumT>& lhs, const Point2<NumT>& rhs) {
     return lhs.x == rhs.x && lhs.y == rhs.y;
 }
 
-template <typename num_t>
-bool operator==(const Point3<num_t>& lhs, const Point3<num_t>& rhs) {
+template <typename NumT>
+bool operator==(const Point3<NumT>& lhs, const Point3<NumT>& rhs) {
     return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
 }
 
-template <typename num_t>
-bool operator!=(const Point2<num_t>& lhs, const Point2<num_t>& rhs) {
+template <typename NumT>
+bool operator!=(const Point2<NumT>& lhs, const Point2<NumT>& rhs) {
     return !(lhs == rhs);
 }
 
-template <typename num_t>
-bool operator!=(const Point3<num_t>& lhs, const Point3<num_t>& rhs) {
+template <typename NumT>
+bool operator!=(const Point3<NumT>& lhs, const Point3<NumT>& rhs) {
     return !(lhs == rhs);
 }
+
+#pragma clang diagnostic pop
 
 }  // namespace Geometry
 #endif
+
+

@@ -35,9 +35,9 @@ constexpr Type&& Forward(typename RemoveReference<Type>::type&& arg) noexcept {
 
 template <typename Type>
 void Swap(Type& lhs, Type& rhs) noexcept {
-	Type temp = Move(lhs);
-	lhs = Move(rhs);
-	rhs = Move(temp);
+    Type temp = Move(lhs);
+    lhs = Move(rhs);
+    rhs = Move(temp);
 }
 
 } // namespace stdlike

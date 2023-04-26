@@ -49,7 +49,7 @@ private:
 int main() {
     Application game;
 
-    IGraphicsLib::Window window_(1000, 800, "Simple");
+    igraphicslib::Window window_(1000, 800, "Simple");
     // auto prev_timer = std::chrono::steady_clock::now();
     while (game.GetState()) {
         // auto new_timer = std::chrono::steady_clock::now();

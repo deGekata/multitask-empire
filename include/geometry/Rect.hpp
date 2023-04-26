@@ -2,37 +2,42 @@
 #define GEOMETRY_RECT_HPP
 #include "geometry/Point.hpp"
 
-namespace Geometry {
-
-template <typename num_t>
+namespace geometry {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Wsign-conversion"
+template <typename NumT>
 struct Rect2 {
-    num_t x, y, w, h;
+    
+    NumT x, y, w, h;
 
-    constexpr Rect2(num_t x_, num_t y_, num_t w_, num_t h_) : x(x_), y(y_), w(w_), h(h_) {
+    constexpr Rect2(NumT x_new, NumT y_new, NumT w_new, NumT h_new) : x(x_new), y(y_new), w(w_new), h(h_new) {
     }
     constexpr Rect2() : Rect2(0, 0, 0, 0) {
     }
 
     template <typename T>
+    
     explicit Rect2(const Rect2<T>& oth) : x(oth.x), y(oth.y), w(oth.w), h(oth.h) {
     }
 
-    Point2<num_t> getCornerLL() const {
+    Point2<NumT> GetCornerLL() const {
         return {x, y};
     }
-    Point2<num_t> getCornerGL() const {
+    Point2<NumT> GetCornerGL() const {
         return {x + w - 1, y};
     }
-    Point2<num_t> getCornerLG() const {
+    Point2<NumT> GetCornerLG() const {
         return {x, y + h - 1};
     }
-    Point2<num_t> getCornerGG() const {
+    Point2<NumT> GetCornerGG() const {
         return {x + w - 1, y + h - 1};
     }
 };
 
 using Rect2u = Rect2<unsigned>;
 
+#pragma clang diagnostic pop
 }  // namespace Geometry
 
 #endif /* GEOMETRY_RECT_HPP */

@@ -9,18 +9,18 @@
 #include <cassert>
 #include <iostream>
 
-namespace IGraphicsLib {
+namespace igraphicslib {
 
-Window_::Window_(uint32_t width, uint32_t height, const char* title)
+WindowPImpl::WindowPImpl(uint32_t width, uint32_t height, const char* title)
     : sf::RenderWindow(sf::VideoMode(width, height), title) {
 }
 
-Window_::~Window_() {
-}
+// WindowPImpl::~WindowPImpl() {
+// }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Window::Window(uint32_t width, uint32_t height, const char* title) : wp_(new Window_(width, height, title)) {
+Window::Window(uint32_t width, uint32_t height, const char* title) : wp_(new WindowPImpl(width, height, title)) {
     assert(wp_ != nullptr);
 }
 
@@ -29,53 +29,53 @@ Window::~Window() {
     wp_ = nullptr;
 }
 
-void Window::resize(uint32_t width, uint32_t height) {
+void Window::Resize(uint32_t width, uint32_t height) {
     wp_->setSize(sf::Vector2u(width, height));
 }
 
-void Window::show() {
+void Window::Show() {
     wp_->setVisible(true);
 }
 
-void Window::hide() {
+void Window::Hide() {
     wp_->setVisible(false);
 }
 
-void Window::clear(Color color) const {
-    wp_->clear(sf::Color(color));
+void Window::Clear(Color color) const {
+    wp_->clear(sf::Color(color.R(), color.G(), color.B(), color.A()));
 }
 
-void Window::drawText(const Text& text) const {
+void Window::DrawText(const Text& text) const {
     wp_->draw(*text.tp_);
 }
 
-void Window::update() const {
+void Window::Update() const {
     wp_->display();
 }
 
-void Window::drawLine(Point p1, Point p2, Color color) const {
+void Window::DrawLine(Point p1, Point p2, Color color) const {
     sf::Vertex lines[2] = {};
     lines[0].position = sf::Vector2f(static_cast<float>(p1.x), static_cast<float>(p1.y));
     lines[1].position = sf::Vector2f(static_cast<float>(p2.x), static_cast<float>(p2.y));
 
-    lines[0].color = lines[1].color = sf::Color(color);
+    lines[0].color = lines[1].color = sf::Color(color.R(), color.G(), color.B(), color.A());
 
     wp_->draw(lines, 2, sf::Lines);
 }
 
-void Window::drawRect(const Rect& rect, Color color) const {
-    sf::RectangleShape sfRect(sf::Vector2f(static_cast<float>(rect.w), static_cast<float>(rect.h)));
-    sfRect.setPosition(static_cast<float>(rect.x), static_cast<float>(rect.y));
-    sfRect.setFillColor(sf::Color(color));
-    wp_->draw(sfRect);
+void Window::DrawRect(const Rect& rect, Color color) const {
+    sf::RectangleShape sf_rect(sf::Vector2f(static_cast<float>(rect.w), static_cast<float>(rect.h)));
+    sf_rect.setPosition(static_cast<float>(rect.x), static_cast<float>(rect.y));
+    sf_rect.setFillColor(sf::Color(color.R(), color.G(), color.B(), color.A()));
+    wp_->draw(sf_rect);
 }
 
-void Window::drawPoint(Point p, Color color) const {
-    sf::Vertex vertex({static_cast<float>(p.x), static_cast<float>(p.y)}, sf::Color(color));
+void Window::DrawPoint(Point p, Color color) const {
+    sf::Vertex vertex({static_cast<float>(p.x), static_cast<float>(p.y)}, sf::Color(color.R(), color.G(), color.B(), color.A()));
     wp_->draw(&vertex, 1, sf::Points);
 }
 
-void Window::drawSurf(Point pt, const RenderSurface& surf) const {
+void Window::DrawSurf(Point pt, const RenderSurface& surf) const {
     sf::Sprite sprite(surf.rsp_->getTexture());
     sprite.setOrigin(0, static_cast<float>(sprite.getTextureRect().height));
     sprite.setScale(1, -1);
@@ -83,7 +83,7 @@ void Window::drawSurf(Point pt, const RenderSurface& surf) const {
     wp_->draw(sprite);
 }
 
-void Window::drawSurf(Point pt, const RenderSurface& surf, const Rect& rect) const {
+void Window::DrawSurf(Point pt, const RenderSurface& surf, const Rect& rect) const {
     sf::Sprite sprite(surf.rsp_->getTexture());
     sprite.setTextureRect({static_cast<int>(rect.x), static_cast<int>(rect.h / 2 - rect.y), static_cast<int>(rect.w),
                            static_cast<int>(rect.h)});
@@ -93,7 +93,7 @@ void Window::drawSurf(Point pt, const RenderSurface& surf, const Rect& rect) con
     wp_->draw(sprite);
 }
 
-static MouseButton getMouseButton(sf::Mouse::Button button) {
+static MouseButton GetMouseButton(sf::Mouse::Button button) {
     switch (button) {
 
         case sf::Mouse::Left:
@@ -110,21 +110,21 @@ static MouseButton getMouseButton(sf::Mouse::Button button) {
     assert(0 && "Wrong switch");
 }
 
-bool Window::pollEvent(Event& event) {
-    sf::Event sfEvent;
-    if (wp_->pollEvent(sfEvent)) {
-        switch (sfEvent.type) {
+bool Window::PollEvent(Event& event) {
+    sf::Event sf_event;
+    if (wp_->pollEvent(sf_event)) {
+        switch (sf_event.type) {
 
             case sf::Event::KeyPressed:
                 event.type = EventType::KeyPressed;
                 event.ked = *reinterpret_cast<KeyEventData*>(
-                    &sfEvent.key);  // I'm personally created very simmilar to SFML prototypes, so I've decided to make
+                    &sf_event.key);  // I'm personally created very simmilar to SFML prototypes, so I've decided to make
                                     // reinterperter cast.
                 break;
 
             case sf::Event::KeyReleased:
                 event.type = EventType::KeyReleased;
-                event.ked = *reinterpret_cast<KeyEventData*>(&sfEvent.key);
+                event.ked = *reinterpret_cast<KeyEventData*>(&sf_event.key);
                 break;
 
             case sf::Event::Closed:
@@ -133,29 +133,29 @@ bool Window::pollEvent(Event& event) {
 
             case sf::Event::MouseWheelMoved:
                 event.type = EventType::MouseWheeled;
-                event.mwed.delta = sfEvent.mouseWheel.delta;
-                event.mwed.point = {sfEvent.mouseWheel.x, sfEvent.mouseWheel.y};
+                event.mwed.delta = sf_event.mouseWheel.delta;
+                event.mwed.point = {sf_event.mouseWheel.x, sf_event.mouseWheel.y};
                 break;
 
             case sf::Event::MouseButtonPressed:
                 event.type = EventType::MouseButtonPressed;
-                event.mbed.button = getMouseButton(sfEvent.mouseButton.button);
-                event.mbed.point = {(sfEvent.mouseButton.x), (sfEvent.mouseButton.y)};
+                event.mbed.button = GetMouseButton(sf_event.mouseButton.button);
+                event.mbed.point = {(sf_event.mouseButton.x), (sf_event.mouseButton.y)};
                 break;
             case sf::Event::MouseButtonReleased:
                 event.type = EventType::MouseButtonReleased;
-                event.mbed.button = getMouseButton(sfEvent.mouseButton.button);
-                event.mbed.point = {(sfEvent.mouseButton.x), (sfEvent.mouseButton.y)};
+                event.mbed.button = GetMouseButton(sf_event.mouseButton.button);
+                event.mbed.point = {(sf_event.mouseButton.x), (sf_event.mouseButton.y)};
                 break;
             case sf::Event::MouseMoved:
                 event.type = EventType::MouseMoved;
-                event.mmed.point = {(sfEvent.mouseMove.x), (sfEvent.mouseMove.y)};
+                event.mmed.point = {(sf_event.mouseMove.x), (sf_event.mouseMove.y)};
                 break;
             case sf::Event::Resized: {
                 sf::View view = wp_->getDefaultView();
-                view.setSize({static_cast<float>(sfEvent.size.width), static_cast<float>(sfEvent.size.height)});
-                view.reset(sf::FloatRect(0, 0, static_cast<float>(sfEvent.size.width),
-                                         static_cast<float>(sfEvent.size.height)));
+                view.setSize({static_cast<float>(sf_event.size.width), static_cast<float>(sf_event.size.height)});
+                view.reset(sf::FloatRect(0, 0, static_cast<float>(sf_event.size.width),
+                                         static_cast<float>(sf_event.size.height)));
                 wp_->setView(view);
             }
                 return false;
@@ -164,7 +164,7 @@ bool Window::pollEvent(Event& event) {
             case sf::Event::GainedFocus:
             case sf::Event::TextEntered:
                 event.type = EventType::TextEntered;
-                event.text = sfEvent.text.unicode;
+                event.text = sf_event.text.unicode;
                 break;
             case sf::Event::MouseEntered:
             case sf::Event::MouseLeft:
@@ -186,22 +186,22 @@ bool Window::pollEvent(Event& event) {
     return false;
 }
 
-void Window::drawSprite(Point pt, const Sprite& sprite) const {
+void Window::DrawSprite(Point pt, const Sprite& sprite) const {
     sprite.sp_->move({static_cast<float>(pt.x), static_cast<float>(pt.y)});
     wp_->draw(*sprite.sp_);
     sprite.sp_->move({-static_cast<float>(pt.x), -static_cast<float>(pt.y)});
 }
 
-void Window::setActive(bool active) const {
+void Window::SetActive(bool active) const {
     wp_->setActive(active);
 }
 
-IGraphicsLib::Rect Window::getSurfRect() const {
+igraphicslib::Rect Window::GetSurfRect() const {
     sf::Vector2u v = wp_->getSize();
     return {0, 0, v.x, v.y};
 }
 
-void Window::drawHolRect(Point p1, Point p2, Color color) const {
+void Window::DrawHolRect(Point p1, Point p2, Color color) const {
     sf::Vertex quad[5];
     quad[0].position = sf::Vector2f(static_cast<float>(p1.x) + 0.5f, static_cast<float>(p1.y));
     quad[1].position = sf::Vector2f(static_cast<float>(p1.x) + 0.5f, static_cast<float>(p2.y));
@@ -209,12 +209,12 @@ void Window::drawHolRect(Point p1, Point p2, Color color) const {
     quad[3].position = sf::Vector2f(static_cast<float>(p2.x) + 0.5f, static_cast<float>(p1.y));
     quad[4].position = sf::Vector2f(static_cast<float>(p1.x) + 0.5f, static_cast<float>(p1.y));
 
-    quad[0].color = quad[1].color = quad[2].color = quad[3].color = quad[4].color = sf::Color(color);
+    quad[0].color = quad[1].color = quad[2].color = quad[3].color = quad[4].color = sf::Color(color.R(), color.G(), color.B(), color.A());
 
     wp_->draw(quad, 5, sf::LinesStrip);
 }
 
-static sf::PrimitiveType sfPrimitive(PrimitiveType type) {
+static sf::PrimitiveType SfPrimitive(PrimitiveType type) {
     switch (type) {
 
         case PrimitiveType::Points:
@@ -233,23 +233,23 @@ static sf::PrimitiveType sfPrimitive(PrimitiveType type) {
     assert(0 && "Bad primitive type");
 }
 
-void Window::drawVert(const Vertex* vert, size_t size, PrimitiveType type) const {
-    sf::Vertex* sfVert = new sf::Vertex[size];  // FIX:
+void Window::DrawVert(const Vertex* vert, size_t size, PrimitiveType type) const {
+    auto sf_vert = new sf::Vertex[size];  // FIX:
     for (size_t i = 0; i < size; ++i) {
-        sfVert[i].position =
+        sf_vert[i].position =
             sf::Vector2f(static_cast<float>(vert[i].point.x) + 0.5f, static_cast<float>(vert[i].point.y));
-        sfVert[i].color = sf::Color(vert[i].color);
+        sf_vert[i].color = sf::Color(vert[i].color.R(), vert[i].color.G(), vert[i].color.B(), vert[i].color.A());
     }
-    wp_->draw(sfVert, size, sfPrimitive(type));
-    delete[] sfVert;
+    wp_->draw(sf_vert, size, SfPrimitive(type));
+    delete[] sf_vert;
 }
 
-void Window::drawTriang(Vertex vert[3]) const {
+void Window::DrawTriang(Vertex vert[3]) const {
     sf::Vertex triag[3];
     for (size_t i = 0; i < 3; ++i) {
         triag[i].position =
             sf::Vector2f(static_cast<float>(vert[i].point.x) + 0.5f, static_cast<float>(vert[i].point.y));
-        triag[i].color = sf::Color(vert[i].color);
+        triag[i].color = sf::Color(vert[i].color.R(), vert[i].color.G(), vert[i].color.B(), vert[i].color.A());
     }
     wp_->draw(triag, 3, sf::Triangles);
 }
@@ -259,4 +259,4 @@ void Window::drawTriang(Vertex vert[3]) const {
 //     wp_->setTopmost(topmost);
 // }
 
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib

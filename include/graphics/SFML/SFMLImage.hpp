@@ -4,8 +4,8 @@
 #include "graphics/AImage.hpp"
 #include <SFML/Graphics.hpp>
 
-namespace IGraphicsLib {
+namespace igraphicslib {
 class Image::Image_ : public sf::Image {};
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib
 
 #endif

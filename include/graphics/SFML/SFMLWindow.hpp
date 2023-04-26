@@ -3,14 +3,14 @@
 #include <SFML/Graphics.hpp>
 #include <cstdint>
 
-namespace IGraphicsLib {
+namespace igraphicslib {
 
-class Window_ : public sf::RenderWindow {
+class WindowPImpl : public sf::RenderWindow {
 public:
-    Window_(uint32_t widht, uint32_t height, const char* title);
-    ~Window_() override;
+    WindowPImpl(uint32_t width, uint32_t height, const char* title);
+    ~WindowPImpl() override = default;
 };
 
-}  // namespace IGraphicsLib
+}  // namespace igraphicslib
 
 #endif

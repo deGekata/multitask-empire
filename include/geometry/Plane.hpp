@@ -3,37 +3,37 @@
 #include <geometry/GeomVector.hpp>
 #include <geometry/Point.hpp>
 
-namespace Geometry {
+namespace geometry {
 
 class Plane3f {
     Vector3f normal_;
     double dist_;
 
-    Plane3f(const Vector3f& normal, double dist) : normal_(normalize(normal)), dist_(dist) {
+    Plane3f(const Vector3f& normal, double dist) : normal_(Normalize(normal)), dist_(dist) {
     }
 
 public:
     Plane3f(const Vector3f& normal, const Point3f& pt);
 
-    bool contains(const Point3f& pt) const;
-    bool contains(const Vector3f& v) const;
+    bool Contains(const Point3f& pt) const;
+    bool Contains(const Vector3f& v) const;
 
-    double dist2(const Point3f& pt) const;
-    double dist(const Point3f& pt) const;
+    double Dist2(const Point3f& pt) const;
+    double Dist(const Point3f& pt) const;
 
-    const Vector3f& normal() const {
+    const Vector3f& Normal() const {
         return normal_;
     }
-    double d() const {
+    double D() const {
         return dist_;
     }
 };
 
 bool operator==(const Plane3f& lhs, const Plane3f& rhs);
 
-bool isParallel(const Plane3f& lhs, const Plane3f& rhs);
-bool isParallel(const Plane3f& lhs, const Vector3f& rhs);
-bool isParallel(const Vector3f& lhs, const Plane3f& rhs);
+bool IsParallel(const Plane3f& lhs, const Plane3f& rhs);
+bool IsParallel(const Plane3f& lhs, const Vector3f& rhs);
+bool IsParallel(const Vector3f& lhs, const Plane3f& rhs);
 
 bool operator||(const Plane3f& lhs, const Plane3f& rhs);
 bool operator||(const Plane3f& lhs, const Vector3f& rhs);

@@ -7,15 +7,15 @@
 #define GEOMETRY_EPSILON 1e-8
 #endif
 
-namespace Geometry {
-const double EPS = GEOMETRY_EPSILON;
+namespace geometry {
+const double kEPS = GEOMETRY_EPSILON;
 
-inline bool isZero(int x) {
+inline bool IsZero(int x) {
     return x == 0;
 }
 
-inline bool isZero(double x) {
-    return fabs(x) < EPS;
+inline bool IsZero(double x) {
+    return fabs(x) < kEPS;
 }
 }  // namespace Geometry
 

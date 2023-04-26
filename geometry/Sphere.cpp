@@ -1,22 +1,22 @@
 #include "geometry/Sphere.hpp"
 #include "geometry/Geometry.hpp"
 
-namespace Geometry {
+namespace geometry {
 
-bool Sphere3f::contains(const Point3f& pt) const {
-    return (pt - center_).len() < r_ - EPS;
+bool Sphere3f::Contains(const Point3f& pt) const {
+    return (pt - center_).Len() < r_ - kEPS;
 }
 
-bool Sphere3f::containsB(const Point3f& pt) const {
-    return (pt - center_).len() < r_ + EPS;
+bool Sphere3f::ContainsB(const Point3f& pt) const {
+    return (pt - center_).Len() < r_ + kEPS;
 }
 
-bool Sphere3f::isOnSurface(const Point3f& pt) const {
-    return ((pt - center_).len() - r_) < EPS;
+bool Sphere3f::IsOnSurface(const Point3f& pt) const {
+    return ((pt - center_).Len() - r_) < kEPS;
 }
 
 bool operator==(const Sphere3f& lhs, const Sphere3f& rhs) {
-    return lhs.center() == rhs.center() && isZero(lhs.r() - rhs.r());
+    return lhs.Center() == rhs.Center() && IsZero(lhs.R() - rhs.R());
 }
 
 }  // namespace Geometry
