@@ -1,8 +1,8 @@
 #ifndef IGRAPHICS_ATEXT_HPP
 #define IGRAPHICS_ATEXT_HPP
 
-#include "geometry/Geometry.hpp"
-#include "Color.hpp"
+#include <geometry/geometry.hpp>
+#include <graphics/color.hpp>
 
 namespace igraphicslib {
 extern const char* const kSystemFont;

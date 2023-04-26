@@ -1,7 +1,7 @@
 #ifndef IGRAPHICS_SFMLTEXT_HPP
 #define IGRAPHICS_SFMLTEXT_HPP
 
-#include "graphics/AText.hpp"
+#include "graphics/aText.hpp"
 #include <SFML/Graphics.hpp>
 
 namespace igraphicslib {

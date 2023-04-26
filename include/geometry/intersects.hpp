@@ -1,12 +1,13 @@
 #ifndef GEOMETRY_INTERSECTS_HPP
 #define GEOMETRY_INTERSECTS_HPP
 
-#include <geometry/Point.hpp>
-#include <geometry/Line.hpp>
-#include <geometry/Sphere.hpp>
-#include <geometry/Plane.hpp>
+#include <geometry/point.hpp>
+#include <geometry/line.hpp>
+#include <geometry/sphere.hpp>
+#include <geometry/plane.hpp>
 
 namespace geometry {
+    
 double DistBtw(const Line3f& line, const Point3f& pt);
 
 Vector3f GetReflection(const Vector3f& v, const Vector3f& u);

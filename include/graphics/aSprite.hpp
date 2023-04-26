@@ -1,8 +1,9 @@
 #ifndef IGRAPHICS_ASPRITE_HPP
 #define IGRAPHICS_ASPRITE_HPP
-#include "geometry/Rect.hpp"
+#include <geometry/rect.hpp>
 
 namespace igraphicslib {
+
 using Rect = geometry::Rect2u;
 class Texture;
 class Sprite {

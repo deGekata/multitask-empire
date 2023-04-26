@@ -1,7 +1,7 @@
 #ifndef IGRAPHICS_SFMLIMAGE_HPP
 #define IGRAPHICS_SFMLIMAGE_HPP
 
-#include "graphics/AImage.hpp"
+#include "graphics/aImage.hpp"
 #include <SFML/Graphics.hpp>
 
 namespace igraphicslib {

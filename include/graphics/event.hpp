@@ -1,6 +1,6 @@
 #ifndef IGRAPHICS_EVENT_HPP
 #define IGRAPHICS_EVENT_HPP
-#include "geometry/Geometry.hpp"
+#include "geometry/geometry.hpp"
 #include <chrono>
 
 namespace igraphicslib {

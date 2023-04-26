@@ -1,5 +1,5 @@
-#include "geometry/Plane.hpp"
-#include "geometry/Operations.hpp"
+#include <geometry/plane.hpp>
+#include <geometry/operations.hpp>
 namespace geometry {
 
 Plane3f::Plane3f(const Vector3f& normal, const Point3f& pt)

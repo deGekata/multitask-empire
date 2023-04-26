@@ -1,9 +1,9 @@
 #ifndef IGRAPHICS_ARENDERSURFACE_HPP
 #define IGRAPHICS_ARENDERSURFACE_HPP
 
-#include "graphics/AText.hpp"
-#include "graphics/Color.hpp"
-#include "graphics/Surface.hpp"
+#include <graphics/aText.hpp>
+#include <graphics/color.hpp>
+#include <graphics/surface.hpp>
 namespace igraphicslib {
 class Texture;
 

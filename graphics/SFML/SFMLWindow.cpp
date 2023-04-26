@@ -1,5 +1,5 @@
 #include "graphics/SFML/SFMLWindow.hpp"
-#include "graphics/AWindow.hpp"
+#include "graphics/aWindow.hpp"
 #include "graphics/SFML/SFMLText.hpp"
 #include "graphics/SFML/SFMLRenderSurface.hpp"
 #include "graphics/SFML/SFMLSprite.hpp"

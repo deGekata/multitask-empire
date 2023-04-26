@@ -1,13 +1,13 @@
 #ifndef GEOMETRY_GEOMETRY_HPP
 #define GEOMETRY_GEOMETRY_HPP
 
-#include "geometry/GeomVector.hpp"
-#include <geometry/Point.hpp>
-#include <geometry/Rect.hpp>
-#include <geometry/Line.hpp>
-#include <geometry/Sphere.hpp>
-#include <geometry/Intersects.hpp>
-#include <geometry/Operations.hpp>
+#include "geometry/geomVector.hpp"
+#include <geometry/point.hpp>
+#include <geometry/rect.hpp>
+#include <geometry/line.hpp>
+#include <geometry/sphere.hpp>
+#include <geometry/intersects.hpp>
+#include <geometry/operations.hpp>
 #include <random>
 
 namespace geometry {

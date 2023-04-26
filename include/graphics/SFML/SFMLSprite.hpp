@@ -2,7 +2,7 @@
 #define IGRAPHICS_SFMLSPRITE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "graphics/ASprite.hpp"
+#include "graphics/aSprite.hpp"
 #include "graphics/SFML/SFMLTexture.hpp"
 
 namespace igraphicslib {

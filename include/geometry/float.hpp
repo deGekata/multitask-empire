@@ -17,6 +17,6 @@ inline bool IsZero(int x) {
 inline bool IsZero(double x) {
     return fabs(x) < kEPS;
 }
-}  // namespace Geometry
+}  // namespace geometry
 
 #endif /* GEOMETRY_FLOAT_HPP */

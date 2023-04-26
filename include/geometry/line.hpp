@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_LINE_HPP
 #define GEOMETRY_LINE_HPP
-#include "geometry/Point.hpp"
-#include "geometry/GeomVector.hpp"
+#include <geometry/point.hpp>
+#include <geometry/geomVector.hpp>
 
 namespace geometry {
 

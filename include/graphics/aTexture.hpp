@@ -2,6 +2,7 @@
 #define IGRAPHICS_ATEXTURE_HPP
 
 namespace igraphicslib {
+    
 class RenderSurface;
 class Image;
 class Texture {

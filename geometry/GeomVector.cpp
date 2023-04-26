@@ -1,6 +1,7 @@
-#include "geometry/GeomVector.hpp"
-#include "geometry/Point.hpp"
-#include "geometry/Float.hpp"
+#include <geometry/geomVector.hpp>
+
+#include <geometry/point.hpp>
+#include <geometry/float.hpp>
 
 namespace geometry {
 Vector2f Rotate(const Vector2f& v, double a) {

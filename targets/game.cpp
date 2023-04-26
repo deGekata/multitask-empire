@@ -15,7 +15,7 @@
 #include <player/dispatcher.hpp>
 #include <player/player.hpp>
 
-#include "graphics/AWindow.hpp"
+#include "graphics/aWindow.hpp"
 
 class Application : public ecs::ECS {
 public:

@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_SPHERE_HPP
 #define GEOMETRY_SPHERE_HPP
-#include <geometry/Point.hpp>
-#include <geometry/GeomVector.hpp>
+#include <geometry/point.hpp>
+#include <geometry/geomVector.hpp>
 
 namespace geometry {
 
@@ -36,6 +36,6 @@ public:
 };
 
 bool operator==(const Sphere3f& lhs, const Sphere3f& rhs);
-}  // namespace Geometry
+}  // namespace geometry
 
 #endif /* GEOMETRY_SPHERE_HPP */

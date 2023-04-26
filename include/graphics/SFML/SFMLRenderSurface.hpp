@@ -2,7 +2,7 @@
 #define IGRAPHICS_SFMLRENDERSURFACE_HPP
 #include <SFML/Graphics.hpp>
 #include <cassert>
-#include "graphics/ARenderSurface.hpp"
+#include "graphics/aRenderSurface.hpp"
 #include "graphics/SFML/SFMLTexture.hpp"
 
 namespace igraphicslib {

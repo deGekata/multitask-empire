@@ -1,6 +1,6 @@
 #ifndef IGRAPHICS_SFMLTEXTURE_HPP
 #define IGRAPHICS_SFMLTEXTURE_HPP
-#include "graphics/ATexture.hpp"
+#include "graphics/aTexture.hpp"
 #include <SFML/Graphics.hpp>
 
 namespace igraphicslib {

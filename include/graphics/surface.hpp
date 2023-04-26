@@ -1,9 +1,11 @@
 #ifndef IGRAPHICS_SURFACE_HPP
 #define IGRAPHICS_SURFACE_HPP
-#include "graphics/Color.hpp"
-#include "geometry/Geometry.hpp"
+
+#include <graphics/color.hpp>
+#include <geometry/geometry.hpp>
 
 namespace igraphicslib {
+
 class Text;
 using Point = geometry::Point2i;
 using Rect = geometry::Rect2<unsigned>;

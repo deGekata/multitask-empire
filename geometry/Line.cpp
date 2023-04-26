@@ -1,5 +1,5 @@
-#include "geometry/Line.hpp"
-#include "geometry/Geometry.hpp"
+#include <geometry/line.hpp>
+#include <geometry/geometry.hpp>
 
 namespace geometry {
 

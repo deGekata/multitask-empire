@@ -1,11 +1,13 @@
 #ifndef GEOMETRY_RECT_HPP
 #define GEOMETRY_RECT_HPP
-#include "geometry/Point.hpp"
+#include <geometry/point.hpp>
 
 namespace geometry {
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wconversion"
 #pragma clang diagnostic ignored "-Wsign-conversion"
+
 template <typename NumT>
 struct Rect2 {
     

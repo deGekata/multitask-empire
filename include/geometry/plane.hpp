@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_PLANE_HPP
 #define GEOMETRY_PLANE_HPP
-#include <geometry/GeomVector.hpp>
-#include <geometry/Point.hpp>
+#include <geometry/geomVector.hpp>
+#include <geometry/point.hpp>
 
 namespace geometry {
 

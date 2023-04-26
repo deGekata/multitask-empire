@@ -1,5 +1,5 @@
-#include "geometry/Sphere.hpp"
-#include "geometry/Geometry.hpp"
+#include <geometry/sphere.hpp>
+#include <geometry/geometry.hpp>
 
 namespace geometry {
 

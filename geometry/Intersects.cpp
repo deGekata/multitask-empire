@@ -1,7 +1,8 @@
-#include "geometry/Intersects.hpp"
-#include "geometry/Operations.hpp"
+#include <geometry/intersects.hpp>
+
 #include <iostream>
 
+#include <geometry/operations.hpp>
 namespace geometry {
 
 double DistBtw(const Line3f& line, const Point3f& pt) {

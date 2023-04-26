@@ -1,6 +1,7 @@
 #ifndef GEOMETRY_VECTOR_HPP
 #define GEOMETRY_VECTOR_HPP
-#include <geometry/Float.hpp>
+#include <geometry/float.hpp>
+
 #include <cassert>
 #include <cmath>
 

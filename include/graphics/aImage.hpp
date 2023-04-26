@@ -1,7 +1,7 @@
 #ifndef IGRAPHICS_AIMAGE_HPP
 #define IGRAPHICS_AIMAGE_HPP
 
-#include "graphics/Color.hpp"
+#include <graphics/color.hpp>
 
 namespace igraphicslib {
 class Image {

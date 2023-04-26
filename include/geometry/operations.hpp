@@ -1,9 +1,9 @@
 #ifndef GEOMETRY_OPERATIONS_HPP
 #define GEOMETRY_OPERATIONS_HPP
-#include <geometry/Float.hpp>
-#include <geometry/Point.hpp>
-#include <geometry/Rect.hpp>
-#include <geometry/GeomVector.hpp>
+#include <geometry/float.hpp>
+#include <geometry/point.hpp>
+#include <geometry/rect.hpp>
+#include <geometry/geomVector.hpp>
 
 namespace geometry {
 

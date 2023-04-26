@@ -1,14 +1,15 @@
 #ifndef IGRAPHICS_AWINDOW_HPP
 #define IGRAPHICS_AWINDOW_HPP
 #include <cstdint>
-#include "geometry/Geometry.hpp"
 
-#include "graphics/Color.hpp"
-#include "graphics/Event.hpp"
-#include "graphics/AObject.hpp"
-#include "graphics/AText.hpp"
-#include "graphics/ARenderSurface.hpp"
-#include "graphics/Surface.hpp"
+#include "geometry/geometry.hpp"
+
+#include <graphics/color.hpp>
+#include <graphics/event.hpp>
+#include <graphics/aObject.hpp>
+#include <graphics/aText.hpp>
+#include <graphics/aRenderSurface.hpp>
+#include <graphics/surface.hpp>
 namespace igraphicslib {
 
 using Point = geometry::Point2i;

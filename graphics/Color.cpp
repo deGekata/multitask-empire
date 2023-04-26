@@ -1,4 +1,4 @@
-#include "graphics/Color.hpp"
+#include "graphics/color.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
