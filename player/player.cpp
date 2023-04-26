@@ -12,8 +12,6 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager&) {
     player.Assign<Position>();
     player.Assign<Velocity>();
     player.Assign<Acceleration>();
-
-    std::cout << "[*] Created player with index: " << player.GetId().GetIndex() << std::endl;
 }
 
 void PlayerSystem::Update(ecs::EntityManager&, ecs::EventManager& events, ecs::TimeDelta) {

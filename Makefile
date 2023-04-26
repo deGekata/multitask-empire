@@ -8,7 +8,7 @@ INC_DIRS := include
 BIN_DIR := bin
 BUILD_DIR := build
 
-DEFAULT_TARGET := example
+DEFAULT_TARGET := game
 APPLICATION := $(BUILD_DIR)/multitask_empire.out
 
 TARGETS_SRC := $(wildcard $(addsuffix /*.cpp, $(TARGET_DIR)))
