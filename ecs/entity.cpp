@@ -16,6 +16,16 @@ uint64_t Entity::Id::GetId() const {
     return id_;
 }
 
+bool Entity::Id::operator==(const Id& other) const {
+    return id_ == other.id_;
+}
+bool Entity::Id::operator!=(const Id& other) const {
+    return id_ != other.id_;
+}
+bool Entity::Id::operator<(const Id& other) const {
+    return id_ < other.id_;
+}
+
 uint32_t Entity::Id::GetIndex() const {
     return id_ & 0xffffffff;
 }
@@ -28,6 +38,18 @@ Entity::Entity() : manager_(nullptr), id_(INVALID_ID) {
 }
 
 Entity::Entity(EntityManager* manager, Id id) : manager_(manager), id_(id) {
+}
+
+bool Entity::operator==(const Entity& other) const {
+    return other.manager_ == manager_ && other.id_ == id_;
+}
+
+bool Entity::operator!=(const Entity& other) const {
+    return !(other == *this);
+}
+
+bool Entity::operator<(const Entity& other) const {
+    return other.id_ < id_;
 }
 
 bool Entity::IsValid() const {

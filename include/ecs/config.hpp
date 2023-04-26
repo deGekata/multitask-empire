@@ -14,7 +14,7 @@ constexpr uint64_t MAX_COMPONENTS = 128;
 using ComponentMask = std::bitset<MAX_COMPONENTS>;
 
 // In seconds
-using TimeDelta = int64_t;
+using TimeDelta = float;
 
 };  // namespace ecs
 
