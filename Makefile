@@ -1,7 +1,7 @@
 SRC_DIRS := src targets ecs signal player physics renderer logger geometry graphics/SFML
 VPATH += $(SRC_DIRS)
 
-INC_DIRS := . include stdlike utility geometry graphics graphics/SFML
+INC_DIRS := . include stdlike utility geometry graphics graphics/SFML fmt/include
 BIN_DIR := bin
 BUILD_DIR := build
 
@@ -25,6 +25,7 @@ LD_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 -fcheck-new -fsized-deallocation -fstack-protector -fstrict-overflow\
 -fno-omit-frame-pointer -fPIE -fsanitize=address -fsanitize=undefined\
 -lsfml-graphics -lsfml-window -lsfml-system \
+-lfmt
 
 all: prepare $(APPLICATION)
 
