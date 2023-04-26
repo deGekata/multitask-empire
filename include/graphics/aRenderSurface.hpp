@@ -4,6 +4,7 @@
 #include <graphics/aText.hpp>
 #include <graphics/color.hpp>
 #include <graphics/surface.hpp>
+
 namespace igraphicslib {
 class Texture;
 

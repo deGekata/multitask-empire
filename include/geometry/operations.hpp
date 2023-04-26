@@ -3,7 +3,7 @@
 #include <geometry/float.hpp>
 #include <geometry/point.hpp>
 #include <geometry/rect.hpp>
-#include <geometry/geomVector.hpp>
+#include <geometry/geom_vector.hpp>
 
 namespace geometry {
 

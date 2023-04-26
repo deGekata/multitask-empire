@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_SPHERE_HPP
 #define GEOMETRY_SPHERE_HPP
 #include <geometry/point.hpp>
-#include <geometry/geomVector.hpp>
+#include <geometry/geom_vector.hpp>
 
 namespace geometry {
 
