@@ -1,5 +1,7 @@
 #include <player/player.hpp>
 
+#include <events/player_events.hpp>
+
 #include <components/movement_components.hpp>
 #include <components/player_components.hpp>
 
@@ -14,14 +16,11 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager&) {
     std::cout << "[*] Created player with index: " << player.GetId().GetIndex() << std::endl;
 }
 
-void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
+void PlayerSystem::Update(ecs::EntityManager&, ecs::EventManager& events, ecs::TimeDelta) {
     std::string command;
     if (std::cin >> command) {
-        entities.Each<PlayerTag>([command](ecs::Entity entity, PlayerTag&) {
-            entity.AssignFromCopy<PendingPlayerCommand>({command});
+        PlayerCommandEvent cmd{command};
 
-            std::cout << "Assigned pending command " << command << " to entity " << entity.GetId().GetIndex()
-                      << std::endl;
-        });
+        events.Emit<PlayerCommandEvent>(std::move(cmd));
     }
 }

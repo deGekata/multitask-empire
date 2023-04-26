@@ -5,25 +5,35 @@
 #include <components/movement_components.hpp>
 #include <components/player_components.hpp>
 
+#include <events/movement_events.hpp>
+
 DispatcherSystem::DispatcherSystem(bool& flag) : running_(flag) {
 }
 
-void DispatcherSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
-    entities.Each<PlayerTag, PendingPlayerCommand>([this](ecs::Entity entity, PlayerTag&, PendingPlayerCommand& cmd) {
-        if (cmd.command_ == "JUMP") {
-            entity.Remove<PendingPlayerCommand>();
-            entity.Assign<PendingMovementCommand>(PendingMovementCommand::Jump);
-        } else if (cmd.command_ == "LEFT") {
-            entity.Remove<PendingPlayerCommand>();
-            entity.Assign<PendingMovementCommand>(PendingMovementCommand::Left);
-        } else if (cmd.command_ == "RIGHT") {
-            entity.Remove<PendingPlayerCommand>();
-            entity.Assign<PendingMovementCommand>(PendingMovementCommand::Right);
-        } else if (cmd.command_ == "SKIP") {
-            entity.Remove<PendingPlayerCommand>();
-        } else if (cmd.command_ == "EXIT") {
-            entity.Remove<PendingPlayerCommand>();
-            running_ = false;
+void DispatcherSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+    events.Subscribe<PlayerCommandEvent>(*this);
+}
+
+void DispatcherSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
+    entities.Each<PlayerTag>([this, &events](ecs::Entity entity, PlayerTag&) {
+        for (auto cmd = events_queue_.front(); !events_queue_.empty(); events_queue_.pop_front()) {
+            if (cmd.command_ == "JUMP") {
+                PendingMovementEvent event{entity, MovementCommand::Jump};
+                events.Emit<PendingMovementEvent>(event);
+            } else if (cmd.command_ == "LEFT") {
+                PendingMovementEvent event{entity, MovementCommand::Left};
+                events.Emit<PendingMovementEvent>(event);
+            } else if (cmd.command_ == "RIGHT") {
+                PendingMovementEvent event{entity, MovementCommand::Right};
+                events.Emit<PendingMovementEvent>(event);
+            } else if (cmd.command_ == "SKIP") {
+            } else if (cmd.command_ == "EXIT") {
+                running_ = false;
+            }
         }
     });
+}
+
+void DispatcherSystem::Recieve(const PlayerCommandEvent& cmd) {
+    events_queue_.push_back(cmd);
 }

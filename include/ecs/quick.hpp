@@ -3,6 +3,7 @@
 
 #include <ecs/config.hpp>
 #include <ecs/entity.hpp>
+#include <ecs/event.hpp>
 #include <ecs/system.hpp>
 
 namespace ecs {

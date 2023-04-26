@@ -4,30 +4,29 @@
 
 #include <components/movement_components.hpp>
 
-void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta dt) {
-    entities.Each<Velocity, Acceleration>([dt](ecs::Entity entity, Velocity& vel, Acceleration& acc) {
-        vel.vx_ += acc.ax_ * dt;
-        vel.vy_ += acc.ay_ * dt;
+#include <events/gravitation_events.hpp>
+#include <events/movement_events.hpp>
 
-        std::cout << "[*] " << entity.GetId().GetIndex() << " had acceleration " << acc.ax_ << " " << acc.ay_ << std::endl;
-        std::cout << "[*] " << entity.GetId().GetIndex() << " now has velocity " << vel.vx_ << " " << vel.vy_ << std::endl; 
-    
-        // TODO: event component changed
-    });
+void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) {
+    entities.Each<Position, Velocity, Acceleration>(
+        [dt](ecs::Entity, Position& cords, Velocity& vel, Acceleration& acc) {
+            if (cords.y_ == 0) {
+                vel.vx_ += acc.ax_ * dt;
+            }
+            vel.vy_ += acc.ay_ * dt;
+        });
 
-    entities.Each<Position, Velocity>([dt](ecs::Entity entity, Position& pos, Velocity& vel) {
+    entities.Each<Position, Velocity>([dt, &events](ecs::Entity entity, Position& pos, Velocity& vel) {
+        pos.y_ = std::max(0l, pos.y_ + vel.vy_ * dt);
         pos.x_ += vel.vx_ * dt;
 
-        // TODO emit landing event
-        if ((pos.y_ + vel.vy_ * dt) >= 0) {
-            pos.y_ += vel.vy_ * dt;
+        if ((pos.y_ == 0) && (vel.vy_ != 0)) {
+            LandingEvent landing_event{entity};
+            events.Emit<LandingEvent>(landing_event);
+
+            if (vel.vx_ == 0) {
+                events.Emit<MovementStopEvent>();
+            }
         }
-        // TODO Move to recieve of landing event
-        else {
-            pos.y_ = 0;
-            vel.vy_ = 0;
-        }
-        
-        std::cout << "[*] " << entity.GetId().GetIndex() << " now has coordinates " << pos.x_ << " " << pos.y_ << std::endl; 
     });
 }

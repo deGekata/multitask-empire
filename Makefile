@@ -1,4 +1,4 @@
-SRC_DIRS := src targets ecs signal physics player logger
+SRC_DIRS := src targets ecs signal player physics renderer logger
 VPATH += $(SRC_DIRS)
 
 INC_DIRS := . include stdlike utility

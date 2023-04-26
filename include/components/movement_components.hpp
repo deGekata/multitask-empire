@@ -18,10 +18,4 @@ struct Acceleration {
     int64_t ay_;
 };
 
-enum class PendingMovementCommand {
-    Left,
-    Right,
-    Jump,
-};
-
 #endif

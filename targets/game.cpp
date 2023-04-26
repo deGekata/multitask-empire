@@ -18,6 +18,8 @@
 #include <logger/logger.hpp>
 #include <logger/logger_ecs.hpp>
 
+#include <renderer/renderer.hpp>
+
 class Application : public ecs::ECS {
 public:
     Application() : running_(true) {
@@ -26,10 +28,12 @@ public:
 
         systems_.Add<DispatcherSystem>(running_);
         systems_.Add<MovementCommandsSystem>();
-        
+
         systems_.Add<GravitationSystem>();
         systems_.Add<FrictionSystem>();
         systems_.Add<MovementSystem>();
+
+        systems_.Add<RendererSystem>();
 
         systems_.Configure();
 
