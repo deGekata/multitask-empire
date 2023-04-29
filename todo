@@ -1,3 +1,0 @@
-- Tracking specific component on specific entity(access and editing) (so editing would trigger if component has really changed(we gonna save it))
-- Event tracking
-- Entity accessed/editing on each
