@@ -37,7 +37,7 @@ public:
 
         systems_.Configure();
 
-        log(INFO, "Application sucessfully created\n");
+        logger::print(INFO, "Application sucessfully created\n");
     }
 
     void Update(ecs::TimeDelta dt) {

@@ -17,13 +17,13 @@ template <typename FormatContext>
     }
 };
 
-template <> struct fmt::formatter<PendingPlayerCommand> : formatter<string_view> {
+// template <> struct fmt::formatter<PendingPlayerCommand> : formatter<string_view> {
 
-    template <typename FormatContext>
-    auto format(const PendingPlayerCommand& p, FormatContext& ctx) const -> decltype(ctx.out()) {
-        return fmt::format_to(ctx.out(), fmt::runtime("{}"), p.command_);
-    }
-};
+//     template <typename FormatContext>
+//     auto format(const PendingPlayerCommand& p, FormatContext& ctx) const -> decltype(ctx.out()) {
+//         return fmt::format_to(ctx.out(), fmt::runtime("{}"), p.command_);
+//     }
+// };
 
 template <> struct fmt::formatter<Position> : formatter<string_view> {
 
@@ -49,19 +49,19 @@ template <> struct fmt::formatter<Acceleration> : formatter<string_view> {
     }
 };
 
-template <> struct fmt::formatter<PendingMovementCommand>: formatter<string_view> {
+// template <> struct fmt::formatter<PendingMovementCommand>: formatter<string_view> {
 
-    template <typename FormatContext>
-    auto format(PendingMovementCommand cmd, FormatContext& ctx) const {
-    string_view name = "unknown";
-    switch (cmd){
-        case PendingMovementCommand::Left:   name = "Left"; break;
-        case PendingMovementCommand::Right:  name = "Right"; break;
-        case PendingMovementCommand::Jump:   name = "Jump"; break;
-    }
+//     template <typename FormatContext>
+//     auto format(PendingMovementCommand cmd, FormatContext& ctx) const {
+//     string_view name = "unknown";
+//     switch (cmd){
+//         case PendingMovementCommand::Left:   name = "Left"; break;
+//         case PendingMovementCommand::Right:  name = "Right"; break;
+//         case PendingMovementCommand::Jump:   name = "Jump"; break;
+//     }
 
-        return formatter<string_view>::format(name, ctx);
-    }
-};
+//         return formatter<string_view>::format(name, ctx);
+//     }
+// };
 
 #endif // COMPONENT_FORMATTING_H

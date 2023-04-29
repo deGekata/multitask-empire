@@ -12,20 +12,25 @@ class EcsBaseLogger : public ecs::System<EcsBaseLogger>, public ecs::ReceiverBas
 public:
     // entity
     virtual void Recieve(const ecs::EntityCreatedEvent& event);
+    virtual void Recieve(const ecs::EntityAccessedEvent& event);
     virtual void Recieve(const ecs::EntityDestroyedEvent& event);
     
     // player_components.hpp
     virtual void Recieve(const ecs::ComponentAddedEvent<PlayerTag>& event);
+    virtual void Recieve(const ecs::ComponentAccessedEvent<PlayerTag>& event);
     virtual void Recieve(const ecs::ComponentRemovedEvent<PlayerTag>& event);
     
     // // movement_components.hpp
     virtual void Recieve(const ecs::ComponentAddedEvent<Position>& event);
+    virtual void Recieve(const ecs::ComponentAccessedEvent<Position>& event);
     virtual void Recieve(const ecs::ComponentRemovedEvent<Position>& event);
     
     virtual void Recieve(const ecs::ComponentAddedEvent<Velocity>& event);
+    virtual void Recieve(const ecs::ComponentAccessedEvent<Velocity>& event);
     virtual void Recieve(const ecs::ComponentRemovedEvent<Velocity>& event);
     
     virtual void Recieve(const ecs::ComponentAddedEvent<Acceleration>& event);
+    virtual void Recieve(const ecs::ComponentAccessedEvent<Acceleration>& event);
     virtual void Recieve(const ecs::ComponentRemovedEvent<Acceleration>& event);
 };
 

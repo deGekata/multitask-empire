@@ -1,9 +1,16 @@
 #include <ecs/entity.hpp>
+#include <logger/logger.hpp>
 
 namespace ecs {
 
 const Entity::Id Entity::INVALID_ID;
 BaseComponent::Family BaseComponent::family_counter_ = 0;
+
+ComponentMask                       Tracker::tracking_components_on_access_;
+ComponentMask                       Tracker::tracking_components_on_adding_;
+ComponentMask                       Tracker::tracking_components_on_removing_;
+std::bitset<MAX_ENTITIES>           Tracker::tracking_entities_;
+EntityManager*                      Tracker::tracking_manager_;
 
 Entity::Id::Id(const uint64_t id) : id_(id) {
 }
@@ -34,10 +41,19 @@ uint32_t Entity::Id::GetGeneration() const {
     return static_cast<uint32_t>(id_ >> 32);
 }
 
-Entity::Entity() : manager_(nullptr), id_(INVALID_ID) {
+Entity::Entity() : manager_(nullptr), id_(INVALID_ID), is_tracked_(false) {
 }
 
-Entity::Entity(EntityManager* manager, Id id) : manager_(manager), id_(id) {
+Entity::Entity(EntityManager* manager, Id id) : manager_(manager), id_(id), is_tracked_(false) {
+}
+
+Entity::~Entity() {
+    //? shared ptr to handle = method
+    if(is_tracked_ && Tracker::IsEntityTracking(id_.GetIndex())) {
+        Entity ent = *this;
+        ent.SetTracking(false);
+        manager_->event_manager_.Emit<EntityAccessedEvent>(ent);
+    }
 }
 
 bool Entity::operator==(const Entity& other) const {
@@ -65,6 +81,10 @@ Entity::Id Entity::GetId() const {
     return id_;
 }
 
+void Entity::SetTracking(bool is_tracked) {
+    is_tracked_ = is_tracked;
+}
+
 EntityManager::EntityManager(EventManager& event_manager)
     : index_counter_(0)
     , event_manager_(event_manager)
@@ -73,10 +93,12 @@ EntityManager::EntityManager(EventManager& event_manager)
     , entity_component_mask_()
     , entity_generations_()
     , free_list_() {
+        Tracker::SetManager(this);
 }
 
 EntityManager::~EntityManager() {
     Reset();
+    Tracker::SetManager(nullptr);
 }
 
 void EntityManager::Reset() {
@@ -129,12 +151,18 @@ EntityCreatedEvent::~EntityCreatedEvent() {
 EntityDestroyedEvent::~EntityDestroyedEvent() {
 }
 
+EntityAccessedEvent::~EntityAccessedEvent() {
+}
+
 Entity EntityManager::Create() {
     uint32_t index = 0;
     uint32_t generation = 0;
 
     if (free_list_.empty()) {
         index = index_counter_++;
+
+        //! if number of entities is > MAX_ENTITES
+        assert(index_counter_ < MAX_ENTITIES);
         AccomodateEntity(index);
 
         entity_generations_[index] = 1;
@@ -147,7 +175,10 @@ Entity EntityManager::Create() {
     }
 
     Entity new_entity{this, Entity::Id(index, generation)};
+    new_entity.SetTracking(true);
+
     event_manager_.Emit<EntityCreatedEvent>(new_entity);
+
     return new_entity;
 }
 
@@ -231,6 +262,29 @@ void BaseComponent::operator delete(void*) {
 
 void BaseComponent::operator delete[](void*) {
     std::abort();
+}
+
+void Tracker::TrackEntity(uint32_t index) {
+    assert(index < tracking_entities_.size() && tracking_manager_); 
+    tracking_entities_.set(index);
+}
+
+void Tracker::UnTrackEntity(uint32_t index) {
+    assert(index < tracking_entities_.size() && tracking_manager_); 
+    tracking_entities_.reset(index);
+}
+
+bool Tracker::IsEntityTracking(uint32_t index) {
+    assert(index < tracking_entities_.size() && tracking_manager_); 
+    return tracking_entities_.test(index);
+}
+
+void Tracker::SetManager(EntityManager* tracking_manager) {
+    tracking_entities_.reset();
+    tracking_components_on_adding_.reset();
+    tracking_components_on_access_.reset();
+    tracking_components_on_removing_.reset();
+    tracking_manager_ = tracking_manager;
 }
 
 };  // namespace ecs

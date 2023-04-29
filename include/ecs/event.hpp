@@ -15,6 +15,7 @@
 
 // C sdtlib
 #include <cstdint>
+#include <cassert>
 
 // C++ stdlib
 #include <memory>
@@ -26,6 +27,8 @@
 // This project
 #include <signal/signal.hpp>
 #include <utility/non_copiable.hpp>
+#include <ecs/config.hpp>
+#include <logger/logger.hpp>
 
 namespace ecs {
 
@@ -68,8 +71,33 @@ public:
 
     static FamilyType Family() {
         static FamilyType family = family_counter_++;
+        assert(family < MAX_EVENTS);
         return family;
     }
+};
+
+class EventTracker {
+public:
+
+    static void Reset();
+
+    template<typename EventType>
+    static void Track() {
+        tracking_events_.set(Event<EventType>::Family());
+    }
+
+    template<typename EventType>
+    static void UnTrack() {
+        tracking_events_.reset(Event<EventType>::Family());
+    }
+
+    template<typename EventType>
+    static bool IsTracking() {
+        return tracking_events_.test(Event<EventType>::Family());
+    }
+
+private:
+    static std::bitset<MAX_EVENTS> tracking_events_;
 };
 
 /**
@@ -183,12 +211,20 @@ public:
     void Emit(const EventType& event) {
         std::shared_ptr<EventSignal>& signal = SignalFromFamily(Event<EventType>::Family());
         signal->Emit(&event);
+
+        if(EventTracker::IsTracking<EventType>()){
+            logger::print(INFO, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
+        }
     }
 
     template <typename EventType>
     void Emit(std::unique_ptr<EventType> event) {
         std::shared_ptr<EventSignal>& signal = SignalFromFamily(Event<EventType>::Family());
         signal->Emit(event.get());
+
+        if(EventTracker::IsTracking<EventType>()){
+            logger::print(INFO, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
+        }
     }
 
     template <typename EventType, typename... ArgTypes>
@@ -196,6 +232,10 @@ public:
         EventType event(std::forward<ArgTypes>(args)...);
         std::shared_ptr<EventSignal>& signal = SignalFromFamily(Event<EventType>::Family());
         signal->Emit(&event);
+
+        if(EventTracker::IsTracking<EventType>()){
+            logger::print(INFO, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
+        }
     }
 
     size_t RecieversCount() const;
