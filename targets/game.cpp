@@ -22,6 +22,8 @@
 #include <logger/logger.hpp>
 #include <logger/logger_ecs.hpp>
 
+#include <spritesheet/spritesheet.hpp>
+
 // #include <graphics/aWindow.hpp>
 // #include <graphics/aSprite.hpp>
 // #include <graphics/aText.hpp>
@@ -42,7 +44,7 @@ public:
         systems_.Add<MovementSystem>();
 
         systems_.Add<RendererSystem>();
-
+        systems_.Add<SpriteSheetSystem>();
         systems_.Configure();
 
         log(INFO, "Application sucessfully created\n");

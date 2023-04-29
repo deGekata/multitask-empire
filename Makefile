@@ -1,7 +1,7 @@
 TARGET_DIR := targets
 TEST_DIR := tests
 
-SRC_DIRS := src ecs signal player physics renderer logger geometry graphics/SFML
+SRC_DIRS := src ecs signal player physics renderer logger geometry graphics/SFML spritesheet
 VPATH += $(SRC_DIRS) $(TEST_DIR) $(TARGET_DIR)
 
 INC_DIRS := include

@@ -27,6 +27,11 @@ void DispatcherSystem::Update(ecs::EntityManager& entities, ecs::EventManager& e
                 PendingMovementEvent event{entity, MovementCommand::Right};
                 events.Emit<PendingMovementEvent>(event);
             } else if (cmd.command_ == "SKIP") {
+            } else if (cmd.command_ == "SPRITE_SHEET"){
+                std::string xml_path;
+                std::cout << "enter the path:";
+                std::cin >> xml_path;
+                events.Emit<SpriteSheetLoadRequest>(xml_path);
             } else if (cmd.command_ == "EXIT") {
                 running_ = false;
             }

@@ -5,6 +5,7 @@
 #include <ecs/entity.hpp>
 #include <components/player_components.hpp>
 #include <components/movement_components.hpp>
+#include <components/graphic_components.hpp>
 
 // TODO: DLOG implementing + save data into file
 
@@ -27,6 +28,8 @@ public:
     
     virtual void Recieve(const ecs::ComponentAddedEvent<Acceleration>& event);
     virtual void Recieve(const ecs::ComponentRemovedEvent<Acceleration>& event);
+
+    virtual void Recieve(const ecs::ComponentAddedEvent<SpriteSheet>& event);
 };
 
 class EcsFullLogger : public EcsBaseLogger{
