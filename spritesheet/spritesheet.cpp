@@ -1,6 +1,7 @@
 #include <spritesheet/spritesheet.hpp>
 #include <string.h>
 
+#include <graphics/aTexture.hpp>
 // todo: to iterator
 static struct xml_position {
     size_t col, line;
@@ -30,6 +31,28 @@ void SpriteSheetSystem::LoadSpriteSheet(const std::string& xml_path) {
 
 void SpriteSheetSystem::Recieve(const SpriteSheetLoadRequest& event) {
     LoadSpriteSheet(event.xml_path_);
+}
+
+void SpriteSheetSystem::Recieve(const SkinChangeRequest& event) {
+
+    bool was_found = false;
+
+    entities_->Each<SpriteSheetStorageTag, SpriteSheet>([this, &event, &was_found](ecs::Entity entity, SpriteSheetStorageTag&, SpriteSheet& sprite_sheet) {
+        if(sprite_sheet.img_path_ == event.skin_name_) {
+            ObjectAnimationData animation_data = {
+                .sprite_sheet_ = entity.GetComponent<SpriteSheet>().Get(),
+                .cur_frame_    = 0,
+                .n_sprite_sheet_state_ = 0 // todo;
+            };
+            this->entities_->Assign<ObjectAnimationData>(event.entity_.GetId(), animation_data);
+            was_found = true;
+        }
+    });
+
+    if(!was_found) {
+        std::cout << "Warning, unable to find requested sprite sheet: " << event.skin_name_ << "\n";
+        return;
+    }
 }
 
 static size_t GetFileSize(FILE* file) {
@@ -240,12 +263,15 @@ static void ParseXml(const std::string& xml_path, ecs::Entity entity) {
     SpriteSheet component;
 
     while((res = ParseTexture(buffer_iter, buffer.end(), &component)) == RET_CODE::PARSED) {
+        component.sprite_.SetTexture(igraphicslib::Texture(component.img_path_.c_str()));
         entity.AssignFromCopy(std::move(component));
     }
 
     if(res == RET_CODE::PARSE_END){
+        component.sprite_.SetTexture(igraphicslib::Texture(component.img_path_.c_str()));
         entity.AssignFromCopy(std::move(component));
     }
+
     else{
         fmt::print("WARNING, xml parsing failed on pos<{}, {}> because of the ", xml_pos.col, xml_pos.line);
         if(res == RET_CODE::WRONG_PATTERN){

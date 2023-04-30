@@ -70,8 +70,7 @@ private:
 //     igraphicslib::Sprite player_sprite(player_texture);
 //     igraphicslib::Rect first_pos(0u, 0u, 40u, 100u);
 //     igraphicslib::Rect second_pos(0u, 120u, 40u, 100u);
-//     bool changed = false;
-//     while (true) {
+//     bool changed = false     while (true) {
 //         window.Clear();
 //         window.DrawPoint({100, 100}, igraphicslib::colors::kGreen);
 //         window.DrawLine({14, 40}, {500, 500}, igraphicslib::colors::kRed);

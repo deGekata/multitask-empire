@@ -32,6 +32,9 @@ Sprite::Sprite(const Sprite& oth, Rect rect) : sp_(new Sprite::Sprite_(*oth.sp_)
     });
 }
 
+Sprite::Sprite(const Sprite& oth) : Sprite(oth, oth.GetTextureRect()) {
+}
+
 Sprite& Sprite::operator=(const Sprite& oth) {
     *sp_ = *oth.sp_;
     return *this;
