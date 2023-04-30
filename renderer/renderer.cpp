@@ -8,7 +8,8 @@
 #include <components/graphic_components.hpp>
 #include <components/player_components.hpp>
 
-const int64_t ANIMATION_FREEZE_TIME = 100; //ms
+
+const int64_t ANIMATION_FREEZE_TIME = 50; //ms
 // todo: enchance
 std::string player_state_to_str(PLAYER_STATE state) {
 
@@ -23,11 +24,25 @@ std::string player_state_to_str(PLAYER_STATE state) {
             return "ATTACK_DOWN";
         case PLAYER_STATE::UPPER_ATTACK:
             return "ATTACK_UP";
+        case PLAYER_STATE::WALK:
+            return "WALK";
     }
 }
 
 RendererSystem::RendererSystem() :
     window_(1000, 800, "Simple"){}
+
+void RendererSystem::SFMLEventsPooling() {
+
+    while(true) {
+        igraphicslib::Event event;
+        if(window_.PollEvent(event)) {
+            on_event_queue_operation_.lock();
+            events_.push(event);
+            on_event_queue_operation_.unlock();
+        }
+    }
+}
 
 void RendererSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<PendingMovementEvent>(*this);
@@ -50,7 +65,33 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
     window_.DrawSprite({cur_pos.x_, cur_pos.y_}, tmp);
 }
 
-void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
+void RendererSystem::HandleGraphicalEvent(igraphicslib::Event event) {
+}
+
+void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
+
+    size_t cur_n_events = events_.size();
+    std::cout << cur_n_events << "\n";
+
+    while(cur_n_events--) {
+        on_event_queue_operation_.lock();
+
+        igraphicslib::Event event = events_.front();
+        events_.pop();
+        on_event_queue_operation_.unlock();
+
+        if(event.type == igraphicslib::EventType::KeyPressed) {
+            if(event.ked.key == igraphicslib::KeyboardKey::D) {
+                events.Emit<PendingMovementEvent>({*(entities.GetEntitiesWithComponents<PlayerTag>().begin()), MovementCommand::Right});
+                events.Emit<PlayerStateChanged>(PLAYER_STATE::WALK);
+            }
+            else if(event.ked.key == igraphicslib::KeyboardKey::Z) {
+                events.Emit<SkinChangeRequest>("orc.png", *(entities.GetEntitiesWithComponents<PlayerTag>().begin()));
+            }
+        }
+        // HandleGraphicalEvent();
+    }
+    
     window_.Clear();
 
     for (auto target : inspected_entities_) {
@@ -77,7 +118,8 @@ void RendererSystem::Recieve(const PendingMovementEvent& event) {
 }
 
 void RendererSystem::Recieve(const PlayerStateChanged& event) {
-    fmt::print("hey\n");
+    
+    std::cout << "wtf nigger\n";
     for(auto target : inspected_entities_){
         if(!target.HasComponent<PlayerTag>() || !target.HasComponent<ObjectAnimationData>()){
             continue;
@@ -109,7 +151,9 @@ void RendererSystem::Recieve(const PlayerStateChanged& event) {
             assert(0);
         } 
 
+        std::cout << "was " << animation_storage->n_sprite_sheet_state_ << "\n";
         animation_storage->n_sprite_sheet_state_ = n_state_in_sprite_sheet;
+        std::cout << "now " << animation_storage->n_sprite_sheet_state_ << "\n";
     }
 }
 

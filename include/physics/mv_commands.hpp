@@ -9,7 +9,7 @@
 #include <events/movement_events.hpp>
 
 const int64_t kJumpSpeed = 100;
-const int64_t kMoveSpeed = 100;
+const int64_t kMoveSpeed = 50;
 
 class MovementCommandsSystem : public ecs::System<MovementCommandsSystem>,
                                public ecs::Reciever<MovementCommandsSystem> {

@@ -109,7 +109,7 @@ public:
             return nullptr;
         }
 
-        return it->second;
+        return reinterpret_cast<System*>(it->second);
     }
 
     /**

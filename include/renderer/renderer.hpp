@@ -2,6 +2,8 @@
 #define H_RENDERER
 
 #include <unordered_set>
+#include <queue>
+#include <mutex>
 
 #include <ecs/system.hpp>
 #include <ecs/entity.hpp>
@@ -11,6 +13,7 @@
 #include <events/player_events.hpp>
 
 #include <graphics/aWindow.hpp>
+#include <graphics/event.hpp>
 
 #include <components/graphic_components.hpp>
 #include <components/movement_components.hpp>
@@ -26,12 +29,20 @@ public:
     void Recieve(const LandingEvent& cmd);
     void Recieve(const MovementStopEvent& cmd);
     void Recieve(const PlayerStateChanged& event);
+
+    void SFMLEventsPooling();
 private:
     void LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos);
 
+    void HandleGraphicalEvent(igraphicslib::Event event);
 private:
     std::unordered_set<ecs::Entity> inspected_entities_;
+    // todo: to entities??
     igraphicslib::Window            window_;
+
+    // todo: to subclass
+    std::queue<igraphicslib::Event> events_;
+    std::mutex on_event_queue_operation_;
 };
 
 #endif

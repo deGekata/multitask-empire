@@ -15,10 +15,10 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager&) {
 }
 
 void PlayerSystem::Update(ecs::EntityManager&, ecs::EventManager& events, ecs::TimeDelta) {
-    std::string command;
-    if (std::cin >> command) {
-        PlayerCommandEvent cmd{command};
+    // std::string command;
+    // if (std::cin >> command) {
+    //     PlayerCommandEvent cmd{command};
 
-        events.Emit<PlayerCommandEvent>(std::move(cmd));
-    }
+    //     events.Emit<PlayerCommandEvent>(std::move(cmd));
+    // }
 }

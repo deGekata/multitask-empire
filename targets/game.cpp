@@ -34,9 +34,10 @@ class Application : public ecs::ECS {
 public:
     Application() : running_(true) {
         systems_.Add<EcsFullLogger>();
+
         systems_.Add<PlayerSystem>();
 
-        systems_.Add<DispatcherSystem>(running_);
+        // systems_.Add<DispatcherSystem>(running_);
         systems_.Add<MovementCommandsSystem>();
 
         systems_.Add<GravitationSystem>();
@@ -55,9 +56,32 @@ public:
     }
 
     bool GetState() {
-        return running_;
+        return true;
     }
 
+    void Pool() {
+        while (GetState()) {
+                // auto new_timer = std::chrono::steady_clock::now();
+                // auto dt = std::chrono::duration_cast<std::chrono::seconds>(new_timer - prev_timer);
+
+                // std::cout << "Delta is " << dt.count() << std::endl;
+                
+                Update(1);
+
+                // prev_timer = new_timer;
+            }
+    }
+
+    void Init() {
+
+        RendererSystem* system = reinterpret_cast<RendererSystem*>(systems_.GetSystem<RendererSystem>());
+        std::thread test(&RendererSystem::SFMLEventsPooling, system);
+        std::thread main(&Application::Pool, this);
+
+        test.join();
+        main.join();
+        
+    }
 private:
     bool running_;
 };
@@ -97,17 +121,11 @@ private:
 
 // }
 
+void GameExecutuon(Application& game) {
+
+}
 int main() {
     Application game;
-    
+    game.Init();
     // auto prev_timer = std::chrono::steady_clock::now();
-    while (game.GetState()) {
-        // auto new_timer = std::chrono::steady_clock::now();
-        // auto dt = std::chrono::duration_cast<std::chrono::seconds>(new_timer - prev_timer);
-
-        // std::cout << "Delta is " << dt.count() << std::endl;
-        game.Update(1);
-
-        // prev_timer = new_timer;
-    }
 }

@@ -8,7 +8,8 @@ enum PLAYER_STATE{
     UPPER_ATTACK,
     LOWER_ATTACK,
     JUMP,
-    DOWN
+    DOWN,
+    WALK
 };
 
 struct PlayerState {
