@@ -37,7 +37,9 @@ void DispatcherSystem::Update(ecs::EntityManager& entities, ecs::EventManager& e
                 std::cout << "enter the name: ";
                 std::cin >> skin_name;
                 events.Emit<SkinChangeRequest>(skin_name, *entities.GetEntitiesWithComponents<PlayerTag>().begin());
-            } else if (cmd.command_ == "EXIT") {
+            } else if (cmd.command_ == "IDLE"){
+                events.Emit<PlayerStateChanged>(PLAYER_STATE::DEFAULT);
+            } if (cmd.command_ == "EXIT") {
                 running_ = false;
             }
         }

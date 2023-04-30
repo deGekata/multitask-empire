@@ -2,6 +2,9 @@
 #include <string.h>
 
 #include <graphics/aTexture.hpp>
+// TODO: path make valid
+// TODO: fix output of component in logger
+
 // todo: to iterator
 static struct xml_position {
     size_t col, line;
@@ -12,11 +15,13 @@ static void ParseXml(const std::string& xml_path, ecs::Entity entity);
 void SpriteSheetSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     // LoadSpriteSheet("default_player_skin.png", "default_player_xml.png");
     events.Subscribe<SpriteSheetLoadRequest, SpriteSheetSystem>(*this);
-
+    events.Subscribe<SkinChangeRequest, SpriteSheetSystem>(*this);
     entities_ = &entities;
 
     ecs::Entity spritesheet_storage = entities.Create();
     spritesheet_storage.Assign<SpriteSheetStorageTag>();
+
+    LoadSpriteSheet("orc.xml");
 }
 
 void SpriteSheetSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
@@ -69,7 +74,7 @@ static size_t GetFileSize(FILE* file) {
 
 #define SKIP_SPACES \
 {\
-    while(buf_iter < buf_end && (*buf_iter == ' ' || *buf_iter == '\t' || *buf_iter == '\n')){\
+    while(buf_iter < buf_end && isspace(*buf_iter)){\
         if(*buf_iter == '\n') {\
             xml_pos.line++;\
             xml_pos.col = 0;\
@@ -141,6 +146,7 @@ SKIP("\"")
     SKIP("=")\
     SKIP("\"")\
     SKIP_UNTIL_SYMB('\"')\
+    SKIP("\"")\
 }
 
 static RET_CODE ParseTitle(std::string::iterator& buf_iter, const std::string::iterator& buf_end) {
@@ -154,12 +160,21 @@ static RET_CODE ParseTitle(std::string::iterator& buf_iter, const std::string::i
         return RET_CODE::PARSED;
     }
 
-    GET_ARG(encoding, encoding_str)
-    if(encoding_str != "UTF-8") return RET_CODE::WRONG_PATTERN;
+    SKIP_ARG(encoding)
+    // if(encoding_str != "UTF-8") return RET_CODE::WRONG_PATTERN;
     
     SKIP("?>")
     return RET_CODE::PARSED;
 }   
+
+std::string GetStateName(const std::string& state_name_with_idx) {
+    for(auto iter = state_name_with_idx.begin(); iter < state_name_with_idx.end(); iter++) {
+        if(isdigit(*iter)) {
+            return std::string(state_name_with_idx.begin(), iter);
+        }
+    }
+    return state_name_with_idx;
+}
 
 static RET_CODE ParseSubTexture(std::string::iterator& buf_iter, const std::string::iterator& buf_end, SpriteSheet* component) {
     SKIP("<")
@@ -171,7 +186,9 @@ static RET_CODE ParseSubTexture(std::string::iterator& buf_iter, const std::stri
 
     SKIP("SubTexture")
     
-    GET_ARG(name, state_name)
+    GET_ARG(name, state_name_with_idx)
+    std::string state_name = GetStateName(state_name_with_idx);
+
     // найти StateData с нейм state_name и добавить координаты или создать новый
     auto is_state_present = [&state_name](typename SpriteSheet::StateData& data) { return data.name_ == state_name; };
     
@@ -193,29 +210,36 @@ static RET_CODE ParseSubTexture(std::string::iterator& buf_iter, const std::stri
     GET_ARG(width, width_str)
     GET_ARG(height, height_str)
 
-    SpriteSheet::StateFrame frame;
+    SpriteSheet::StateFrame frame = {};
     frame.x_ = std::stoi(x_str);
     frame.y_ = std::stoi(y_str);
     frame.w_ = std::stoi(width_str);
     frame.h_ = std::stoi(height_str);
 
-    p_poses->push_back(frame);
-
     if(*buf_iter == '/'){
+        p_poses->push_back(frame);
         SKIP("/>")
         return RET_CODE::PARSED;
     }
 
-    SKIP_ARG(frameX)
-    SKIP_ARG(frameY)
-    SKIP_ARG(frameWidth)
-    SKIP_ARG(frameHeight)
+    GET_ARG(frameX, frameX_str)
+    GET_ARG(frameY, frameY_str)
+    GET_ARG(frameWidth, frameW_str)
+    GET_ARG(frameHeight, frameH_str)
     
+    frame.x_offset_ = std::stoi(frameX_str);
+    frame.y_offset_ = std::stoi(frameY_str);
+    frame.frame_w_  = std::stoi(frameW_str);
+    frame.frame_h_  = std::stoi(frameH_str);
+    
+    p_poses->push_back(frame);
+
     SKIP("/>")
     return RET_CODE::PARSED;
 }
 
 static RET_CODE ParseTexture(std::string::iterator& buf_iter, const std::string::iterator& buf_end, SpriteSheet* component) {
+    
     SKIP("<")
 
     SKIP("TextureAtlas")
@@ -251,6 +275,7 @@ static void ParseXml(const std::string& xml_path, ecs::Entity entity) {
         fmt::print("WARNING, xml parsing failed on pos<{}, {}> because of the ", xml_pos.col, xml_pos.line);
         if(res == RET_CODE::WRONG_PATTERN){
             fmt::print("wrong pattern\n");
+            std::cout << (int)*buffer_iter << "\n";
         }
         else if (res == RET_CODE::REACHED_BUFFER_END){
             fmt::print("end of the buffer has been reached\n");
@@ -258,24 +283,31 @@ static void ParseXml(const std::string& xml_path, ecs::Entity entity) {
         else {
             assert(0);
         }
+        return;
     }
 
     SpriteSheet component;
 
     while((res = ParseTexture(buffer_iter, buffer.end(), &component)) == RET_CODE::PARSED) {
-        component.sprite_.SetTexture(igraphicslib::Texture(component.img_path_.c_str()));
+        
+        component.texture_ = igraphicslib::Texture(component.img_path_.c_str());
+        // component.sprite_.SetTexture(igraphicslib::Texture(component.img_path_.c_str()));
         entity.AssignFromCopy(std::move(component));
     }
 
     if(res == RET_CODE::PARSE_END){
-        component.sprite_.SetTexture(igraphicslib::Texture(component.img_path_.c_str()));
+        std::cout << &component.sprite_ << "\n";
+        component.texture_ = igraphicslib::Texture(component.img_path_.c_str());
+        // component.sprite_.SetTexture(igraphicslib::Texture(component.img_path_.c_str()));
         entity.AssignFromCopy(std::move(component));
     }
 
     else{
         fmt::print("WARNING, xml parsing failed on pos<{}, {}> because of the ", xml_pos.col, xml_pos.line);
         if(res == RET_CODE::WRONG_PATTERN){
+
             fmt::print("wrong pattern\n");
+            std::cout << (int)*buffer_iter << "\n";
         }
         else if (res == RET_CODE::REACHED_BUFFER_END){
             fmt::print("end of the buffer has been reached\n");

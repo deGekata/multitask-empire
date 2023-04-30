@@ -5,11 +5,14 @@
 #include <vector>
 
 #include <graphics/aSprite.hpp>
+#include <graphics/aTexture.hpp>
 
 struct SpriteSheet {
 
     struct StateFrame {
         uint x_, y_, h_, w_;
+        uint x_offset_, y_offset_;
+        uint frame_w_, frame_h_;
     };
 
     struct StateData {
@@ -18,6 +21,7 @@ struct SpriteSheet {
     };
 
     // std::string            name_;
+    igraphicslib::Texture  texture_;
     std::string            img_path_;
     igraphicslib::Sprite   sprite_;
     std::vector<StateData> states_;
