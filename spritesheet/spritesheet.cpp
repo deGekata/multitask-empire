@@ -46,8 +46,8 @@ void SpriteSheetSystem::Recieve(const SkinChangeRequest& event) {
         if(sprite_sheet.img_path_ == event.skin_name_) {
             ObjectAnimationData animation_data = {
                 .sprite_sheet_ = entity.GetComponent<SpriteSheet>().Get(),
-                .cur_frame_    = 0,
-                .n_sprite_sheet_state_ = 0 // todo;
+                .n_sprite_sheet_state_ = 0,
+                .cur_frame_    = 0 // todo;
             };
             this->entities_->Assign<ObjectAnimationData>(event.entity_.GetId(), animation_data);
             was_found = true;
@@ -211,10 +211,10 @@ static RET_CODE ParseSubTexture(std::string::iterator& buf_iter, const std::stri
     GET_ARG(height, height_str)
 
     SpriteSheet::StateFrame frame = {};
-    frame.x_ = std::stoi(x_str);
-    frame.y_ = std::stoi(y_str);
-    frame.w_ = std::stoi(width_str);
-    frame.h_ = std::stoi(height_str);
+    frame.x_ = static_cast<uint>(std::stoi(x_str));
+    frame.y_ = static_cast<uint>(std::stoi(y_str));
+    frame.w_ = static_cast<uint>(std::stoi(width_str));
+    frame.h_ = static_cast<uint>(std::stoi(height_str));
 
     if(*buf_iter == '/'){
         p_poses->push_back(frame);
@@ -227,10 +227,10 @@ static RET_CODE ParseSubTexture(std::string::iterator& buf_iter, const std::stri
     GET_ARG(frameWidth, frameW_str)
     GET_ARG(frameHeight, frameH_str)
     
-    frame.x_offset_ = std::stoi(frameX_str);
-    frame.y_offset_ = std::stoi(frameY_str);
-    frame.frame_w_  = std::stoi(frameW_str);
-    frame.frame_h_  = std::stoi(frameH_str);
+    frame.x_offset_ = static_cast<uint>(std::stoi(frameX_str));
+    frame.y_offset_ = static_cast<uint>(std::stoi(frameY_str));
+    frame.frame_w_  = static_cast<uint>(std::stoi(frameW_str));
+    frame.frame_h_  = static_cast<uint>(std::stoi(frameH_str));
     
     p_poses->push_back(frame);
 
@@ -275,7 +275,6 @@ static void ParseXml(const std::string& xml_path, ecs::Entity entity) {
         fmt::print("WARNING, xml parsing failed on pos<{}, {}> because of the ", xml_pos.col, xml_pos.line);
         if(res == RET_CODE::WRONG_PATTERN){
             fmt::print("wrong pattern\n");
-            std::cout << (int)*buffer_iter << "\n";
         }
         else if (res == RET_CODE::REACHED_BUFFER_END){
             fmt::print("end of the buffer has been reached\n");
@@ -305,9 +304,7 @@ static void ParseXml(const std::string& xml_path, ecs::Entity entity) {
     else{
         fmt::print("WARNING, xml parsing failed on pos<{}, {}> because of the ", xml_pos.col, xml_pos.line);
         if(res == RET_CODE::WRONG_PATTERN){
-
             fmt::print("wrong pattern\n");
-            std::cout << (int)*buffer_iter << "\n";
         }
         else if (res == RET_CODE::REACHED_BUFFER_END){
             fmt::print("end of the buffer has been reached\n");

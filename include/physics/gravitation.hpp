@@ -6,7 +6,7 @@
 #include <ecs/event.hpp>
 #include <ecs/system.hpp>
 
-#include <events/movement_events.hpp>
+#include <events/player_events.hpp>
 #include <events/gravitation_events.hpp>
 
 constexpr int64_t kAttraction = 20;
@@ -16,7 +16,7 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Recieve(const PendingMovementEvent& event);
+    void Recieve(const PlayerCommandEvent& event);
     void Recieve(const LandingEvent& event);
 
 private:

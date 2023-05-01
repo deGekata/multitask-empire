@@ -6,7 +6,7 @@
 #include <ecs/event.hpp>
 #include <ecs/system.hpp>
 
-#include <events/movement_events.hpp>
+#include <events/player_events.hpp>
 
 const int64_t kJumpSpeed = 100;
 const int64_t kMoveSpeed = 50;
@@ -17,9 +17,9 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Recieve(const PendingMovementEvent& event);
+    void Recieve(const PlayerCommandEvent& event);
 private:
-    std::deque<PendingMovementEvent> events_queue_;
+    std::deque<PlayerCommandEvent> events_queue_;
 };
 
 #endif

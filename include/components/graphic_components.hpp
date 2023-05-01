@@ -31,8 +31,8 @@ struct SpriteSheetStorageTag {};
 
 struct ObjectAnimationData {
     SpriteSheet* sprite_sheet_;
-    int          n_sprite_sheet_state_;
-    int          cur_frame_;
+    uint         n_sprite_sheet_state_;
+    uint         cur_frame_;
 };
 
 #endif // H_GRAPHIC_CMPNTS

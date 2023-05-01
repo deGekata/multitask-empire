@@ -3,7 +3,7 @@
 #include <components/movement_components.hpp>
 
 void GravitationSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
-    events.Subscribe<PendingMovementEvent>(*this);
+    events.Subscribe<PlayerCommandEvent>(*this);
     events.Subscribe<LandingEvent>(*this);
 }
 
@@ -23,9 +23,9 @@ void GravitationSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::Tim
     }
 }
 
-void GravitationSystem::Recieve(const PendingMovementEvent& event) {
-    if (event.type_ == MovementCommand::Jump) {
-        jumpers_queue_.push_back(event.target_);
+void GravitationSystem::Recieve(const PlayerCommandEvent& event) {
+    if (event.cmd_ == PLAYER_CMD::JUMP) {
+        jumpers_queue_.push_back(event.entity_);
     }
 }
 

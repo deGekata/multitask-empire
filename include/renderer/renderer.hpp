@@ -25,24 +25,19 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Recieve(const PendingMovementEvent& cmd);
-    void Recieve(const LandingEvent& cmd);
-    void Recieve(const MovementStopEvent& cmd);
-    void Recieve(const PlayerStateChanged& event);
+    // void Recieve(const PendingMovementEvent& cmd);
+    // void Recieve(const LandingEvent& cmd);
+    // void Recieve(const MovementStopEvent& cmd);
+    void Recieve(const PlayerCommandEvent& event);
+    void Recieve(const PlayerInitiatedEvent& event);
 
-    void SFMLEventsPooling();
 private:
     void LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos);
 
-    void HandleGraphicalEvent(igraphicslib::Event event);
 private:
     std::unordered_set<ecs::Entity> inspected_entities_;
     // todo: to entities??
     igraphicslib::Window            window_;
-
-    // todo: to subclass
-    std::queue<igraphicslib::Event> events_;
-    std::mutex on_event_queue_operation_;
 };
 
 #endif

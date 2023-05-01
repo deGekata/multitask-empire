@@ -14,8 +14,8 @@
 #include <physics/friction.hpp>
 #include <physics/gravitation.hpp>
 
-#include <player/dispatcher.hpp>
 #include <player/player.hpp>
+#include <player/input.hpp>
 
 #include <renderer/renderer.hpp>
 
@@ -35,6 +35,10 @@ public:
     Application() : running_(true) {
         systems_.Add<EcsFullLogger>();
 
+        systems_.Add<KeyboardInputSystem>();
+        systems_.Add<RendererSystem>();
+        systems_.Add<SpriteSheetSystem>();
+        
         systems_.Add<PlayerSystem>();
 
         // systems_.Add<DispatcherSystem>(running_);
@@ -44,8 +48,6 @@ public:
         systems_.Add<FrictionSystem>();
         systems_.Add<MovementSystem>();
 
-        systems_.Add<RendererSystem>();
-        systems_.Add<SpriteSheetSystem>();
         systems_.Configure();
 
         log(INFO, "Application sucessfully created\n");
@@ -74,13 +76,12 @@ public:
 
     void Init() {
 
-        RendererSystem* system = reinterpret_cast<RendererSystem*>(systems_.GetSystem<RendererSystem>());
-        std::thread test(&RendererSystem::SFMLEventsPooling, system);
-        std::thread main(&Application::Pool, this);
+        KeyboardInputSystem* system = reinterpret_cast<KeyboardInputSystem*>(systems_.GetSystem<KeyboardInputSystem>());
+        std::thread input_thread(&KeyboardInputSystem::Pool, system);
+        std::thread main_thread(&Application::Pool, this);
 
-        test.join();
-        main.join();
-        
+        input_thread.join();
+        main_thread.join();
     }
 private:
     bool running_;
@@ -121,9 +122,6 @@ private:
 
 // }
 
-void GameExecutuon(Application& game) {
-
-}
 int main() {
     Application game;
     game.Init();
