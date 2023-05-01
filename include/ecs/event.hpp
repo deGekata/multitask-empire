@@ -213,7 +213,7 @@ public:
         signal->Emit(&event);
 
         if(EventTracker::IsTracking<EventType>()){
-            logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
+            logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(logger::kEcsEventHex))));
         }
     }
 
@@ -223,7 +223,7 @@ public:
         signal->Emit(event.get());
 
         if(EventTracker::IsTracking<EventType>()){
-            logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
+            logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(logger::kEcsEventHex))));
         }
     }
 
@@ -234,7 +234,7 @@ public:
         signal->Emit(&event);
 
         if(EventTracker::IsTracking<EventType>()){
-            logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
+            logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(logger::kEcsEventHex))));
         }
     }
 

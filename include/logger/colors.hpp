@@ -4,7 +4,7 @@
 #include <cstdint>
 
 namespace logger{
-    constexpr uint32_t kEcsEventHex  = 0x33cccc;
+    constexpr uint32_t kEcsEventHex  = kEcsEventHex;
     constexpr uint32_t kEcsSystemHex = 0xee51b1;
     constexpr uint32_t kLogTimeHex   = 0x4b2d9f;
     constexpr uint32_t kWarningHex   = 0x6600ff;

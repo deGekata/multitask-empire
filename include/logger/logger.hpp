@@ -4,6 +4,8 @@
 #include <fmt/color.h>
 #include <fmt/format.h>
 
+#include <logger/colors.hpp>
+
 #include <string>
 #include <typeinfo>
 #include <ctime>
@@ -36,7 +38,7 @@ void DebugLog(const char*, const char*, int, fmt::text_style info_style, fmt::st
     char time_str[20] = "";
     strftime(time_str, 16, "%H:%M:%S", ptm);
 
-    fmt::print(fmt::bg(fmt::detail::color_type(fmt::rgb(0x4B2D9F))) | info_style, "[{}]", time_str);
+    fmt::print(fmt::bg(fmt::detail::color_type(fmt::rgb(kLogTimeHex))) | info_style, "[{}]", time_str);
     fmt::print(" ");
 
     fmt::print(info_style, format, args...);
@@ -49,15 +51,15 @@ void DebugLog(const char* file_name, const char* func_name, int n_line, LogMode 
 
 #ifdef LOG_ALL
     if (mode == kWarning) {
-        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(0x6600ff)));  // todo:
+        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(kWarningHex)));  // todo:
     } else if (mode == kError) {
-        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(0xc41e3a)));  // todo:
+        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(kErrorHex)));  // todo:
         fmt::print(info_style, format, args...);
         exit(0);
     }
 #else
     if(mode == kError) {
-        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(0xc41e3a)));
+        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(kErrorHex)));
         fmt::print(info_style, format, args...);
 
         exit(0);

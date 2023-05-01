@@ -12,21 +12,21 @@
 void EcsBaseLogger::Recieve(const ecs::ComponentAddedEvent<T_COMPONENT>& event) {                                    \
     assert(event.entity_.IsValid());                                                                                  \
     \
-    logger::Print(kInfo, "Entity{} gained {}[{}]\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(0xEE51B1))), fmt::styled(#T_COMPONENT, fmt::fg(fmt::color(0xE3C515))), *(event.component_.Get())); \
+    logger::Print(kInfo, "Entity{} gained {}[{}]\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))), fmt::styled(#T_COMPONENT, fmt::fg(fmt::color(0xE3C515))), *(event.component_.Get())); \
 }
 
 #define BASE_COMP_EDIT_RESPONSE(T_COMPONENT)                                         \
 void EcsBaseLogger::Recieve(const ecs::ComponentAccessedEvent<T_COMPONENT>& event) {                    \
     assert(event.entity_.IsValid());                                                                    \
                                                                                                          \
-    logger::Print(kInfo, "Entity{} accessed {}[{}]\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(0xEE51B1))), fmt::styled(#T_COMPONENT, fmt::fg(fmt::color(0xE3C515))), *(event.component_.Get())); \
+    logger::Print(kInfo, "Entity{} accessed {}[{}]\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))), fmt::styled(#T_COMPONENT, fmt::fg(fmt::color(0xE3C515))), *(event.component_.Get())); \
 }
 
 #define BASE_COMP_REMOVE_RESPONSE(T_COMPONENT)                                         \
 void EcsBaseLogger::Recieve(const ecs::ComponentRemovedEvent<T_COMPONENT>& event) {                    \
     assert(event.entity_.IsValid());                                                                    \
                                                                                                          \
-    logger::Print(kInfo, "Entity{} lost {}[{}]\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(0xEE51B1))), fmt::styled(#T_COMPONENT, fmt::fg(fmt::color(0xE3C515))), *(event.component_.Get())); \
+    logger::Print(kInfo, "Entity{} lost {}[{}]\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))), fmt::styled(#T_COMPONENT, fmt::fg(fmt::color(0xE3C515))), *(event.component_.Get())); \
 }
 
 // define to avoid copypaste
@@ -37,17 +37,17 @@ BASE_COMP_REMOVE_RESPONSE(T_COMPONENT)
 
 void EcsBaseLogger::Recieve(const ecs::EntityCreatedEvent& event) {
     assert(event.entity_.IsValid());
-    logger::Print(kInfo, "Entity{} was created\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(0xEE51B1))));
+    logger::Print(kInfo, "Entity{} was created\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
 }
 
 void EcsBaseLogger::Recieve(const ecs::EntityAccessedEvent& event) {
     assert(event.entity_.IsValid());
-    logger::Print(kInfo, "Entity{} was accessed\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(0xEE51B1))));
+    logger::Print(kInfo, "Entity{} was accessed\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
 }
 
 void EcsBaseLogger::Recieve(const ecs::EntityDestroyedEvent& event) {
     assert(event.entity_.IsValid());
-    logger::Print(kInfo, "Entity{} was destroyed\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(0xEE51B1))));
+    logger::Print(kInfo, "Entity{} was destroyed\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
 }
 
 BASE_COMP_ALL_RESPONSE(PlayerTag)
