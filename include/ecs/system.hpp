@@ -77,7 +77,7 @@ public:
     template <typename System>
     void Add(System* system) {
         systems_.insert(std::make_pair(System::GetFamily(), system));
-        logger::print(INFO, "System {} added\n", fmt::styled(logger::Type(*system), fmt::fg(fmt::color(0x2C5D37))));
+        logger::Print(kInfo, "System {} added\n", fmt::styled(logger::Type(*system), fmt::fg(fmt::color(0x2C5D37))));
     }
 
     /**

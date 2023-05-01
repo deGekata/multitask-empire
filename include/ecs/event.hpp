@@ -71,7 +71,7 @@ public:
 
     static FamilyType Family() {
         static FamilyType family = family_counter_++;
-        assert(family < MAX_EVENTS);
+        assert(family < kMaxEvents);
         return family;
     }
 };
@@ -97,7 +97,7 @@ public:
     }
 
 private:
-    static std::bitset<MAX_EVENTS> tracking_events_;
+    static std::bitset<kMaxEvents> tracking_events_;
 };
 
 /**
@@ -213,7 +213,7 @@ public:
         signal->Emit(&event);
 
         if(EventTracker::IsTracking<EventType>()){
-            logger::print(INFO, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
+            logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
         }
     }
 
@@ -223,7 +223,7 @@ public:
         signal->Emit(event.get());
 
         if(EventTracker::IsTracking<EventType>()){
-            logger::print(INFO, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
+            logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
         }
     }
 
@@ -234,7 +234,7 @@ public:
         signal->Emit(&event);
 
         if(EventTracker::IsTracking<EventType>()){
-            logger::print(INFO, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
+            logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(0x33cccc))));
         }
     }
 

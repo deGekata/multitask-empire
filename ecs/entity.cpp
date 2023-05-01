@@ -9,7 +9,7 @@ BaseComponent::Family BaseComponent::family_counter_ = 0;
 ComponentMask                       Tracker::tracking_components_on_access_;
 ComponentMask                       Tracker::tracking_components_on_adding_;
 ComponentMask                       Tracker::tracking_components_on_removing_;
-std::bitset<MAX_ENTITIES>           Tracker::tracking_entities_;
+std::bitset<kMaxEntities>           Tracker::tracking_entities_;
 EntityManager*                      Tracker::tracking_manager_;
 
 Entity::Id::Id(const uint64_t id) : id_(id) {
@@ -162,7 +162,7 @@ Entity EntityManager::Create() {
         index = index_counter_++;
 
         //! if number of entities is > MAX_ENTITES
-        assert(index_counter_ < MAX_ENTITIES);
+        assert(index_counter_ < kMaxEntities);
         AccomodateEntity(index);
 
         entity_generations_[index] = 1;

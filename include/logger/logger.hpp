@@ -8,7 +8,7 @@
 #include <typeinfo>
 #include <ctime>
 
-enum LOG_MODE { INFO, WARNING, ERROR };
+enum LogMode { kInfo, kWarning, kError };
 
 namespace logger {
 // https://stackoverflow.com/questions/281818/unmangling-the-result-of-stdtype-infoname
@@ -43,20 +43,20 @@ void DebugLog(const char*, const char*, int, fmt::text_style info_style, fmt::st
 }
 
 template <typename... Args>
-void DebugLog(const char* file_name, const char* func_name, int n_line, LOG_MODE mode, fmt::string_view format,
+void DebugLog(const char* file_name, const char* func_name, int n_line, LogMode mode, fmt::string_view format,
                const Args&... args) {
     fmt::text_style info_style;
 
 #ifdef LOG_ALL
-    if (mode == WARNING) {
+    if (mode == kWarning) {
         info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(0x6600ff)));  // todo:
-    } else if (mode == ERROR) {
+    } else if (mode == kError) {
         info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(0xc41e3a)));  // todo:
         fmt::print(info_style, format, args...);
         exit(0);
     }
 #else
-    if(mode == ERROR) {
+    if(mode == kError) {
         info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(0xc41e3a)));
         fmt::print(info_style, format, args...);
 
@@ -67,7 +67,7 @@ void DebugLog(const char* file_name, const char* func_name, int n_line, LOG_MODE
     DebugLog(file_name, func_name, n_line, info_style, format, args...);
 }
 
-#define print(...) DebugLog((__FILE__), (__FUNCTION__), (__LINE__), __VA_ARGS__)
+#define Print(...) DebugLog((__FILE__), (__FUNCTION__), (__LINE__), __VA_ARGS__)
 };  // namespace logger
 
 #endif  // LOGGER_H

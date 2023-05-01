@@ -151,7 +151,7 @@ private:
     static ecs::ComponentMask           tracking_components_on_access_;
     static ecs::ComponentMask           tracking_components_on_adding_;
     static ecs::ComponentMask           tracking_components_on_removing_;
-    static std::bitset<MAX_ENTITIES>    tracking_entities_;
+    static std::bitset<kMaxEntities>    tracking_entities_;
     static EntityManager*               tracking_manager_;
 };
 
@@ -191,7 +191,7 @@ private:
     /// Used internally for registration.
     static Family GetFamily() {
         static Family family = family_counter_++;
-        assert(family < MAX_COMPONENTS);
+        assert(family < kMaxComponents);
         return family;
     }
 };

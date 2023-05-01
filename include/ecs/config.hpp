@@ -8,12 +8,12 @@
 
 namespace ecs {
 
-constexpr uint64_t MAX_COMPONENTS = 128;
-constexpr uint64_t MAX_ENTITIES   = 8 * 1024;
-constexpr uint64_t MAX_EVENTS     = 8 * 1024;
+constexpr uint64_t kMaxComponents = 128;
+constexpr uint64_t kMaxEntities   = 8 * 1024;
+constexpr uint64_t kMaxEvents     = 8 * 1024;
 
 // TODO std::vector<bool>
-using ComponentMask = std::bitset<MAX_COMPONENTS>;
+using ComponentMask = std::bitset<kMaxComponents>;
 
 // In seconds
 using TimeDelta = int64_t;

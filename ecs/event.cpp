@@ -3,7 +3,7 @@
 namespace ecs {
 
 EventBase::FamilyType EventBase::family_counter_ = 0;
-std::bitset<MAX_EVENTS> EventTracker::tracking_events_;
+std::bitset<kMaxEvents> EventTracker::tracking_events_;
 
 EventBase::EventBase() {
 }
