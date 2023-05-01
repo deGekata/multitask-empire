@@ -3,7 +3,6 @@
 namespace ecs {
 
 EventBase::FamilyType EventBase::family_counter_ = 0;
-std::bitset<kMaxEvents> EventTracker::tracking_events_;
 
 EventBase::EventBase() {
 }
@@ -41,12 +40,11 @@ ReceiverBase::ConnectionsInfo ReceiverBase::ConnectionsList() {
 }
 
 EventManager::EventManager()
-	: utility::NonCopiable() {
-		EventTracker::Reset();
+	: utility::NonCopiable(),
+	  tracker_() {
 }
 
 EventManager::~EventManager() {
-	EventTracker::Reset();
 }
 
 size_t EventManager::RecieversCount() const {
@@ -57,6 +55,10 @@ size_t EventManager::RecieversCount() const {
 		}
 	}
 	return count;
+}
+
+EventTrackingManager& EventManager::Tracker() {
+	return tracker_;
 }
 
 std::shared_ptr<EventSignal>& EventManager::SignalFromFamily(EventBase::FamilyType family) {
@@ -72,7 +74,7 @@ std::shared_ptr<EventSignal>& EventManager::SignalFromFamily(EventBase::FamilyTy
 	return handlers_[family];
 }
 
-void EventTracker::Reset() {
+EventTrackingManager::EventTrackingManager() {
 	tracking_events_.reset();
 }
 

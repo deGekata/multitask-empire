@@ -40,13 +40,13 @@ public:
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 protected:
     template<typename Component, class LoggerSystem>
-    void SubsribeComponent(LoggerSystem* p_system, ecs::EventManager& events) {
+    void SubsribeComponent(LoggerSystem* p_system, ecs::EntityManager& entities, ecs::EventManager& events) {
         events.Subscribe<ecs::ComponentAddedEvent<Component>, LoggerSystem>(*p_system);
         events.Subscribe<ecs::ComponentAccessedEvent<Component>, LoggerSystem>(*p_system);
         events.Subscribe<ecs::ComponentRemovedEvent<Component>, LoggerSystem>(*p_system);
-        ecs::Tracker::TrackComponentOnAdding<Component>();
-        ecs::Tracker::TrackComponentOnAccess<Component>();
-        ecs::Tracker::TrackComponentOnRemoving<Component>();
+        entities.Tracker().TrackComponentOnAdding<Component>();
+        entities.Tracker().TrackComponentOnAccess<Component>();
+        entities.Tracker().TrackComponentOnRemoving<Component>();
     }
 };
 

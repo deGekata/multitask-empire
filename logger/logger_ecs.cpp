@@ -55,17 +55,17 @@ BASE_COMP_ALL_RESPONSE(Position)
 BASE_COMP_ALL_RESPONSE(Velocity)
 BASE_COMP_ALL_RESPONSE(Acceleration)
 
-void EcsFullLogger::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+void EcsFullLogger::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<ecs::EntityCreatedEvent, EcsFullLogger>(*this);
     events.Subscribe<ecs::EntityAccessedEvent, EcsFullLogger>(*this);
     events.Subscribe<ecs::EntityDestroyedEvent, EcsFullLogger>(*this);
 
-    SubsribeComponent<PlayerTag>(this, events);
-    SubsribeComponent<Position>(this, events);
-    SubsribeComponent<Velocity>(this, events);
-    SubsribeComponent<Acceleration>(this, events);
+    SubsribeComponent<PlayerTag>(this, entities, events);
+    SubsribeComponent<Position>(this, entities, events);
+    SubsribeComponent<Velocity>(this, entities, events);
+    SubsribeComponent<Acceleration>(this, entities, events);
 
-    ecs::EventTracker::Track<ecs::ComponentAccessedEvent<Position>>();
+    events.Tracker().Track<ecs::ComponentAccessedEvent<Position>>();
 }
 
 void EcsFullLogger::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {

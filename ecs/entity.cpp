@@ -6,12 +6,6 @@ namespace ecs {
 const Entity::Id Entity::INVALID_ID;
 BaseComponent::Family BaseComponent::family_counter_ = 0;
 
-ComponentMask                       Tracker::tracking_components_on_access_;
-ComponentMask                       Tracker::tracking_components_on_adding_;
-ComponentMask                       Tracker::tracking_components_on_removing_;
-std::bitset<kMaxEntities>           Tracker::tracking_entities_;
-EntityManager*                      Tracker::tracking_manager_;
-
 Entity::Id::Id(const uint64_t id) : id_(id) {
 }
 
@@ -49,7 +43,7 @@ Entity::Entity(EntityManager* manager, Id id) : manager_(manager), id_(id), is_t
 
 Entity::~Entity() {
     //? shared ptr to handle = method
-    if(is_tracked_ && Tracker::IsEntityTracking(id_.GetIndex())) {
+    if(is_tracked_ && manager_->tracker_.IsEntityTracking(id_.GetIndex())) {
         Entity ent = *this;
         ent.SetTracking(false);
         manager_->event_manager_.Emit<EntityAccessedEvent>(ent);
@@ -92,13 +86,12 @@ EntityManager::EntityManager(EventManager& event_manager)
     , component_helpers_()
     , entity_component_mask_()
     , entity_generations_()
-    , free_list_() {
-        Tracker::SetManager(this);
+    , free_list_()
+    , tracker_(this) {
 }
 
 EntityManager::~EntityManager() {
     Reset();
-    Tracker::SetManager(nullptr);
 }
 
 void EntityManager::Reset() {
@@ -133,6 +126,10 @@ uint64_t EntityManager::GetCapacity() const {
 
 bool EntityManager::IsValid(const Entity::Id& id) const {
     return id.GetIndex() < entity_generations_.size() && entity_generations_[id.GetIndex()] == id.GetGeneration();
+}
+
+TrackingManager& EntityManager::Tracker() {
+    return tracker_;
 }
 
 void Entity::Destroy() {
@@ -264,27 +261,28 @@ void BaseComponent::operator delete[](void*) {
     std::abort();
 }
 
-void Tracker::TrackEntity(uint32_t index) {
-    assert(index < tracking_entities_.size() && tracking_manager_); 
-    tracking_entities_.set(index);
-}
+TrackingManager::TrackingManager(EntityManager* tracking_manager):
+    tracking_manager_(tracking_manager) {
 
-void Tracker::UnTrackEntity(uint32_t index) {
-    assert(index < tracking_entities_.size() && tracking_manager_); 
-    tracking_entities_.reset(index);
-}
-
-bool Tracker::IsEntityTracking(uint32_t index) {
-    assert(index < tracking_entities_.size() && tracking_manager_); 
-    return tracking_entities_.test(index);
-}
-
-void Tracker::SetManager(EntityManager* tracking_manager) {
     tracking_entities_.reset();
     tracking_components_on_adding_.reset();
     tracking_components_on_access_.reset();
     tracking_components_on_removing_.reset();
-    tracking_manager_ = tracking_manager;
+}
+
+void TrackingManager::TrackEntity(uint32_t index) {
+    assert(index < tracking_entities_.size() && tracking_manager_); 
+    tracking_entities_.set(index);
+}
+
+void TrackingManager::UnTrackEntity(uint32_t index) {
+    assert(index < tracking_entities_.size() && tracking_manager_); 
+    tracking_entities_.reset(index);
+}
+
+bool TrackingManager::IsEntityTracking(uint32_t index) {
+    assert(index < tracking_entities_.size() && tracking_manager_); 
+    return tracking_entities_.test(index);
 }
 
 };  // namespace ecs

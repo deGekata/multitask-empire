@@ -76,28 +76,31 @@ public:
     }
 };
 
-class EventTracker {
+class EventTrackingManager {
 public:
 
-    static void Reset();
+    EventTrackingManager();
+
+    EventTrackingManager(const EventTrackingManager& other) = default;
+    ~EventTrackingManager() = default;
 
     template<typename EventType>
-    static void Track() {
+    void Track() {
         tracking_events_.set(Event<EventType>::Family());
     }
 
     template<typename EventType>
-    static void UnTrack() {
+    void UnTrack() {
         tracking_events_.reset(Event<EventType>::Family());
     }
 
     template<typename EventType>
-    static bool IsTracking() {
+    bool IsTracking() {
         return tracking_events_.test(Event<EventType>::Family());
     }
 
 private:
-    static std::bitset<kMaxEvents> tracking_events_;
+    std::bitset<kMaxEvents> tracking_events_;
 };
 
 /**
@@ -212,7 +215,7 @@ public:
         std::shared_ptr<EventSignal>& signal = SignalFromFamily(Event<EventType>::Family());
         signal->Emit(&event);
 
-        if(EventTracker::IsTracking<EventType>()){
+        if(tracker_.IsTracking<EventType>()){
             logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(logger::kEcsEventHex))));
         }
     }
@@ -222,7 +225,7 @@ public:
         std::shared_ptr<EventSignal>& signal = SignalFromFamily(Event<EventType>::Family());
         signal->Emit(event.get());
 
-        if(EventTracker::IsTracking<EventType>()){
+        if(tracker_.IsTracking<EventType>()){
             logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(logger::kEcsEventHex))));
         }
     }
@@ -233,18 +236,21 @@ public:
         std::shared_ptr<EventSignal>& signal = SignalFromFamily(Event<EventType>::Family());
         signal->Emit(&event);
 
-        if(EventTracker::IsTracking<EventType>()){
+        if(tracker_.IsTracking<EventType>()){
             logger::Print(kInfo, "Event{} was emited\n", fmt::styled("<" + logger::Type<EventType>() + ">", fmt::fg(fmt::rgb(logger::kEcsEventHex))));
         }
     }
 
     size_t RecieversCount() const;
 
+    EventTrackingManager& Tracker();
 private:
     std::shared_ptr<EventSignal>& SignalFromFamily(EventBase::FamilyType family);
 
 private:
     std::vector<std::shared_ptr<EventSignal>> handlers_;
+
+    EventTrackingManager tracker_;
 };
 
 }  // namespace ecs
