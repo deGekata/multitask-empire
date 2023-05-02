@@ -35,19 +35,13 @@ uint32_t Entity::Id::GetGeneration() const {
     return static_cast<uint32_t>(id_ >> 32);
 }
 
-Entity::Entity() : manager_(nullptr), id_(INVALID_ID), is_tracked_(false) {
+Entity::Entity() : manager_(nullptr), id_(INVALID_ID) {
 }
 
-Entity::Entity(EntityManager* manager, Id id) : manager_(manager), id_(id), is_tracked_(false) {
+Entity::Entity(EntityManager* manager, Id id) : manager_(manager), id_(id) {
 }
 
 Entity::~Entity() {
-    //? shared ptr to handle = method
-    if(is_tracked_ && manager_->tracker_.IsEntityTracking(id_.GetIndex())) {
-        Entity ent = *this;
-        ent.SetTracking(false);
-        manager_->event_manager_.Emit<EntityAccessedEvent>(ent);
-    }
 }
 
 bool Entity::operator==(const Entity& other) const {
@@ -73,10 +67,6 @@ void Entity::Invalidate() {
 
 Entity::Id Entity::GetId() const {
     return id_;
-}
-
-void Entity::SetTracking(bool is_tracked) {
-    is_tracked_ = is_tracked;
 }
 
 EntityManager::EntityManager(EventManager& event_manager)
@@ -148,9 +138,6 @@ EntityCreatedEvent::~EntityCreatedEvent() {
 EntityDestroyedEvent::~EntityDestroyedEvent() {
 }
 
-EntityAccessedEvent::~EntityAccessedEvent() {
-}
-
 Entity EntityManager::Create() {
     uint32_t index = 0;
     uint32_t generation = 0;
@@ -172,8 +159,6 @@ Entity EntityManager::Create() {
     }
 
     Entity new_entity{this, Entity::Id(index, generation)};
-    new_entity.SetTracking(true);
-
     event_manager_.Emit<EntityCreatedEvent>(new_entity);
 
     return new_entity;
@@ -266,7 +251,6 @@ TrackingManager::TrackingManager(EntityManager* tracking_manager):
 
     tracking_entities_.reset();
     tracking_components_on_adding_.reset();
-    tracking_components_on_access_.reset();
     tracking_components_on_removing_.reset();
 }
 

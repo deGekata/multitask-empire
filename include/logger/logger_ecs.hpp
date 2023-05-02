@@ -17,20 +17,16 @@ public:
     
     // player_components.hpp
     virtual void Recieve(const ecs::ComponentAddedEvent<PlayerTag>& event);
-    virtual void Recieve(const ecs::ComponentAccessedEvent<PlayerTag>& event);
     virtual void Recieve(const ecs::ComponentRemovedEvent<PlayerTag>& event);
     
     // // movement_components.hpp
     virtual void Recieve(const ecs::ComponentAddedEvent<Position>& event);
-    virtual void Recieve(const ecs::ComponentAccessedEvent<Position>& event);
     virtual void Recieve(const ecs::ComponentRemovedEvent<Position>& event);
     
     virtual void Recieve(const ecs::ComponentAddedEvent<Velocity>& event);
-    virtual void Recieve(const ecs::ComponentAccessedEvent<Velocity>& event);
     virtual void Recieve(const ecs::ComponentRemovedEvent<Velocity>& event);
     
     virtual void Recieve(const ecs::ComponentAddedEvent<Acceleration>& event);
-    virtual void Recieve(const ecs::ComponentAccessedEvent<Acceleration>& event);
     virtual void Recieve(const ecs::ComponentRemovedEvent<Acceleration>& event);
 };
 
@@ -42,10 +38,8 @@ protected:
     template<typename Component, class LoggerSystem>
     void SubsribeComponent(LoggerSystem* p_system, ecs::EntityManager& entities, ecs::EventManager& events) {
         events.Subscribe<ecs::ComponentAddedEvent<Component>, LoggerSystem>(*p_system);
-        events.Subscribe<ecs::ComponentAccessedEvent<Component>, LoggerSystem>(*p_system);
         events.Subscribe<ecs::ComponentRemovedEvent<Component>, LoggerSystem>(*p_system);
         entities.Tracker().TrackComponentOnAdding<Component>();
-        entities.Tracker().TrackComponentOnAccess<Component>();
         entities.Tracker().TrackComponentOnRemoving<Component>();
     }
 };

@@ -15,13 +15,6 @@ void EcsBaseLogger::Recieve(const ecs::ComponentAddedEvent<T_COMPONENT>& event) 
     logger::Print(kInfo, "Entity{} gained {}[{}]\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))), fmt::styled(#T_COMPONENT, fmt::fg(fmt::color(logger::kEcsComponentHex))), *(event.component_.Get())); \
 }
 
-#define BASE_COMP_EDIT_RESPONSE(T_COMPONENT)                                         \
-void EcsBaseLogger::Recieve(const ecs::ComponentAccessedEvent<T_COMPONENT>& event) {                    \
-    assert(event.entity_.IsValid());                                                                    \
-                                                                                                         \
-    logger::Print(kInfo, "Entity{} accessed {}[{}]\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))), fmt::styled(#T_COMPONENT, fmt::fg(fmt::color(logger::kEcsComponentHex))), *(event.component_.Get())); \
-}
-
 #define BASE_COMP_REMOVE_RESPONSE(T_COMPONENT)                                         \
 void EcsBaseLogger::Recieve(const ecs::ComponentRemovedEvent<T_COMPONENT>& event) {                    \
     assert(event.entity_.IsValid());                                                                    \
@@ -32,7 +25,6 @@ void EcsBaseLogger::Recieve(const ecs::ComponentRemovedEvent<T_COMPONENT>& event
 // define to avoid copypaste
 #define BASE_COMP_ALL_RESPONSE(T_COMPONENT) \
 BASE_COMP_ADD_RESPONSE(T_COMPONENT)  \
-BASE_COMP_EDIT_RESPONSE(T_COMPONENT)  \
 BASE_COMP_REMOVE_RESPONSE(T_COMPONENT)
 
 void EcsBaseLogger::Recieve(const ecs::EntityCreatedEvent& event) {

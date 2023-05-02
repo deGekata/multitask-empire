@@ -63,7 +63,6 @@ public:
 
     Id GetId() const;
 
-    void SetTracking(bool is_tracked = true);
 public:
     template <typename Component, typename... Args>
     ComponentHandle<Component> Assign(Args&&... args);
@@ -96,7 +95,6 @@ public:
 private:
     EntityManager* manager_;
     Id id_;
-    bool is_tracked_;
 };
 
 class TrackingManager {
@@ -114,18 +112,6 @@ public:
     bool IsComponentOnAddingTracking();
 
     template<typename Component>
-    void TrackComponentOnAccess();
-
-    template<typename Component>
-    void UnTrackComponentOnAccess();
-
-    template<typename Component>
-    bool IsComponentOnAccessTracking();
-
-    template<typename fComponent, typename... Components>
-    void TriggerTrackerOnEach(Entity entity);
-
-    template<typename Component>
     void TrackComponentOnRemoving();
 
     template<typename Component>
@@ -133,9 +119,6 @@ public:
 
     template<typename Component>
     bool IsComponentOnRemovingTracking();
-
-    template<typename Component>
-    void TriggerComponentOnAccess(Entity entity, ComponentHandle<Component> handler);
 
     template<typename Component>
     void TriggerComponentOnAdding(Entity entity, ComponentHandle<Component> handler);
@@ -148,7 +131,6 @@ public:
     bool IsEntityTracking(uint32_t index);
 
 private:
-    ecs::ComponentMask           tracking_components_on_access_;
     ecs::ComponentMask           tracking_components_on_adding_;
     ecs::ComponentMask           tracking_components_on_removing_;
     std::bitset<kMaxEntities>    tracking_entities_;
@@ -209,7 +191,7 @@ private:
 template <typename Component>
 class ComponentHandle {
 public:
-    ComponentHandle() : manager_(nullptr), is_tracked_(false) {
+    ComponentHandle() : manager_(nullptr) {
     }
 
     ComponentHandle( const ComponentHandle & ) = default;
@@ -231,7 +213,6 @@ public:
 
     Entity GetEntity();
 
-    void SetTracking(bool is_tracked = true);
 private:
     friend struct EntityManager;
 
@@ -240,7 +221,6 @@ private:
 
     EntityManager* manager_;
     Entity::Id id_;
-    bool is_tracked_;
 };
 
 struct BaseComponentHelper {
@@ -266,7 +246,6 @@ struct ComponentHelper : public BaseComponentHelper {
  */
 struct EntityCreatedEvent : public Event<EntityCreatedEvent> {
     explicit EntityCreatedEvent(const Entity& entity) : entity_(entity) {
-        entity_.SetTracking(false);
     }
 
     virtual ~EntityCreatedEvent() override;
@@ -276,7 +255,6 @@ struct EntityCreatedEvent : public Event<EntityCreatedEvent> {
 
 struct EntityAccessedEvent : public Event<EntityAccessedEvent> {
     explicit EntityAccessedEvent(const Entity& entity) : entity_(entity) {
-        entity_.SetTracking(false);
     }
     virtual ~EntityAccessedEvent() override;
 
@@ -288,7 +266,6 @@ struct EntityAccessedEvent : public Event<EntityAccessedEvent> {
  */
 struct EntityDestroyedEvent : public Event<EntityDestroyedEvent> {
     explicit EntityDestroyedEvent(const Entity& entity) : entity_(entity) {
-        entity_.SetTracking(false);
     }
     virtual ~EntityDestroyedEvent() override;
 
@@ -298,8 +275,6 @@ struct EntityDestroyedEvent : public Event<EntityDestroyedEvent> {
 template <typename C>
 struct ComponentAddedEvent : public Event<ComponentAddedEvent<C>> {
     ComponentAddedEvent(const Entity& entity, const ComponentHandle<C>& component) : entity_(entity), component_(component) {
-        entity_.SetTracking(false);
-        component_.SetTracking(false);
     }
 
     Entity entity_;
@@ -309,8 +284,6 @@ struct ComponentAddedEvent : public Event<ComponentAddedEvent<C>> {
 template <typename C>
 struct ComponentAccessedEvent : public Event<ComponentAccessedEvent<C>> {
     ComponentAccessedEvent(const Entity& entity, const ComponentHandle<C>& component) : entity_(entity), component_(component) {
-        entity_.SetTracking(false);
-        component_.SetTracking(false);
     }
 
     Entity entity_;
@@ -323,8 +296,6 @@ struct ComponentAccessedEvent : public Event<ComponentAccessedEvent<C>> {
 template <typename C>
 struct ComponentRemovedEvent : public Event<ComponentRemovedEvent<C>> {
     ComponentRemovedEvent(const Entity& entity, const ComponentHandle<C>& component) : entity_(entity), component_(component) {
-        entity_.SetTracking(false);
-        component_.SetTracking(false);
     }
 
     Entity entity_;
@@ -456,10 +427,9 @@ public:
     public:
         
         template<typename FunctionT>
-        void Each(FunctionT f, TrackingManager& tracker) {
+        void Each(FunctionT f) {
             for (auto it : *this) {
                 f(it, *(it.template GetComponent<Components>().Get())...);
-                tracker.TriggerTrackerOnEach<Components...>(it);
             }
         }
 
@@ -514,8 +484,6 @@ public:
         entity_component_mask_[id.GetIndex()].set(family);
 
         ComponentHandle<Component> component{this, id};
-
-        component.SetTracking(true);
         tracker_.TriggerComponentOnAdding<Component>(Entity{this, id}, component);
 
         return component;
@@ -568,12 +536,10 @@ public:
     ComponentHandle<Component> GetComponent(Entity::Id id) {
         if (HasComponent<Component>(id)) {
             auto component = ComponentHandle<Component>(this, id);
-            component.SetTracking(true);
             return component;
         }
 
         auto component = ComponentHandle<Component>();
-        component.SetTracking(true);
         return component;
     }
 
@@ -609,7 +575,7 @@ public:
 
     template < typename... Components>
     void Each(typename identity<std::function<void(Entity entity, Components&...)>>::type f) {
-        GetEntitiesWithComponents<Components...>().Each(std::move(f), tracker_);
+        GetEntitiesWithComponents<Components...>().Each(std::move(f));
     }
 
     TrackingManager& Tracker();
@@ -720,7 +686,8 @@ private:
 template <typename Component, typename... Args>
 ComponentHandle<Component> Entity::Assign(Args&&... args) {
     assert(IsValid());
-
+    
+    assert(0);
     return manager_->Assign<Component>(id_, std::forward<Args>(args)...);
 }
 
@@ -771,11 +738,6 @@ bool Entity::HasComponent() {
 
 template <typename Component>
 ComponentHandle<Component>::~ComponentHandle(){
-    if(is_tracked_) {
-        ComponentHandle<Component> comp = *this;
-        comp.SetTracking(false);
-        manager_->tracker_.TriggerComponentOnAccess<Component>(GetEntity(), comp);
-    }
 }
 
 template <typename Component>
@@ -831,12 +793,6 @@ Entity ComponentHandle<Component>::GetEntity() {
     return manager_->GetEntity(id_);
 }
 
-template <typename Component>
-void ComponentHandle<Component>::SetTracking(bool is_tracked) {
-    assert(IsValid());
-    is_tracked_ = is_tracked;
-}
-
 template<typename Component>
 void TrackingManager::TrackComponentOnAdding() {
     assert(tracking_manager_);
@@ -856,36 +812,6 @@ bool TrackingManager::IsComponentOnAddingTracking() {
 }
 
 template<typename Component>
-void TrackingManager::TrackComponentOnAccess() {
-    assert(tracking_manager_);
-    tracking_components_on_access_.set(EntityManager::Family<Component>()); 
-}
-
-template<typename Component>
-void TrackingManager::UnTrackComponentOnAccess() {
-    assert(tracking_manager_);
-    tracking_components_on_access_.reset(EntityManager::Family<Component>()); 
-}
-
-template<typename Component>
-bool TrackingManager::IsComponentOnAccessTracking() {
-    assert(tracking_manager_);
-    return tracking_components_on_access_.test(EntityManager::Family<Component>()); 
-}
-
-template<typename fComponent, typename... Components>
-void TrackingManager::TriggerTrackerOnEach(Entity entity) {
-    assert(tracking_manager_);
-    if(IsComponentOnAccessTracking<fComponent>()){
-        tracking_manager_->event_manager_.Emit<ComponentAccessedEvent<fComponent>>(entity, entity.GetComponent<fComponent>());
-    }
-
-    if(sizeof...(Components) == 0 && IsEntityTracking(entity.GetId().GetIndex())) {
-        tracking_manager_->event_manager_.Emit<EntityAccessedEvent>(entity);
-    }
-}
-
-template<typename Component>
 void TrackingManager::TrackComponentOnRemoving() {
     assert(tracking_manager_);
     tracking_components_on_removing_.set(EntityManager::Family<Component>()); 
@@ -901,17 +827,6 @@ template<typename Component>
 bool TrackingManager::IsComponentOnRemovingTracking(){
     assert(tracking_manager_);
     return tracking_components_on_removing_.test(EntityManager::Family<Component>());
-}
-
-template<typename Component>
-void TrackingManager::TriggerComponentOnAccess(Entity entity, ComponentHandle<Component> handler){
-    assert(tracking_manager_);
-    if(IsComponentOnAccessTracking<Component>()) {
-        tracking_manager_->event_manager_.Emit<ComponentAccessedEvent<Component>>(entity, handler);
-    }
-    if(IsEntityTracking(entity.GetId().GetIndex())) {
-        tracking_manager_->event_manager_.Emit<EntityAccessedEvent>(entity);
-    }
 }
 
 template<typename Component>
