@@ -15,7 +15,7 @@ void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDe
         if (target.HasComponent<Position>()) {
             auto position = target.GetComponent<Position>();
 
-            log(INFO, "{} has coordinates {} {}\n", target.GetId().GetIndex(), position->x_, position->y_);
+            logger::Print(kInfo, "{} has coordinates {} {}\n", target.GetId().GetIndex(), position->x_, position->y_);
         }
     }
 }
@@ -25,11 +25,11 @@ void RendererSystem::Recieve(const PendingMovementEvent& event) {
 }
 
 void RendererSystem::Recieve(const LandingEvent& event) {
-    log(INFO, "{} landed\n", event.target_.GetId().GetIndex());
+    logger::Print(kInfo, "{} landed\n", event.target_.GetId().GetIndex());
 }
 
 void RendererSystem::Recieve(const MovementStopEvent& event) {
     inspected_entities_.erase(event.target_);
 
-    log(INFO, "{} stopped moving\n", event.target_.GetId().GetIndex());
+    logger::Print(kInfo, "{} stopped moving\n", event.target_.GetId().GetIndex());
 }
