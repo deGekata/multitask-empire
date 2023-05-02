@@ -30,6 +30,7 @@ public:
     virtual void Recieve(const ecs::ComponentRemovedEvent<Acceleration>& event);
 
     virtual void Recieve(const ecs::ComponentAddedEvent<SpriteSheet>& event);
+    virtual void Recieve(const ecs::ComponentRemovedEvent<SpriteSheet>& event);
 };
 
 class EcsFullLogger : public EcsBaseLogger{

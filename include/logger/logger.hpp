@@ -31,6 +31,14 @@ std::string Type() {
 }
 
 template <typename... Args>
+void DebugLog(const char*, const char*, int, fmt::string_view format,
+               const Args&... args) {
+
+    fmt::print(fmt::text_style(), format, args...);
+}
+
+
+template <typename... Args>
 void DebugLog(const char*, const char*, int, fmt::text_style info_style, fmt::string_view format,
                const Args&... args) {
 
