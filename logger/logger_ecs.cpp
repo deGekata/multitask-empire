@@ -32,11 +32,6 @@ void EcsBaseLogger::Recieve(const ecs::EntityCreatedEvent& event) {
     logger::Print(kInfo, "Entity{} was created\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
 }
 
-void EcsBaseLogger::Recieve(const ecs::EntityAccessedEvent& event) {
-    assert(event.entity_.IsValid());
-    logger::Print(kInfo, "Entity{} was accessed\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
-}
-
 void EcsBaseLogger::Recieve(const ecs::EntityDestroyedEvent& event) {
     assert(event.entity_.IsValid());
     logger::Print(kInfo, "Entity{} was destroyed\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
@@ -49,15 +44,12 @@ BASE_COMP_ALL_RESPONSE(Acceleration)
 
 void EcsFullLogger::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<ecs::EntityCreatedEvent, EcsFullLogger>(*this);
-    events.Subscribe<ecs::EntityAccessedEvent, EcsFullLogger>(*this);
     events.Subscribe<ecs::EntityDestroyedEvent, EcsFullLogger>(*this);
 
     SubsribeComponent<PlayerTag>(this, entities, events);
     SubsribeComponent<Position>(this, entities, events);
     SubsribeComponent<Velocity>(this, entities, events);
     SubsribeComponent<Acceleration>(this, entities, events);
-
-    events.Tracker().Track<ecs::ComponentAccessedEvent<Position>>();
 }
 
 void EcsFullLogger::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {

@@ -253,14 +253,6 @@ struct EntityCreatedEvent : public Event<EntityCreatedEvent> {
     Entity entity_;
 };
 
-struct EntityAccessedEvent : public Event<EntityAccessedEvent> {
-    explicit EntityAccessedEvent(const Entity& entity) : entity_(entity) {
-    }
-    virtual ~EntityAccessedEvent() override;
-
-    Entity entity_;
-};
-
 /**
  * Called just prior to an entity being destroyed.
  */
@@ -275,15 +267,6 @@ struct EntityDestroyedEvent : public Event<EntityDestroyedEvent> {
 template <typename C>
 struct ComponentAddedEvent : public Event<ComponentAddedEvent<C>> {
     ComponentAddedEvent(const Entity& entity, const ComponentHandle<C>& component) : entity_(entity), component_(component) {
-    }
-
-    Entity entity_;
-    ComponentHandle<C> component_;
-};
-
-template <typename C>
-struct ComponentAccessedEvent : public Event<ComponentAccessedEvent<C>> {
-    ComponentAccessedEvent(const Entity& entity, const ComponentHandle<C>& component) : entity_(entity), component_(component) {
     }
 
     Entity entity_;
@@ -834,9 +817,6 @@ void TrackingManager::TriggerComponentOnAdding(Entity entity, ComponentHandle<Co
     if(IsComponentOnAddingTracking<Component>()) {
         tracking_manager_->event_manager_.Emit<ComponentAddedEvent<Component>>(entity, handler);
     }
-    if(IsEntityTracking(entity.GetId().GetIndex())) {
-        tracking_manager_->event_manager_.Emit<EntityAccessedEvent>(entity);
-    }
 }
 
 template<typename Component>
@@ -844,9 +824,6 @@ void TrackingManager::TriggerComponentOnRemoving(Entity entity, ComponentHandle<
     assert(tracking_manager_);
     if(IsComponentOnRemovingTracking<Component>()) {
         tracking_manager_->event_manager_.Emit<ComponentRemovedEvent<Component>>(entity, handler);
-    }
-    if(IsEntityTracking(entity.GetId().GetIndex())) {
-        tracking_manager_->event_manager_.Emit<EntityAccessedEvent>(entity);
     }
 }
 };  // namespace ecs
