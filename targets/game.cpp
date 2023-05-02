@@ -47,7 +47,7 @@ public:
         systems_.Add<SpriteSheetSystem>();
         systems_.Configure();
 
-        log(INFO, "Application sucessfully created\n");
+        logger::Print(kInfo, "Application sucessfully created\n");
     }
 
     void Update(ecs::TimeDelta dt) {

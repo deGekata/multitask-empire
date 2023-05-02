@@ -40,7 +40,8 @@ ReceiverBase::ConnectionsInfo ReceiverBase::ConnectionsList() {
 }
 
 EventManager::EventManager()
-    : utility::NonCopiable() {
+	: utility::NonCopiable(),
+	  tracker_() {
 }
 
 EventManager::~EventManager() {
@@ -56,16 +57,25 @@ size_t EventManager::RecieversCount() const {
     return count;
 }
 
+EventTrackingManager& EventManager::Tracker() {
+	return tracker_;
+}
+
 std::shared_ptr<EventSignal>& EventManager::SignalFromFamily(EventBase::FamilyType family) {
-    if (family >= handlers_.size()) {
-        handlers_.resize(family + 1);
-    }
+	if (family >= handlers_.size()) {
+		handlers_.resize(family + 1);
+
+	}
 
     if (!handlers_[family]) {
         handlers_[family] = std::make_shared<EventSignal>();
     }
 
     return handlers_[family];
+}
+
+EventTrackingManager::EventTrackingManager() {
+	tracking_events_.reset();
 }
 
 } // namespace ecs

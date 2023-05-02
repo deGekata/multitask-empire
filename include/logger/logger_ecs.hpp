@@ -36,6 +36,14 @@ class EcsFullLogger : public EcsBaseLogger{
 public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
+protected:
+    template<typename Component, class LoggerSystem>
+    void SubsribeComponent(LoggerSystem* p_system, ecs::EntityManager& entities, ecs::EventManager& events) {
+        events.Subscribe<ecs::ComponentAddedEvent<Component>, LoggerSystem>(*p_system);
+        events.Subscribe<ecs::ComponentRemovedEvent<Component>, LoggerSystem>(*p_system);
+        entities.Tracker().TrackComponentOnAdding<Component>();
+        entities.Tracker().TrackComponentOnRemoving<Component>();
+    }
 };
 
 #endif // LOGGER_ECS_H
