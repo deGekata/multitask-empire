@@ -5,7 +5,8 @@
 #include <ecs/system.hpp>
 #include <events/player_events.hpp>
 
-// todo: rename to skin(sprite) manager
+#include <spritesheet/xml_parser.hpp>
+
 class SpriteSheetSystem : public ecs::System<SpriteSheetSystem>, public ecs::Reciever<SpriteSheetSystem>{
 public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
@@ -18,6 +19,7 @@ public:
     void Recieve(const SkinChangeRequest& event);
 private:
     // todo: remove, cause system shouldn't storage any data
+    XmlParser parser_;
     ecs::EntityManager* entities_;
 };
 

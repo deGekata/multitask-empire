@@ -9,10 +9,13 @@
 #include <tuple>
 #include <type_traits>
 #include <vector>
+#include <list>
 
 #include <ecs/event.hpp>
 #include <ecs/pool.hpp>
 #include <ecs/config.hpp>
+
+#include <logger/logger.hpp>
 
 namespace ecs {
 
@@ -45,6 +48,8 @@ public:
 
     Entity();
     Entity(const Entity& other) = default;
+    ~Entity();
+
     Entity& operator=(const Entity& other) = default;
 
     Entity(EntityManager* manager, Id id);
@@ -92,6 +97,46 @@ private:
     Id id_;
 };
 
+class TrackingManager {
+public:
+
+    TrackingManager(ecs::EntityManager* manager_);
+
+    template<typename Component>
+    void TrackComponentOnAdding();
+
+    template<typename Component>
+    void UnTrackComponentOnAdding();
+    
+    template<typename Component>
+    bool IsComponentOnAddingTracking();
+
+    template<typename Component>
+    void TrackComponentOnRemoving();
+
+    template<typename Component>
+    void UnTrackComponentOnRemoving();
+
+    template<typename Component>
+    bool IsComponentOnRemovingTracking();
+
+    template<typename Component>
+    void TriggerComponentOnAdding(Entity entity, ComponentHandle<Component> handler);
+
+    template<typename Component>
+    void TriggerComponentOnRemoving(Entity entity, ComponentHandle<Component> handler);
+
+    void TrackEntity(uint32_t index);
+    void UnTrackEntity(uint32_t index);
+    bool IsEntityTracking(uint32_t index);
+
+private:
+    ecs::ComponentMask           tracking_components_on_adding_;
+    ecs::ComponentMask           tracking_components_on_removing_;
+    std::bitset<kMaxEntities>    tracking_entities_;
+    EntityManager*               tracking_manager_;
+};
+
 /**
  * Base component class, only used for insertion into collections.
  *
@@ -128,7 +173,7 @@ private:
     /// Used internally for registration.
     static Family GetFamily() {
         static Family family = family_counter_++;
-        assert(family < MAX_COMPONENTS);
+        assert(family < kMaxComponents);
         return family;
     }
 };
@@ -149,6 +194,10 @@ public:
     ComponentHandle() : manager_(nullptr) {
     }
 
+    ComponentHandle( const ComponentHandle & ) = default;
+
+    ~ComponentHandle(); 
+    
     bool IsValid() const;
 
     Component* operator->();
@@ -196,8 +245,9 @@ struct ComponentHelper : public BaseComponentHelper {
  * Emitted when an entity is added to the system.
  */
 struct EntityCreatedEvent : public Event<EntityCreatedEvent> {
-    explicit EntityCreatedEvent(Entity entity) : entity_(entity) {
+    explicit EntityCreatedEvent(const Entity& entity) : entity_(entity) {
     }
+
     virtual ~EntityCreatedEvent() override;
 
     Entity entity_;
@@ -207,7 +257,7 @@ struct EntityCreatedEvent : public Event<EntityCreatedEvent> {
  * Called just prior to an entity being destroyed.
  */
 struct EntityDestroyedEvent : public Event<EntityDestroyedEvent> {
-    explicit EntityDestroyedEvent(Entity entity) : entity_(entity) {
+    explicit EntityDestroyedEvent(const Entity& entity) : entity_(entity) {
     }
     virtual ~EntityDestroyedEvent() override;
 
@@ -216,7 +266,7 @@ struct EntityDestroyedEvent : public Event<EntityDestroyedEvent> {
 
 template <typename C>
 struct ComponentAddedEvent : public Event<ComponentAddedEvent<C>> {
-    ComponentAddedEvent(Entity entity, ComponentHandle<C> component) : entity_(entity), component_(component) {
+    ComponentAddedEvent(const Entity& entity, const ComponentHandle<C>& component) : entity_(entity), component_(component) {
     }
 
     Entity entity_;
@@ -228,7 +278,7 @@ struct ComponentAddedEvent : public Event<ComponentAddedEvent<C>> {
  */
 template <typename C>
 struct ComponentRemovedEvent : public Event<ComponentRemovedEvent<C>> {
-    ComponentRemovedEvent(Entity entity, ComponentHandle<C> component) : entity_(entity), component_(component) {
+    ComponentRemovedEvent(const Entity& entity, const ComponentHandle<C>& component) : entity_(entity), component_(component) {
     }
 
     Entity entity_;
@@ -417,7 +467,8 @@ public:
         entity_component_mask_[id.GetIndex()].set(family);
 
         ComponentHandle<Component> component{this, id};
-        event_manager_.Emit<ComponentAddedEvent<Component>>(Entity{this, id}, component);
+        tracker_.TriggerComponentOnAdding<Component>(Entity{this, id}, component);
+
         return component;
     }
 
@@ -432,8 +483,8 @@ public:
         BaseComponent::Family family = Family<Component>();
 
         auto* pool = component_pools_[family];
-        ComponentHandle<Component> component{this, id};
-        event_manager_.Emit<ComponentRemovedEvent<Component>>(Entity{this, id}, component);
+
+        tracker_.TriggerComponentOnRemoving<Component>(Entity{this, id}, ComponentHandle<Component>{this, id});
 
         entity_component_mask_[id.GetIndex()].reset(family);
         pool->DestroyElement(id.GetIndex());
@@ -467,10 +518,12 @@ public:
     template <typename Component>
     ComponentHandle<Component> GetComponent(Entity::Id id) {
         if (HasComponent<Component>(id)) {
-            return ComponentHandle<Component>(this, id);
+            auto component = ComponentHandle<Component>(this, id);
+            return component;
         }
 
-        return ComponentHandle<Component>();
+        auto component = ComponentHandle<Component>();
+        return component;
     }
 
     template <typename... Components>
@@ -508,8 +561,10 @@ public:
         GetEntitiesWithComponents<Components...>().Each(std::move(f));
     }
 
+    TrackingManager& Tracker();
 private:
     friend class Entity;
+    friend class TrackingManager;
     template <typename C>
     friend class ComponentHandle;
 
@@ -606,12 +661,15 @@ private:
 
     // List of available entity slots.
     std::vector<uint32_t> free_list_;
+
+    // Logging
+    TrackingManager tracker_;
 };
 
 template <typename Component, typename... Args>
 ComponentHandle<Component> Entity::Assign(Args&&... args) {
     assert(IsValid());
-
+    
     return manager_->Assign<Component>(id_, std::forward<Args>(args)...);
 }
 
@@ -658,6 +716,10 @@ template <typename Component>
 bool Entity::HasComponent() {
     assert(IsValid());
     return manager_->HasComponent<Component>(id_);
+}
+
+template <typename Component>
+ComponentHandle<Component>::~ComponentHandle(){
 }
 
 template <typename Component>
@@ -713,6 +775,57 @@ Entity ComponentHandle<Component>::GetEntity() {
     return manager_->GetEntity(id_);
 }
 
+template<typename Component>
+void TrackingManager::TrackComponentOnAdding() {
+    assert(tracking_manager_);
+    tracking_components_on_adding_.set(EntityManager::Family<Component>());
+}
+
+template<typename Component>
+void TrackingManager::UnTrackComponentOnAdding() {
+    assert(tracking_manager_);
+    tracking_components_on_adding_.reset(EntityManager::Family<Component>()); 
+}
+
+template<typename Component>
+bool TrackingManager::IsComponentOnAddingTracking() {
+    assert(tracking_manager_);
+    return tracking_components_on_adding_.test(EntityManager::Family<Component>());
+}
+
+template<typename Component>
+void TrackingManager::TrackComponentOnRemoving() {
+    assert(tracking_manager_);
+    tracking_components_on_removing_.set(EntityManager::Family<Component>()); 
+}
+
+template<typename Component>
+void TrackingManager::UnTrackComponentOnRemoving() {
+    assert(tracking_manager_);
+    tracking_components_on_removing_.reset(EntityManager::Family<Component>());
+}
+
+template<typename Component>
+bool TrackingManager::IsComponentOnRemovingTracking(){
+    assert(tracking_manager_);
+    return tracking_components_on_removing_.test(EntityManager::Family<Component>());
+}
+
+template<typename Component>
+void TrackingManager::TriggerComponentOnAdding(Entity entity, ComponentHandle<Component> handler) {
+    assert(tracking_manager_);
+    if(IsComponentOnAddingTracking<Component>()) {
+        tracking_manager_->event_manager_.Emit<ComponentAddedEvent<Component>>(entity, handler);
+    }
+}
+
+template<typename Component>
+void TrackingManager::TriggerComponentOnRemoving(Entity entity, ComponentHandle<Component> handler) {
+    assert(tracking_manager_);
+    if(IsComponentOnRemovingTracking<Component>()) {
+        tracking_manager_->event_manager_.Emit<ComponentRemovedEvent<Component>>(entity, handler);
+    }
+}
 };  // namespace ecs
 
 namespace std {

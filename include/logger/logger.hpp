@@ -4,25 +4,42 @@
 #include <fmt/color.h>
 #include <fmt/format.h>
 
+#include <logger/colors.hpp>
+
 #include <string>
 #include <typeinfo>
 #include <ctime>
 
 #define LOG_ALL
 
+enum LogMode { kInfo, kWarning, kError };
+
+namespace logger {
 // https://stackoverflow.com/questions/281818/unmangling-the-result-of-stdtype-infoname
-std::string demangle(const char* name);
+std::string Demangle(const char* name);
 
 template <class T>
-std::string type(const T& t) {
+std::string Type(const T& t) {
 
-    return demangle(typeid(t).name());
+    return Demangle(typeid(t).name());
 }
 
-enum LOG_MODE { INFO, WARNING, ERROR };
+template <class T>
+std::string Type() {
+
+    return Demangle(typeid(T).name());
+}
 
 template <typename... Args>
-void debug_log(const char*, const char*, int, fmt::text_style info_style, fmt::string_view format,
+void DebugLog(const char*, const char*, int, fmt::string_view format,
+               const Args&... args) {
+
+    fmt::print(fmt::text_style(), format, args...);
+}
+
+
+template <typename... Args>
+void DebugLog(const char*, const char*, int, fmt::text_style info_style, fmt::string_view format,
                const Args&... args) {
 
     time_t rawtime = time(nullptr);
@@ -31,35 +48,38 @@ void debug_log(const char*, const char*, int, fmt::text_style info_style, fmt::s
     char time_str[20] = "";
     strftime(time_str, 16, "%H:%M:%S", ptm);
 
-    fmt::print(fmt::bg(fmt::detail::color_type(fmt::rgb(0x4B2D9F))) | info_style, "[{}]", time_str);
+    fmt::print(fmt::bg(fmt::detail::color_type(fmt::rgb(kLogTimeHex))) | info_style, "[{}]", time_str);
     fmt::print(" ");
 
     fmt::print(info_style, format, args...);
 }
 
 template <typename... Args>
-void debug_log(const char* file_name, const char* func_name, int n_line, LOG_MODE mode, fmt::string_view format,
+void DebugLog(const char* file_name, const char* func_name, int n_line, LogMode mode, fmt::string_view format,
                const Args&... args) {
     fmt::text_style info_style;
 
 #ifdef LOG_ALL
-    if (mode == WARNING) {
-        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(0x6600ff)));  // todo:
-    } else if (mode == ERROR) {
-        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(0xc41e3a)));  // todo:
+    if (mode == kWarning) {
+        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(kWarningHex)));  // todo:
+    } else if (mode == kError) {
+        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(kErrorHex)));  // todo:
         fmt::print(info_style, format, args...);
         exit(0);
     }
 #else
-    info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(0xc41e3a)));
-    fmt::print(info_style, format, args...);
+    if(mode == kError) {
+        info_style = fmt::fg(fmt::detail::color_type(fmt::rgb(kErrorHex)));
+        fmt::print(info_style, format, args...);
 
-    exit(0);
+        exit(0);
+    }
 #endif  // LOG_ALL
 
-    debug_log(file_name, func_name, n_line, info_style, format, args...);
+    DebugLog(file_name, func_name, n_line, info_style, format, args...);
 }
 
-#define log(...) debug_log((__FILE__), (__FUNCTION__), (__LINE__), __VA_ARGS__)
+#define Print(...) DebugLog((__FILE__), (__FUNCTION__), (__LINE__), __VA_ARGS__)
+};  // namespace logger
 
 #endif  // LOGGER_H

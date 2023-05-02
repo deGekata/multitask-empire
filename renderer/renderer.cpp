@@ -1,6 +1,4 @@
 #include <renderer/renderer.hpp>
-
-#include <iostream>
 #include <thread>
 #include <chrono>
 #include <limits>
@@ -49,6 +47,7 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
     animation_data.sprite_sheet_->sprite_.SetTexture(animation_data.sprite_sheet_->texture_);
     auto tmp = animation_data.sprite_sheet_->sprite_.Crop(rect);
     
+    std::cout << static_cast<int>(frame_pos.x_offset_) << " " << static_cast<int>(frame_pos.y_offset_) << "\n";
     window_.DrawSprite({static_cast<int>(cur_pos.x_) - static_cast<int>(frame_pos.x_offset_), static_cast<int>(cur_pos.y_) - static_cast<int>(frame_pos.y_offset_)}, tmp);
 }
 
@@ -57,6 +56,7 @@ void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDe
     window_.Clear();
 
     for (auto target : inspected_entities_) {
+
         if(target.HasComponent<PlayerTag>() && target.HasComponent<ObjectAnimationData>()) {            
             Position cur_pos = *target.GetComponent<Position>();
             ObjectAnimationData* player_animation_data = target.GetComponent<ObjectAnimationData>().Get();
@@ -123,6 +123,16 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
         animation_storage->n_sprite_sheet_state_ = n_state_in_sprite_sheet;
     }
 }
+
+// void RendererSystem::Recieve(const LandingEvent& event) {
+//     logger::Print(kInfo, "{} landed\n", event.target_.GetId().GetIndex());
+// }
+
+// void RendererSystem::Recieve(const MovementStopEvent& event) {
+//     inspected_entities_.erase(event.target_);
+
+//     logger::Print(kInfo, "{} stopped moving\n", event.target_.GetId().GetIndex());
+// }
 
 void RendererSystem::Recieve(const PlayerInitiatedEvent& event) {
     inspected_entities_.insert(event.entity_);

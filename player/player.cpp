@@ -13,9 +13,12 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
     player.Assign<Velocity>();
     player.Assign<Acceleration>();
 
+    entities.Tracker().TrackEntity(player.GetId().GetIndex());
+    std::cout << "[*] Created player with index: " << player.GetId().GetIndex() << std::endl;
+
     //! remove
-    events.Emit<SkinChangeRequest>("orc.png", player);
     events.Emit<PlayerInitiatedEvent>(player);
+    events.Emit<SkinChangeRequest>("./orc.png", player);
     events.Emit<PlayerCommandEvent>(PLAYER_CMD::IDLE, player);
 }
 

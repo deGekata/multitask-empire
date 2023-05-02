@@ -11,7 +11,7 @@ struct SpriteSheet {
 
     struct StateFrame {
         uint x_, y_, h_, w_;
-        uint x_offset_, y_offset_;
+        int  x_offset_, y_offset_;
         uint frame_w_, frame_h_;
     };
 

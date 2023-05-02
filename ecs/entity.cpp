@@ -1,4 +1,5 @@
 #include <ecs/entity.hpp>
+#include <logger/logger.hpp>
 
 namespace ecs {
 
@@ -40,6 +41,9 @@ Entity::Entity() : manager_(nullptr), id_(INVALID_ID) {
 Entity::Entity(EntityManager* manager, Id id) : manager_(manager), id_(id) {
 }
 
+Entity::~Entity() {
+}
+
 bool Entity::operator==(const Entity& other) const {
     return other.manager_ == manager_ && other.id_ == id_;
 }
@@ -72,7 +76,8 @@ EntityManager::EntityManager(EventManager& event_manager)
     , component_helpers_()
     , entity_component_mask_()
     , entity_generations_()
-    , free_list_() {
+    , free_list_()
+    , tracker_(this) {
 }
 
 EntityManager::~EntityManager() {
@@ -113,6 +118,10 @@ bool EntityManager::IsValid(const Entity::Id& id) const {
     return id.GetIndex() < entity_generations_.size() && entity_generations_[id.GetIndex()] == id.GetGeneration();
 }
 
+TrackingManager& EntityManager::Tracker() {
+    return tracker_;
+}
+
 void Entity::Destroy() {
     assert(IsValid());
     manager_->Destroy(id_);
@@ -135,6 +144,9 @@ Entity EntityManager::Create() {
 
     if (free_list_.empty()) {
         index = index_counter_++;
+
+        //! if number of entities is > MAX_ENTITES
+        assert(index_counter_ < kMaxEntities);
         AccomodateEntity(index);
 
         entity_generations_[index] = 1;
@@ -148,6 +160,7 @@ Entity EntityManager::Create() {
 
     Entity new_entity{this, Entity::Id(index, generation)};
     event_manager_.Emit<EntityCreatedEvent>(new_entity);
+
     return new_entity;
 }
 
@@ -231,6 +244,29 @@ void BaseComponent::operator delete(void*) {
 
 void BaseComponent::operator delete[](void*) {
     std::abort();
+}
+
+TrackingManager::TrackingManager(EntityManager* tracking_manager):
+    tracking_manager_(tracking_manager) {
+
+    tracking_entities_.reset();
+    tracking_components_on_adding_.reset();
+    tracking_components_on_removing_.reset();
+}
+
+void TrackingManager::TrackEntity(uint32_t index) {
+    assert(index < tracking_entities_.size() && tracking_manager_); 
+    tracking_entities_.set(index);
+}
+
+void TrackingManager::UnTrackEntity(uint32_t index) {
+    assert(index < tracking_entities_.size() && tracking_manager_); 
+    tracking_entities_.reset(index);
+}
+
+bool TrackingManager::IsEntityTracking(uint32_t index) {
+    assert(index < tracking_entities_.size() && tracking_manager_); 
+    return tracking_entities_.test(index);
 }
 
 };  // namespace ecs

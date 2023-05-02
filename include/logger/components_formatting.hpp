@@ -55,7 +55,6 @@ template <> struct fmt::formatter<SpriteSheet> : formatter<string_view> {
     template <typename FormatContext>
     auto format(const SpriteSheet& p, FormatContext& ctx) const -> decltype(ctx.out()) {
         std::string format_str = fmt::format(fmt::runtime("\n\tpath: {}\n\tstates[\n"), p.img_path_);
-        std::cout << format_str << "\n";
 
         for(size_t n_state = 0; n_state < p.states_.size(); n_state++) {
             format_str += fmt::format(fmt::runtime("\t\t[{}] {}({}) "), n_state, p.states_[n_state].name_, p.states_[n_state].positions_.size());

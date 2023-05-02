@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"/>
 <TextureAtlas imagePath="orc.png">
 <SubTexture name="ATTACK_ONE0000" x="0" y="0" width="82" height="61" frameX="-9" frameY="-35" frameWidth="96" frameHeight="96" />
 <SubTexture name="ATTACK_ONE0001" x="82" y="0" width="37" height="60" frameX="-30" frameY="-36" frameWidth="96" frameHeight="96" />
