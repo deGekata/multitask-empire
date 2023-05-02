@@ -687,7 +687,6 @@ template <typename Component, typename... Args>
 ComponentHandle<Component> Entity::Assign(Args&&... args) {
     assert(IsValid());
     
-    assert(0);
     return manager_->Assign<Component>(id_, std::forward<Args>(args)...);
 }
 
