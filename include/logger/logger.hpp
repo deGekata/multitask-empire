@@ -45,6 +45,13 @@ void DebugLog(const char*, const char*, int, fmt::text_style info_style, fmt::st
 }
 
 template <typename... Args>
+void DebugLog(const char*, const char*, int, fmt::string_view format,
+               const Args&... args) {
+
+    fmt::print(fmt::text_style(), format, args...);
+}
+
+template <typename... Args>
 void DebugLog(const char* file_name, const char* func_name, int n_line, LogMode mode, fmt::string_view format,
                const Args&... args) {
     fmt::text_style info_style;

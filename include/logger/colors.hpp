@@ -7,6 +7,9 @@ namespace logger{
     constexpr uint32_t kEcsEventHex     = 0x33cccc;
     constexpr uint32_t kEcsSystemHex    = 0xee51b1;
     constexpr uint32_t kEcsComponentHex = 0xe3c515;
+    constexpr uint32_t kEcsComponentAddedHex    = 0x999900; 
+    constexpr uint32_t kEcsComponentRemovedHex  = 0xff6600;
+    constexpr uint32_t kEcsComponentAccessedHex = kEcsComponentHex;
     constexpr uint32_t kLogTimeHex      = 0x4b2d9f;
     constexpr uint32_t kWarningHex      = 0x6600ff;
     constexpr uint32_t kErrorHex        = 0xc41e3a;

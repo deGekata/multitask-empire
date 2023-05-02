@@ -135,6 +135,9 @@ ComponentMask Entity::GetComponentMask() const {
 EntityCreatedEvent::~EntityCreatedEvent() {
 }
 
+EntityEditedEvent::~EntityEditedEvent() {
+}
+
 EntityDestroyedEvent::~EntityDestroyedEvent() {
 }
 
@@ -249,24 +252,20 @@ void BaseComponent::operator delete[](void*) {
 TrackingManager::TrackingManager(EntityManager* tracking_manager):
     tracking_manager_(tracking_manager) {
 
-    tracking_entities_.reset();
     tracking_components_on_adding_.reset();
     tracking_components_on_removing_.reset();
 }
 
-void TrackingManager::TrackEntity(uint32_t index) {
-    assert(index < tracking_entities_.size() && tracking_manager_); 
-    tracking_entities_.set(index);
+void TrackingManager::TrackEntity(Entity::Id id) {
+    tracking_manager_->Assign<WatchPoint>(id);
 }
 
-void TrackingManager::UnTrackEntity(uint32_t index) {
-    assert(index < tracking_entities_.size() && tracking_manager_); 
-    tracking_entities_.reset(index);
+void TrackingManager::UnTrackEntity(Entity::Id id) {
+    tracking_manager_->Remove<WatchPoint>(id);
 }
 
-bool TrackingManager::IsEntityTracking(uint32_t index) {
-    assert(index < tracking_entities_.size() && tracking_manager_); 
-    return tracking_entities_.test(index);
+bool TrackingManager::IsEntityTracking(Entity::Id id) {
+    return tracking_manager_->HasComponent<WatchPoint>(id);
 }
 
 };  // namespace ecs

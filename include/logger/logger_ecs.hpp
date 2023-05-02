@@ -12,6 +12,7 @@ class EcsBaseLogger : public ecs::System<EcsBaseLogger>, public ecs::ReceiverBas
 public:
     // entity
     virtual void Recieve(const ecs::EntityCreatedEvent& event);
+    virtual void Recieve(const ecs::EntityEditedEvent& event);
     virtual void Recieve(const ecs::EntityDestroyedEvent& event);
     
     // player_components.hpp

@@ -32,6 +32,27 @@ void EcsBaseLogger::Recieve(const ecs::EntityCreatedEvent& event) {
     logger::Print(kInfo, "Entity{} was created\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
 }
 
+void EcsBaseLogger::Recieve(const ecs::EntityEditedEvent& event) {
+    assert(event.entity_.IsValid());
+    logger::Print(kInfo, "Entity{} was edited", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
+    
+    fmt::text_style comp_print_style;
+
+    if(event.type_of_change_ == ecs::EntityEditedEvent::ComponentChangeType::kAccessed) {
+        logger::Print("(access)\n");
+        comp_print_style = fmt::fg(fmt::color(logger::kEcsComponentAccessedHex));
+    }
+    else if(event.type_of_change_ == ecs::EntityEditedEvent::ComponentChangeType::kAdded) {
+        logger::Print("(add)\n");
+        comp_print_style = fmt::fg(fmt::color(logger::kEcsComponentAddedHex));
+    }
+    else if(event.type_of_change_ == ecs::EntityEditedEvent::ComponentChangeType::kRemoved) {
+        logger::Print("(remove)\n");
+        comp_print_style = fmt::fg(fmt::color(logger::kEcsComponentRemovedHex));
+    }
+
+}
+
 void EcsBaseLogger::Recieve(const ecs::EntityDestroyedEvent& event) {
     assert(event.entity_.IsValid());
     logger::Print(kInfo, "Entity{} was destroyed\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
@@ -44,6 +65,7 @@ BASE_COMP_ALL_RESPONSE(Acceleration)
 
 void EcsFullLogger::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<ecs::EntityCreatedEvent, EcsFullLogger>(*this);
+    events.Subscribe<ecs::EntityEditedEvent, EcsFullLogger>(*this);
     events.Subscribe<ecs::EntityDestroyedEvent, EcsFullLogger>(*this);
 
     SubsribeComponent<PlayerTag>(this, entities, events);

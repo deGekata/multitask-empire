@@ -7,13 +7,14 @@
 
 void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager&) {
     ecs::Entity player = entities.Create();
-    player.Assign<PlayerTag>();
+    entities.Tracker().TrackEntity(player.GetId());
 
+    player.Assign<PlayerTag>();
+    
     player.Assign<Position>();
     player.Assign<Velocity>();
     player.Assign<Acceleration>();
 
-    entities.Tracker().TrackEntity(player.GetId().GetIndex());
     std::cout << "[*] Created player with index: " << player.GetId().GetIndex() << std::endl;
 }
 

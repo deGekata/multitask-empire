@@ -16,6 +16,7 @@
 #include <ecs/config.hpp>
 
 #include <logger/logger.hpp>
+#include <components/logger_components.hpp>
 
 namespace ecs {
 
@@ -126,14 +127,13 @@ public:
     template<typename Component>
     void TriggerComponentOnRemoving(Entity entity, ComponentHandle<Component> handler);
 
-    void TrackEntity(uint32_t index);
-    void UnTrackEntity(uint32_t index);
-    bool IsEntityTracking(uint32_t index);
+    void TrackEntity(Entity::Id id);
+    void UnTrackEntity(Entity::Id id);
+    bool IsEntityTracking(Entity::Id id);
 
 private:
     ecs::ComponentMask           tracking_components_on_adding_;
     ecs::ComponentMask           tracking_components_on_removing_;
-    std::bitset<kMaxEntities>    tracking_entities_;
     EntityManager*               tracking_manager_;
 };
 
@@ -252,6 +252,23 @@ struct EntityCreatedEvent : public Event<EntityCreatedEvent> {
 
     Entity entity_;
 };
+
+/**
+ * Emitted if entity has component WatchPont and when entity gains, loses or getting changes(maybe empty) of it's components
+ */
+struct EntityEditedEvent : public Event<EntityEditedEvent> {
+
+    enum class ComponentChangeType { kAdded, kRemoved, kAccessed };
+
+    explicit EntityEditedEvent(const Entity& entity, ComponentChangeType type_of_change) : entity_(entity), type_of_change_(type_of_change) {
+    }
+
+    virtual ~EntityEditedEvent() override;
+
+    Entity              entity_;
+    ComponentChangeType type_of_change_;
+};
+
 
 /**
  * Called just prior to an entity being destroyed.
@@ -400,19 +417,21 @@ public:
 
         BaseViewer(EntityManager* manager, ComponentMask mask) : manager_(manager), mask_(mask) {
         }
-
+    //?
+    protected:
         EntityManager* manager_;
+    private:    
         ComponentMask mask_;
     };
 
     template <bool ShowAll, typename... Components>
     class TypedViewer : public BaseViewer<ShowAll> {
     public:
-        
         template<typename FunctionT>
         void Each(FunctionT f) {
             for (auto it : *this) {
                 f(it, *(it.template GetComponent<Components>().Get())...);
+                this->manager_->event_manager_.template Emit<EntityEditedEvent>(it, EntityEditedEvent::ComponentChangeType::kAccessed);
             }
         }
 
@@ -669,7 +688,7 @@ private:
 template <typename Component, typename... Args>
 ComponentHandle<Component> Entity::Assign(Args&&... args) {
     assert(IsValid());
-    
+
     return manager_->Assign<Component>(id_, std::forward<Args>(args)...);
 }
 
@@ -720,6 +739,7 @@ bool Entity::HasComponent() {
 
 template <typename Component>
 ComponentHandle<Component>::~ComponentHandle(){
+    manager_->event_manager_.Emit<EntityEditedEvent>(GetEntity(), EntityEditedEvent::ComponentChangeType::kAccessed);
 }
 
 template <typename Component>
@@ -817,6 +837,10 @@ void TrackingManager::TriggerComponentOnAdding(Entity entity, ComponentHandle<Co
     if(IsComponentOnAddingTracking<Component>()) {
         tracking_manager_->event_manager_.Emit<ComponentAddedEvent<Component>>(entity, handler);
     }
+    
+    if(entity.HasComponent<WatchPoint>()){
+        tracking_manager_->event_manager_.Emit<EntityEditedEvent>(entity, EntityEditedEvent::ComponentChangeType::kAdded);
+    }
 }
 
 template<typename Component>
@@ -824,6 +848,10 @@ void TrackingManager::TriggerComponentOnRemoving(Entity entity, ComponentHandle<
     assert(tracking_manager_);
     if(IsComponentOnRemovingTracking<Component>()) {
         tracking_manager_->event_manager_.Emit<ComponentRemovedEvent<Component>>(entity, handler);
+    }
+
+    if(entity.HasComponent<WatchPoint>()){
+        tracking_manager_->event_manager_.Emit<EntityEditedEvent>(entity, EntityEditedEvent::ComponentChangeType::kRemoved);
     }
 }
 };  // namespace ecs
