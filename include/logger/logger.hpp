@@ -10,7 +10,10 @@
 #include <typeinfo>
 #include <ctime>
 
+enum LogMode { kInfo, kWarning, kError };
+
 #define LOG_ALL
+namespace logger {
 
 enum LogMode { kInfo, kWarning, kError };
 
