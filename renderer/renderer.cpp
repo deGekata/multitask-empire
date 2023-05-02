@@ -64,8 +64,8 @@ void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDe
 
             LaunchAnimationFrame(*player_animation_data, cur_pos);
 
+            player_animation_data->n_sprite_sheet_state_ = n_sprite_sheet_state_to_change_;
             if(player_animation_data->cur_frame_ + 1 == player_animation_data->sprite_sheet_->states_[player_animation_data->n_sprite_sheet_state_].positions_.size()) {
-                player_animation_data->n_sprite_sheet_state_ = n_sprite_sheet_state_to_change_;
                 player_animation_data->cur_frame_ = 0;
             }
             else player_animation_data->cur_frame_++;
@@ -103,7 +103,7 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
         }
 
         std::string str_cmd = PLAYER_CMD_TO_STR[static_cast<uint>(event.cmd_)];
-        std::cout << str_cmd << "\n";
+
         uint n_state_in_sprite_sheet = UINT32_MAX;
 
         size_t n_states_in_spritesheet = animation_storage->sprite_sheet_->states_.size();
