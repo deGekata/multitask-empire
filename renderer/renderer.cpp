@@ -1,7 +1,5 @@
 #include <renderer/renderer.hpp>
 
-#include <iostream>
-
 #include <components/movement_components.hpp>
 
 void RendererSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {

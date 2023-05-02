@@ -42,6 +42,8 @@ BASE_COMP_ALL_RESPONSE(Position)
 BASE_COMP_ALL_RESPONSE(Velocity)
 BASE_COMP_ALL_RESPONSE(Acceleration)
 
+BASE_COMP_ALL_RESPONSE(SpriteSheet)
+
 void EcsFullLogger::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<ecs::EntityCreatedEvent, EcsFullLogger>(*this);
     events.Subscribe<ecs::EntityDestroyedEvent, EcsFullLogger>(*this);
@@ -50,6 +52,9 @@ void EcsFullLogger::Configure(ecs::EntityManager& entities, ecs::EventManager& e
     SubsribeComponent<Position>(this, entities, events);
     SubsribeComponent<Velocity>(this, entities, events);
     SubsribeComponent<Acceleration>(this, entities, events);
+
+    SubsribeComponent<SpriteSheet>(this, entities, events);
+    
 }
 
 void EcsFullLogger::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {

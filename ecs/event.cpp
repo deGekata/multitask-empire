@@ -62,9 +62,10 @@ EventTrackingManager& EventManager::Tracker() {
 }
 
 std::shared_ptr<EventSignal>& EventManager::SignalFromFamily(EventBase::FamilyType family) {
-    if (family >= handlers_.size()) {
-        handlers_.resize(family + 1);
-    }
+	if (family >= handlers_.size()) {
+		handlers_.resize(family + 1);
+
+	}
 
     if (!handlers_[family]) {
         handlers_[family] = std::make_shared<EventSignal>();
