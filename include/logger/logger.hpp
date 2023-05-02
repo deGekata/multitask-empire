@@ -12,11 +12,6 @@
 
 enum LogMode { kInfo, kWarning, kError };
 
-#define LOG_ALL
-namespace logger {
-
-enum LogMode { kInfo, kWarning, kError };
-
 namespace logger {
 // https://stackoverflow.com/questions/281818/unmangling-the-result-of-stdtype-infoname
 std::string Demangle(const char* name);
