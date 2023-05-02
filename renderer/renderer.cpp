@@ -47,7 +47,6 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
     animation_data.sprite_sheet_->sprite_.SetTexture(animation_data.sprite_sheet_->texture_);
     auto tmp = animation_data.sprite_sheet_->sprite_.Crop(rect);
     
-    std::cout << static_cast<int>(frame_pos.x_offset_) << " " << static_cast<int>(frame_pos.y_offset_) << "\n";
     window_.DrawSprite({static_cast<int>(cur_pos.x_) - static_cast<int>(frame_pos.x_offset_), static_cast<int>(cur_pos.y_) - static_cast<int>(frame_pos.y_offset_)}, tmp);
 }
 
