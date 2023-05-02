@@ -1,10 +1,13 @@
 #include "logger/logger.hpp"
+
+namespace logger
+{
 #ifdef __GNUG__
 #include <cstdlib>
 #include <memory>
 #include <cxxabi.h>
 
-std::string demangle(const char* name) {
+std::string Demangle(const char* name) {
 
     int status = -4;
 
@@ -18,8 +21,9 @@ std::string demangle(const char* name) {
 
 #else
 
-std::string demangle(const char* name) {
+std::string Demangle(const char* name) {
     return name;
 }
 
 #endif
+};
