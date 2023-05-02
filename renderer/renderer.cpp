@@ -8,8 +8,9 @@
 #include <components/player_components.hpp>
 
 #include <events/graphic_events.hpp>
-
-static const int64_t ANIMATION_FREEZE_TIME = 150; //ms
+#include <cassert>
+static constexpr double kSecondsOnRerender = 0.04;
+static constexpr double kSecondsOnFrameChange = 0.16;
 
 // todo: enchance, when normal states for objects would be implemented
 static std::string PLAYER_CMD_TO_STR[MAX_N_CMDS] = {"INVALID"};
@@ -17,7 +18,8 @@ static std::string PLAYER_CMD_TO_STR[MAX_N_CMDS] = {"INVALID"};
 #define ADD_CMD_STR_MATCH(cmd) PLAYER_CMD_TO_STR[static_cast<uint>(PLAYER_CMD::cmd)] = #cmd;
 
 RendererSystem::RendererSystem() :
-    window_(1000, 800, "Simple")
+    window_(1000, 800, "Simple"),
+    cur_state_(PLAYER_CMD::INVALID)
 {
     ADD_CMD_STR_MATCH(IDLE)
     ADD_CMD_STR_MATCH(WALK_LEFT)
@@ -37,6 +39,9 @@ void RendererSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     window_.Show();
 
     events.Emit<WindowInitiatedEvent>(&window_);
+
+    render_init_time_  = std::chrono::high_resolution_clock::now();
+    state_change_init_time_ = std::chrono::high_resolution_clock::now();
 }
 
 void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos) {
@@ -46,13 +51,32 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
     igraphicslib::Rect rect(frame_pos.x_, frame_pos.y_, frame_pos.w_, frame_pos.h_);
     animation_data.sprite_sheet_->sprite_.SetTexture(animation_data.sprite_sheet_->texture_);
     auto tmp = animation_data.sprite_sheet_->sprite_.Crop(rect);
-    std::cout << animation_data.n_sprite_sheet_state_ << "\n";
-    std::cout << static_cast<int>(cur_pos.x_) - static_cast<int>(frame_pos.x_offset_) << " " << static_cast<int>(window_.GetSurfRect().h) - static_cast<int>(frame_pos.h_) - (static_cast<int>(cur_pos.y_) - static_cast<int>(frame_pos.y_offset_)) << "\n";
-    window_.DrawSprite({static_cast<int>(cur_pos.x_) - static_cast<int>(frame_pos.x_offset_), static_cast<int>(window_.GetSurfRect().h) - static_cast<int>(frame_pos.h_) - (static_cast<int>(cur_pos.y_) - static_cast<int>(frame_pos.y_offset_))}, tmp);
+
+    int x_coord = static_cast<int>(cur_pos.x_) - static_cast<int>(frame_pos.x_offset_);
+    int y_coord = static_cast<int>(window_.GetSurfRect().h) - static_cast<int>(frame_pos.h_) - (static_cast<int>(cur_pos.y_));
+
+    window_.DrawSprite({x_coord, y_coord}, tmp);
 }
 
 void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
     
+    std::chrono::high_resolution_clock::time_point cur_count = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration<double>(cur_count - render_init_time_);
+
+    if(duration.count() < kSecondsOnRerender) {
+        return;
+    }
+
+    bool is_frame_change = false;
+    duration = std::chrono::duration<double>(cur_count - state_change_init_time_);
+
+    if(duration.count() >= kSecondsOnFrameChange) {
+        is_frame_change = true;
+        state_change_init_time_ = std::chrono::high_resolution_clock::now();
+    }
+
+    render_init_time_ = std::chrono::high_resolution_clock::now();
+
     window_.Clear();
 
     for (auto target : inspected_entities_) {
@@ -64,16 +88,18 @@ void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDe
 
             LaunchAnimationFrame(*player_animation_data, cur_pos);
 
-            player_animation_data->n_sprite_sheet_state_ = n_sprite_sheet_state_to_change_;
-            if(player_animation_data->cur_frame_ + 1 == player_animation_data->sprite_sheet_->states_[player_animation_data->n_sprite_sheet_state_].positions_.size()) {
-                player_animation_data->cur_frame_ = 0;
+            if(is_frame_change) {
+
+                if(player_animation_data->cur_frame_ + 1 == player_animation_data->sprite_sheet_->states_[player_animation_data->n_sprite_sheet_state_].positions_.size()) {
+                    player_animation_data->cur_frame_ = 0;
+                }
+                else player_animation_data->cur_frame_++;
             }
-            else player_animation_data->cur_frame_++;
         }
     }
 
     window_.Update();
-    std::this_thread::sleep_for(std::chrono::milliseconds(ANIMATION_FREEZE_TIME));
+    // std::this_thread::sleep_for(std::chrono::milliseconds(ANIMATION_FREEZE_TIME));
 }
 
 // void RendererSystem::Recieve(const PendingMovementEvent& event) {
@@ -85,9 +111,20 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
     // todo: implement something like playerStateDispatcherSystem
     if((event.cmd_ != PLAYER_CMD::WALK_LEFT)  && (event.cmd_ != PLAYER_CMD::WALK_RIGHT) && (event.cmd_ != PLAYER_CMD::ATTACK_ONE) &&
        (event.cmd_ != PLAYER_CMD::ATTACK_TWO) && (event.cmd_ != PLAYER_CMD::GET_DOWN)   && (event.cmd_ != PLAYER_CMD::IDLE)     && 
-       (event.cmd_ != PLAYER_CMD::JUMP)) {
+       (event.cmd_ != PLAYER_CMD::JUMP) && (event.cmd_ != PLAYER_CMD::INVALID)) {
 
         return;
+    }
+
+    if(event.cmd_ == cur_state_){
+        return;
+    }
+
+    if(event.cmd_ == PLAYER_CMD::IDLE) {
+        cur_state_ = PLAYER_CMD::INVALID;
+    }
+    else {
+        cur_state_ = event.cmd_;
     }
 
     for(auto target : inspected_entities_){
@@ -103,9 +140,8 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
         }
 
         std::string str_cmd = PLAYER_CMD_TO_STR[static_cast<uint>(event.cmd_)];
-
         uint n_state_in_sprite_sheet = UINT32_MAX;
-
+        
         size_t n_states_in_spritesheet = animation_storage->sprite_sheet_->states_.size();
         std::vector<typename SpriteSheet::StateData>* sprite_sheet_states = &animation_storage->sprite_sheet_->states_;
 
@@ -121,7 +157,8 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
             assert(0);
         } 
 
-        n_sprite_sheet_state_to_change_ = n_state_in_sprite_sheet;
+        animation_storage->n_sprite_sheet_state_ = n_state_in_sprite_sheet;
+        animation_storage->cur_frame_            = 0;
     }
 }
 

@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <queue>
 #include <mutex>
+#include <chrono>
 
 #include <ecs/system.hpp>
 #include <ecs/entity.hpp>
@@ -39,6 +40,10 @@ private:
     // todo: to entities??
     igraphicslib::Window            window_;
     uint n_sprite_sheet_state_to_change_;
+
+    std::chrono::high_resolution_clock::time_point render_init_time_;
+    std::chrono::high_resolution_clock::time_point state_change_init_time_;
+    PLAYER_CMD cur_state_;
 };
 
 #endif

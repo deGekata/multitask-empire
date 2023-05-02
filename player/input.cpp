@@ -35,7 +35,7 @@ void KeyboardInputSystem::Update(ecs::EntityManager& entities, ecs::EventManager
             }
             else if(event.type == igraphicslib::EventType::KeyReleased) {
                 PLAYER_CMD matched_cmd = KeyPressedCmdMatcher[static_cast<uint>(event.ked.key)];
-
+                
                 if(matched_cmd != PLAYER_CMD::INVALID) {
                     events.Emit<PlayerCommandEvent>(PLAYER_CMD::IDLE, player);
                 }
