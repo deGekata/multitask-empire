@@ -38,6 +38,7 @@ private:
     std::unordered_set<ecs::Entity> inspected_entities_;
     // todo: to entities??
     igraphicslib::Window            window_;
+    uint n_sprite_sheet_state_to_change_;
 };
 
 #endif

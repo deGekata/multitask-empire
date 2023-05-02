@@ -21,6 +21,7 @@ void KeyboardInputSystem::Configure(ecs::EntityManager&, ecs::EventManager& even
     ADD_CMD_MATCH(ATTACK_ONE, J)
     ADD_CMD_MATCH(ATTACK_TWO, K)
     ADD_CMD_MATCH(GET_DOWN, S)
+    ADD_CMD_MATCH(JUMP, W)
 }
 
 void KeyboardInputSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta){

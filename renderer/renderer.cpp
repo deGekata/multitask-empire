@@ -9,7 +9,7 @@
 
 #include <events/graphic_events.hpp>
 
-static const int64_t ANIMATION_FREEZE_TIME = 200; //ms
+static const int64_t ANIMATION_FREEZE_TIME = 150; //ms
 
 // todo: enchance, when normal states for objects would be implemented
 static std::string PLAYER_CMD_TO_STR[MAX_N_CMDS] = {"INVALID"};
@@ -46,8 +46,9 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
     igraphicslib::Rect rect(frame_pos.x_, frame_pos.y_, frame_pos.w_, frame_pos.h_);
     animation_data.sprite_sheet_->sprite_.SetTexture(animation_data.sprite_sheet_->texture_);
     auto tmp = animation_data.sprite_sheet_->sprite_.Crop(rect);
-    
-    window_.DrawSprite({static_cast<int>(cur_pos.x_) - static_cast<int>(frame_pos.x_offset_), static_cast<int>(cur_pos.y_) - static_cast<int>(frame_pos.y_offset_)}, tmp);
+    std::cout << animation_data.n_sprite_sheet_state_ << "\n";
+    std::cout << static_cast<int>(cur_pos.x_) - static_cast<int>(frame_pos.x_offset_) << " " << static_cast<int>(window_.GetSurfRect().h) - static_cast<int>(frame_pos.h_) - (static_cast<int>(cur_pos.y_) - static_cast<int>(frame_pos.y_offset_)) << "\n";
+    window_.DrawSprite({static_cast<int>(cur_pos.x_) - static_cast<int>(frame_pos.x_offset_), static_cast<int>(window_.GetSurfRect().h) - static_cast<int>(frame_pos.h_) - (static_cast<int>(cur_pos.y_) - static_cast<int>(frame_pos.y_offset_))}, tmp);
 }
 
 void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
@@ -64,6 +65,7 @@ void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDe
             LaunchAnimationFrame(*player_animation_data, cur_pos);
 
             if(player_animation_data->cur_frame_ + 1 == player_animation_data->sprite_sheet_->states_[player_animation_data->n_sprite_sheet_state_].positions_.size()) {
+                player_animation_data->n_sprite_sheet_state_ = n_sprite_sheet_state_to_change_;
                 player_animation_data->cur_frame_ = 0;
             }
             else player_animation_data->cur_frame_++;
@@ -101,7 +103,7 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
         }
 
         std::string str_cmd = PLAYER_CMD_TO_STR[static_cast<uint>(event.cmd_)];
-
+        std::cout << str_cmd << "\n";
         uint n_state_in_sprite_sheet = UINT32_MAX;
 
         size_t n_states_in_spritesheet = animation_storage->sprite_sheet_->states_.size();
@@ -119,7 +121,7 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
             assert(0);
         } 
 
-        animation_storage->n_sprite_sheet_state_ = n_state_in_sprite_sheet;
+        n_sprite_sheet_state_to_change_ = n_state_in_sprite_sheet;
     }
 }
 
