@@ -27,6 +27,8 @@ RendererSystem::RendererSystem() :
     ADD_CMD_STR_MATCH(ATTACK_TWO)
     ADD_CMD_STR_MATCH(DEATH)
     ADD_CMD_STR_MATCH(JUMP)
+    ADD_CMD_STR_MATCH(ATTACK_THREE)
+    ADD_CMD_STR_MATCH(HURT)
 }
 
 void RendererSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
@@ -112,7 +114,7 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
     // todo: implement something like playerStateDispatcherSystem
     if((event.cmd_ != PLAYER_CMD::WALK_LEFT)  && (event.cmd_ != PLAYER_CMD::WALK_RIGHT) && (event.cmd_ != PLAYER_CMD::ATTACK_ONE) &&
        (event.cmd_ != PLAYER_CMD::ATTACK_TWO) && (event.cmd_ != PLAYER_CMD::DEATH)   && (event.cmd_ != PLAYER_CMD::IDLE)     && 
-       (event.cmd_ != PLAYER_CMD::JUMP)       && (event.cmd_ != PLAYER_CMD::INVALID)) {
+       (event.cmd_ != PLAYER_CMD::JUMP)       && (event.cmd_ != PLAYER_CMD::ATTACK_THREE) && (event.cmd_ != PLAYER_CMD::HURT) && (event.cmd_ != PLAYER_CMD::INVALID)) {
 
         return;
     }

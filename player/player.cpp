@@ -16,9 +16,12 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
     entities.Tracker().TrackEntity(player.GetId().GetIndex());
     std::cout << "[*] Created player with index: " << player.GetId().GetIndex() << std::endl;
 
-    //! remove
     events.Emit<PlayerInitiatedEvent>(player);
+    
+    //! remove, use only for debug
+    events.Emit<SpriteSheetLoadRequest>("orc_berserk.xml");
     events.Emit<SkinChangeRequest>("./orc_berserk.png", player);
+
     events.Emit<PlayerCommandEvent>(PLAYER_CMD::IDLE, player);
 }
 

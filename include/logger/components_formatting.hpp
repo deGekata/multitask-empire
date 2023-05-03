@@ -59,8 +59,9 @@ template <> struct fmt::formatter<SpriteSheet> : formatter<string_view> {
         for(size_t n_state = 0; n_state < p.states_.size(); n_state++) {
             format_str +=fmt::format(fmt::runtime("\t\t[{}] {}({})\n"), n_state, p.states_[n_state].name_, p.states_[n_state].positions_.size());
             for(auto pos : p.states_[n_state].positions_) {
-                format_str += fmt::format(fmt::runtime("\t\t\t<x({0:4d}), y({0:4d}), w({0:4d}), h({0:4d}), fx({0:4d}), fy({0:4d}), fw({0:4d}), fh({0:4d})>\n"), 
+                format_str += fmt::format(fmt::runtime("\t\t\t<x({:4d}), y({:4d}), w({:4d}), h({:4d}), fx({:4d}), fy({:4d}), fw({:4d}), fh({:4d})>\n"), 
                                                                 pos.x_, pos.y_, pos.w_, pos.h_, pos.x_offset_, pos.y_offset_, pos.frame_w_, pos.frame_h_);
+
             }
             format_str += "\n";
         }

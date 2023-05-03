@@ -22,6 +22,8 @@ void KeyboardInputSystem::Configure(ecs::EntityManager&, ecs::EventManager& even
     ADD_CMD_MATCH(ATTACK_TWO, K)
     ADD_CMD_MATCH(DEATH, S)
     ADD_CMD_MATCH(JUMP, W)
+    ADD_CMD_MATCH(HURT, Z)
+    ADD_CMD_MATCH(ATTACK_THREE, H)
     ADD_CMD_MATCH(TEXT_INSERT_REQUEST, T)
 
     cur_key_ = igraphicslib::KeyboardKey::Unknown;

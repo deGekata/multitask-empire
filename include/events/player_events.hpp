@@ -18,6 +18,8 @@ enum class PLAYER_CMD {
     ATTACK_TWO,
     DEATH,
     JUMP,
+    ATTACK_THREE,
+    HURT,
     TEXT_INSERT_REQUEST
 };
 
