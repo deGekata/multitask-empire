@@ -12,7 +12,11 @@ void BotSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& event
 
     //! remove
     events.Emit<PlayerInitiatedEvent>(bot);
-    events.Emit<SkinChangeRequest>("./sprites/knight.png", bot);
+    if (bot.HasComponent<Position>()) {
+        bot.GetComponent<Position>()->x_ = 500;
+    }
+
+    events.Emit<SkinChangeRequest>("./assets/sprites/knight.png", bot);
     events.Emit<PlayerCommandEvent>(PlayerCommand::IDLE, bot);
 }
 

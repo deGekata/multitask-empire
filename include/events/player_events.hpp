@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 
+#include <ecs/entity.hpp>
 #include <ecs/event.hpp>
 
 #include <components/player_components.hpp>

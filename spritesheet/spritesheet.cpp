@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-static constexpr auto kSpritesPath = "./sprites/";
+static constexpr auto kSpritesPath = "./assets/sprites/";
 
 static constexpr auto kSpriteAdd = "sprite";
 static constexpr auto kSpriteLoad = "load_sprite";

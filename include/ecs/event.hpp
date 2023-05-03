@@ -134,7 +134,7 @@ public:
     Reciever() : ReceiverBase() {
     }
 
-    virtual ~Reciever() override = default;
+    ~Reciever() override = default;
 };
 
 /**
