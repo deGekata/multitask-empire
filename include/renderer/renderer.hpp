@@ -3,6 +3,7 @@
 
 #include <unordered_set>
 #include <queue>
+#include <map>
 #include <mutex>
 
 #include <utility/metric.hpp>
@@ -44,7 +45,9 @@ private:
     metrics::TimeStorage rerender_timestamp_;
     metrics::TimeStorage sprite_frame_change_timestamp_;
 
-    PLAYER_CMD  cur_player_state_; // todo: change
+    PlayerCommand cur_player_state_; // todo: change
+
+    std::map<PlayerCommand, std::string> command_converter_;
 };
 
 #endif

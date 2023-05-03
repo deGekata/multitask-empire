@@ -8,8 +8,7 @@
 
 #include <components/player_components.hpp>
 
-//? to review
-enum class PLAYER_CMD {
+enum class PlayerCommand {
     INVALID = -1,
     IDLE,
     WALK_LEFT,
@@ -21,54 +20,45 @@ enum class PLAYER_CMD {
     TEXT_INSERT_REQUEST
 };
 
-const size_t MAX_N_CMDS = 200;
-
 struct PlayerInitiatedEvent : public ecs::Event<PlayerInitiatedEvent> {
-    explicit PlayerInitiatedEvent(ecs::Entity player_entity): entity_(player_entity) {
+    explicit PlayerInitiatedEvent(ecs::Entity player_entity) : entity_(player_entity) {
     }
 
     PlayerInitiatedEvent(const PlayerInitiatedEvent& other) = default;
-
-    ~PlayerInitiatedEvent() override{
-    }
+    ~PlayerInitiatedEvent() override = default;
 
     ecs::Entity entity_;
 };
 
 struct PlayerCommandEvent : public ecs::Event<PlayerCommandEvent> {
-    explicit PlayerCommandEvent(PLAYER_CMD cmd, ecs::Entity player_entity): cmd_(cmd), entity_(player_entity) {
+    explicit PlayerCommandEvent(PlayerCommand cmd, ecs::Entity player_entity) : cmd_(cmd), entity_(player_entity) {
     }
 
     PlayerCommandEvent(const PlayerCommandEvent& other) = default;
+    ~PlayerCommandEvent() override = default;
 
-    ~PlayerCommandEvent() override{
-    }
-
-    PLAYER_CMD  cmd_;
+    PlayerCommand cmd_;
     ecs::Entity entity_;
 };
 
 struct PlayerTextRequestEvent : public ecs::Event<PlayerTextRequestEvent> {
-    explicit PlayerTextRequestEvent(std::stringstream ss): cmd_(std::istream_iterator<std::string>(ss), std::istream_iterator<std::string>()) {
+    explicit PlayerTextRequestEvent(std::stringstream ss)
+        : cmd_(std::istream_iterator<std::string>(ss), std::istream_iterator<std::string>()) {
     }
 
     PlayerTextRequestEvent(const PlayerTextRequestEvent& other) = default;
+    ~PlayerTextRequestEvent() override = default;
 
-    ~PlayerTextRequestEvent() override{
-    }
-
-    std::vector<std::string>  cmd_;
+    std::vector<std::string> cmd_;
 };
 
 struct SpriteSheetLoadRequest : public ecs::Event<SpriteSheetLoadRequest> {
 
-    explicit SpriteSheetLoadRequest(const std::string& xml_path): xml_path_(xml_path){
+    explicit SpriteSheetLoadRequest(const std::string& xml_path) : xml_path_(xml_path) {
     }
 
     SpriteSheetLoadRequest(const SpriteSheetLoadRequest& other) = default;
-
-    ~SpriteSheetLoadRequest() override{
-    }
+    ~SpriteSheetLoadRequest() override = default;
 
     std::string xml_path_;
 };
@@ -87,12 +77,11 @@ struct SpriteSheetLoadRequest : public ecs::Event<SpriteSheetLoadRequest> {
 // };
 
 struct SkinChangeRequest : public ecs::Event<SkinChangeRequest> {
-    explicit SkinChangeRequest(std::string skin_name, ecs::Entity entity): skin_name_(skin_name), entity_(entity){
+    explicit SkinChangeRequest(std::string skin_name, ecs::Entity entity) : skin_name_(skin_name), entity_(entity) {
     }
 
     SkinChangeRequest(const SkinChangeRequest& other) = default;
-    ~SkinChangeRequest() override{
-    }
+    ~SkinChangeRequest() override = default;
 
     std::string skin_name_;
     ecs::Entity entity_;

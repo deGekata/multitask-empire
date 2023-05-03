@@ -2,12 +2,15 @@
 #define INPUT_SYSTEM_HPP
 
 #include <deque>
+#include <map>
 #include <mutex>
 #include <atomic>
 
 #include <ecs/system.hpp>
 #include <graphics/aWindow.hpp>
+
 #include <events/graphic_events.hpp>
+#include <events/player_events.hpp>
 
 /// @brief values of key from igraphics Keyboard Event should be in range [0, 200) for the fast mapping
 const size_t MAX_N_KEYS = 200;
@@ -49,7 +52,10 @@ private:
     std::mutex                      pooling_lock_;
     std::mutex                      system_members_access_lock_;
     std::atomic<bool>               is_request_to_stop_pooling_;
-    std::atomic<bool>               is_pooling_is_stopped_;      
+    std::atomic<bool>               is_pooling_is_stopped_;  
+
+    // Map which gives command by taking keyboard key
+    std::map<uint32_t, PlayerCommand> key_to_cmd_matcher_;   
 
     // todo: remove
     igraphicslib::KeyboardKey       cur_key_;          

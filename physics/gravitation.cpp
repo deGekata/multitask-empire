@@ -25,7 +25,7 @@ void GravitationSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::Tim
 }
 
 void GravitationSystem::Recieve(const PlayerCommandEvent& event) {
-    if (event.cmd_ == PLAYER_CMD::JUMP) {
+    if (event.cmd_ == PlayerCommand::JUMP) {
         jumpers_queue_.push_back(event.entity_);
     }
 }

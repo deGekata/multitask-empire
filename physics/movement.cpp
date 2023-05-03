@@ -5,9 +5,14 @@
 #include <events/gravitation_events.hpp>
 #include <events/movement_events.hpp>
 
-void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) {
+void MovementSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+    events.Subscribe<PlayerInitiatedEvent>(*this);
+}
 
-    if(metrics::CheckDuration(timestamp_, metrics::kNSecInDt)) return;
+void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) {
+    if (metrics::CheckDuration(timestamp_, metrics::kNSecInDt)) {
+        return;
+    }
 
     // todo: dt -> 1
 
@@ -21,7 +26,6 @@ void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& eve
         });
 
     entities.Each<Position, Velocity>([dt, &events](ecs::Entity entity, Position& pos, Velocity& vel) {
-
         pos.y_ = std::max(0l, pos.y_ + vel.vy_ * dt);
         pos.x_ += vel.vx_ * dt;
 
@@ -34,4 +38,13 @@ void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& eve
             }
         }
     });
+}
+
+void MovementSystem::Recieve(const PlayerInitiatedEvent& new_player) {
+    ecs::Entity player_entity = new_player.entity_;
+
+    std::cout << "ASSIGNE\n";
+    player_entity.Assign<Position>();
+    player_entity.Assign<Velocity>();
+    player_entity.Assign<Acceleration>();
 }

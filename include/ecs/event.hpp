@@ -47,8 +47,7 @@ class EventBase {
 public:
     using FamilyType = uint64_t;
 
-    EventBase();
-    virtual ~EventBase();
+    virtual ~EventBase() = default;
 
 protected:
     static FamilyType family_counter_;
@@ -64,9 +63,6 @@ template <typename Derived>
 class Event : public EventBase {
 public:
     Event() : EventBase() {
-    }
-
-    virtual ~Event() override {
     }
 
     static FamilyType Family() {
@@ -138,8 +134,7 @@ public:
     Reciever() : ReceiverBase() {
     }
 
-    virtual ~Reciever() override {
-    }
+    virtual ~Reciever() override = default;
 };
 
 /**
@@ -170,7 +165,7 @@ private:
 
 public:
     EventManager();
-    virtual ~EventManager();
+    virtual ~EventManager() = default;
 
     template <typename EventType, typename RecieverType>
     void Subscribe(RecieverType& reciever) {

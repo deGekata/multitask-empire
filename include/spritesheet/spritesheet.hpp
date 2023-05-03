@@ -21,6 +21,7 @@ public:
     
 private:
     void ChangeSkin(ecs::Entity entity, std::string skin_path);
+    void LoadSprites();
 private:
     // todo: remove, cause system shouldn't storage any data
     XmlParser parser_;

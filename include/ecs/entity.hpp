@@ -222,8 +222,7 @@ private:
 };
 
 struct BaseComponentHelper {
-    virtual ~BaseComponentHelper() {
-    }
+    virtual ~BaseComponentHelper() = default;
     virtual void RemoveComponent(Entity enity) = 0;
     virtual void CopyComponentTo(Entity from, Entity to) = 0;
 };

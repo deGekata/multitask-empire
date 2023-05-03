@@ -9,6 +9,8 @@
 
 #include <ecs/quick.hpp>
 
+#include <bot/bot.hpp>
+
 #include <physics/movement.hpp>
 #include <physics/mv_commands.hpp>
 #include <physics/friction.hpp>
@@ -25,12 +27,6 @@
 
 #include <spritesheet/spritesheet.hpp>
 
-// #include <graphics/aWindow.hpp>
-// #include <graphics/aSprite.hpp>
-// #include <graphics/aText.hpp>
-// #include <graphics/aTexture.hpp>
-// #include <graphics/color.hpp>
-
 class Application : public ecs::ECS {
 public:
     Application() {
@@ -40,14 +36,15 @@ public:
         systems_.Add<RendererSystem>();
         systems_.Add<SpriteSheetSystem>();
         systems_.Add<TextInputSystem>();
-        systems_.Add<PlayerSystem>();
 
-        // systems_.Add<DispatcherSystem>(running_);
         systems_.Add<MovementCommandsSystem>();
 
         systems_.Add<GravitationSystem>();
         systems_.Add<FrictionSystem>();
         systems_.Add<MovementSystem>();
+
+        systems_.Add<PlayerSystem>();
+        systems_.Add<BotSystem>();
 
         systems_.Configure();
 
@@ -76,8 +73,7 @@ public:
     }
 
     void Init() {
-
-        KeyboardInputSystem* system = reinterpret_cast<KeyboardInputSystem*>(systems_.GetSystem<KeyboardInputSystem>());
+        auto* system = reinterpret_cast<KeyboardInputSystem*>(systems_.GetSystem<KeyboardInputSystem>());
         std::thread input_thread(&KeyboardInputSystem::Pool, system);
         std::thread main_thread(&Application::Pool, this);
 

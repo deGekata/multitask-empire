@@ -12,7 +12,7 @@ void MovementCommandsSystem::Configure(ecs::EntityManager&, ecs::EventManager& e
 void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
     for (auto event = events_queue_.front(); !events_queue_.empty(); events_queue_.pop_front()) {
         switch (event.cmd_) {
-            case PLAYER_CMD::JUMP: {
+            case PlayerCommand::JUMP: {
                 auto position = event.entity_.GetComponent<Position>();
                 if (position->y_ == 0) {
                     auto velocity = event.entity_.GetComponent<Velocity>();
@@ -21,30 +21,30 @@ void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs
                 break;
             }
 
-            case PLAYER_CMD::WALK_LEFT: {
+            case PlayerCommand::WALK_LEFT: {
                 auto velocity = event.entity_.GetComponent<Velocity>();
                 velocity->vx_ = -kMoveSpeed;
 
                 break;
             }
 
-            case PLAYER_CMD::WALK_RIGHT: {
+            case PlayerCommand::WALK_RIGHT: {
                 auto velocity = event.entity_.GetComponent<Velocity>();
                 velocity->vx_ = kMoveSpeed;
 
                 break;
             }
 
-            case PLAYER_CMD::IDLE: {
+            case PlayerCommand::IDLE: {
                 auto position = event.entity_.GetComponent<Position>();
                 if (position->y_ == 0) {
                     auto velocity = event.entity_.GetComponent<Velocity>();
-                    velocity->vx_ = 0;    
+                    velocity->vx_ = 0;
                 }
                 break;
             }
-            
-            default:{
+
+            default: {
                 break;
             }
         }

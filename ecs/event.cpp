@@ -4,12 +4,6 @@ namespace ecs {
 
 EventBase::FamilyType EventBase::family_counter_ = 0;
 
-EventBase::EventBase() {
-}
-
-EventBase::~EventBase() {
-}
-
 ReceiverBase::ReceiverBase()
     : connections_() {
 }
@@ -42,9 +36,6 @@ ReceiverBase::ConnectionsInfo ReceiverBase::ConnectionsList() {
 EventManager::EventManager()
 	: utility::NonCopiable(),
 	  tracker_() {
-}
-
-EventManager::~EventManager() {
 }
 
 size_t EventManager::RecieversCount() const {
