@@ -20,6 +20,7 @@ void GravitationSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::Tim
 
         acceleration->ay_ = 0;
         velocity->vy_ = 0;
+        velocity->vx_ = 0;
     }
 }
 

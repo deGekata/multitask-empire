@@ -20,7 +20,7 @@ void KeyboardInputSystem::Configure(ecs::EntityManager&, ecs::EventManager& even
     ADD_CMD_MATCH(WALK_RIGHT, D)
     ADD_CMD_MATCH(ATTACK_ONE, J)
     ADD_CMD_MATCH(ATTACK_TWO, K)
-    ADD_CMD_MATCH(GET_DOWN, S)
+    ADD_CMD_MATCH(DEATH, S)
     ADD_CMD_MATCH(JUMP, W)
 }
 

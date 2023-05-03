@@ -35,4 +35,10 @@ struct ObjectAnimationData {
     uint         cur_frame_;
 };
 
+struct RenderFrameData {
+    uint        n_new_state_;
+    bool        idle_request_;
+    bool        is_flipped_;
+};
+
 #endif // H_GRAPHIC_CMPNTS

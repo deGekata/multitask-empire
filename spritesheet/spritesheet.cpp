@@ -10,7 +10,7 @@ void SpriteSheetSystem::Configure(ecs::EntityManager& entities, ecs::EventManage
     spritesheet_storage.Assign<SpriteSheetStorageTag>();
 
     // todo: remove
-    LoadSpriteSheet("orc.xml");
+    LoadSpriteSheet("orc_berserk.xml");
 }
 
 void SpriteSheetSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {

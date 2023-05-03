@@ -4,7 +4,8 @@
 #include <unordered_set>
 #include <queue>
 #include <mutex>
-#include <chrono>
+
+#include <utility/metric.hpp>
 
 #include <ecs/system.hpp>
 #include <ecs/entity.hpp>
@@ -33,17 +34,17 @@ public:
     void Recieve(const PlayerInitiatedEvent& event);
 
 private:
-    void LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos);
+    void LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos, bool is_flipped);
 
-private:
+private:    
     std::unordered_set<ecs::Entity> inspected_entities_;
     // todo: to entities??
     igraphicslib::Window            window_;
-    uint n_sprite_sheet_state_to_change_;
 
-    std::chrono::high_resolution_clock::time_point render_init_time_;
-    std::chrono::high_resolution_clock::time_point state_change_init_time_;
-    PLAYER_CMD cur_state_;
+    metrics::TimeStorage rerender_timestamp_;
+    metrics::TimeStorage sprite_frame_change_timestamp_;
+
+    PLAYER_CMD  cur_player_state_; // todo: change
 };
 
 #endif

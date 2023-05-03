@@ -1,7 +1,5 @@
 #include <physics/movement.hpp>
 
-#include <iostream>
-
 #include <components/movement_components.hpp>
 
 #include <events/gravitation_events.hpp>
@@ -9,15 +7,14 @@
 
 void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) {
 
-    std::chrono::high_resolution_clock::time_point cur_count = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration<double>(cur_count - init_time_);  
+    if(metrics::CheckDuration(timestamp_, metrics::kNSecInDt)) return;
 
-    if(duration.count() < 0.06) return;
-    init_time_ = std::chrono::high_resolution_clock::now();
+    // todo: dt -> 1
 
     entities.Each<Position, Velocity, Acceleration>(
         [dt](ecs::Entity, Position& cords, Velocity& vel, Acceleration& acc) {
             if (cords.y_ == 0) {
+                //!
                 // vel.vx_ += acc.ax_ * dt;
             }
             vel.vy_ += acc.ay_ * dt;

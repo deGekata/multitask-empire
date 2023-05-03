@@ -36,11 +36,14 @@ void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs
             }
 
             case PLAYER_CMD::IDLE: {
-                auto velocity = event.entity_.GetComponent<Velocity>();
-                velocity->vx_ = 0;
-
+                auto position = event.entity_.GetComponent<Position>();
+                if (position->y_ == 0) {
+                    auto velocity = event.entity_.GetComponent<Velocity>();
+                    velocity->vx_ = 0;    
+                }
                 break;
             }
+            
             default:{
                 break;
             }

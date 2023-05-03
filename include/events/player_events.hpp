@@ -14,7 +14,7 @@ enum class PLAYER_CMD {
     WALK_RIGHT,
     ATTACK_ONE,
     ATTACK_TWO,
-    GET_DOWN,
+    DEATH,
     JUMP,
 };
 const size_t MAX_N_CMDS = 200;

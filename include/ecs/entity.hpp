@@ -83,7 +83,7 @@ public:
     std::tuple<ComponentHandle<Components>...> GetComponents();
 
     template <typename Component>
-    bool HasComponent();
+    bool HasComponent() const;
 
     /**
      * Destroy and invalidate this Entity.
@@ -713,7 +713,7 @@ std::tuple<ComponentHandle<Components>...> Entity::GetComponents() {
 }
 
 template <typename Component>
-bool Entity::HasComponent() {
+bool Entity::HasComponent() const {
     assert(IsValid());
     return manager_->HasComponent<Component>(id_);
 }
