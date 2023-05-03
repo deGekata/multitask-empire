@@ -22,14 +22,14 @@ void CollisionSystem::CollectCandidates(ecs::EntityManager& entities) {
 }
 
 void CollisionSystem::ProcessCandidates(ecs::EventManager& events) {
-    for (auto& candidate_one : candidates_) {
-        for (auto& candidate_two : candidates_) {
-            if (candidate_one.first == candidate_two.first) {
+    for (auto candidate_one = candidates_.begin(); candidate_one != candidates_.end(); candidate_one++) {
+        for (auto candidate_two = candidate_one; candidate_two != candidates_.end(); candidate_two++) {
+            if (candidate_one->first == candidate_two->first) {
                 continue;
             }
 
-            if (IsCollide(candidate_one.second, candidate_two.second)) {
-                events.Emit<CollisionEvent>(candidate_one.first, candidate_two.first);
+            if (IsCollide(candidate_one->second, candidate_two->second)) {
+                events.Emit<CollisionEvent>(candidate_one->first, candidate_two->first);
             }
         }
     }

@@ -43,7 +43,6 @@ void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& eve
 void MovementSystem::Recieve(const PlayerInitiatedEvent& new_player) {
     ecs::Entity player_entity = new_player.entity_;
 
-    std::cout << "ASSIGNE\n";
     player_entity.Assign<Position>();
     player_entity.Assign<Velocity>();
     player_entity.Assign<Acceleration>();

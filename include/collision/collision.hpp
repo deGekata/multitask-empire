@@ -1,7 +1,7 @@
 #ifndef H_COLLISION
 #define H_COLLISION
 
-#include <unordered_map>
+#include <map>
 
 #include <components/collision_components.hpp>
 #include <components/movement_components.hpp>
@@ -27,7 +27,7 @@ private:
 
   static bool IsCollide(const CollideInfo& lhs, const CollideInfo& rhs);
 private:
-  std::unordered_map<ecs::Entity, CollideInfo> candidates_;
+  std::map<ecs::Entity, CollideInfo> candidates_;
 };
 
 #endif

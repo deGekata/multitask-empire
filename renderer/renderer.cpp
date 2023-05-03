@@ -57,6 +57,7 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
 
     if (is_flipped) {
         tmp.SetScale(-kSpriteScale, kSpriteScale);
+        x_coord += static_cast<int>(frame_pos.w_) * static_cast<int>(kSpriteScale);
     } else {
         tmp.SetScale(kSpriteScale, kSpriteScale);
     }

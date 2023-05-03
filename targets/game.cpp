@@ -12,6 +12,7 @@
 #include <bot/bot.hpp>
 
 #include <collision/collision.hpp>
+#include <collision/stopper.hpp>
 
 #include <physics/movement.hpp>
 #include <physics/mv_commands.hpp>
@@ -44,7 +45,9 @@ public:
         systems_.Add<GravitationSystem>();
         systems_.Add<FrictionSystem>();
         systems_.Add<MovementSystem>();
+
         systems_.Add<CollisionSystem>();
+        systems_.Add<CollisionStopperSystem>();
 
         systems_.Add<PlayerSystem>();
         systems_.Add<BotSystem>();
