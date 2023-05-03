@@ -16,6 +16,7 @@
 
 #include <player/player.hpp>
 #include <player/input.hpp>
+#include <player/text_input.hpp>
 
 #include <renderer/renderer.hpp>
 
@@ -32,13 +33,13 @@
 
 class Application : public ecs::ECS {
 public:
-    Application() : running_(true) {
+    Application() {
         systems_.Add<EcsFullLogger>();
 
         systems_.Add<KeyboardInputSystem>();
         systems_.Add<RendererSystem>();
         systems_.Add<SpriteSheetSystem>();
-        
+        systems_.Add<TextInputSystem>();
         systems_.Add<PlayerSystem>();
 
         // systems_.Add<DispatcherSystem>(running_);
@@ -83,8 +84,7 @@ public:
         input_thread.join();
         main_thread.join();
     }
-private:
-    bool running_;
+    // bool running_;
 };
 
 // [[noreturn]] void TestWindow() {

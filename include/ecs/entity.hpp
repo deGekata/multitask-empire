@@ -194,11 +194,9 @@ public:
     ComponentHandle() : manager_(nullptr) {
     }
 
-    ComponentHandle( const ComponentHandle & ) = default;
-
-    ~ComponentHandle(); 
-    
     bool IsValid() const;
+
+    operator bool() const;
 
     Component* operator->();
     const Component* operator->() const;
@@ -719,12 +717,13 @@ bool Entity::HasComponent() const {
 }
 
 template <typename Component>
-ComponentHandle<Component>::~ComponentHandle(){
+bool ComponentHandle<Component>::IsValid() const {
+    return manager_ && manager_->IsValid(id_) && manager_->template HasComponent<Component>(id_);
 }
 
 template <typename Component>
-bool ComponentHandle<Component>::IsValid() const {
-    return manager_ && manager_->IsValid(id_) && manager_->template HasComponent<Component>(id_);
+ComponentHandle<Component>::operator bool() const {
+    return IsValid();
 }
 
 template <typename Component>

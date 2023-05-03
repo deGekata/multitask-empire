@@ -22,18 +22,25 @@ void KeyboardInputSystem::Configure(ecs::EntityManager&, ecs::EventManager& even
     ADD_CMD_MATCH(ATTACK_TWO, K)
     ADD_CMD_MATCH(DEATH, S)
     ADD_CMD_MATCH(JUMP, W)
+    ADD_CMD_MATCH(TEXT_INSERT_REQUEST, T)
+
+    cur_key_ = igraphicslib::KeyboardKey::Unknown;
 }
 
 void KeyboardInputSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta){
     entities.Each<PlayerTag>([this, &events](ecs::Entity player, PlayerTag&){
         for (auto event = events_queue_.front(); !events_queue_.empty(); events_queue_.pop_front()) {
             if(event.type == igraphicslib::EventType::KeyPressed) {
+                if(event.ked.key == cur_key_) continue;
+                cur_key_ = event.ked.key;
+
                 PLAYER_CMD matched_cmd = KeyPressedCmdMatcher[static_cast<uint>(event.ked.key)];
                 if(matched_cmd != PLAYER_CMD::INVALID) {
                     events.Emit<PlayerCommandEvent>(matched_cmd, player);
                 }
             }
             else if(event.type == igraphicslib::EventType::KeyReleased) {
+                cur_key_ = igraphicslib::KeyboardKey::Unknown;
                 PLAYER_CMD matched_cmd = KeyPressedCmdMatcher[static_cast<uint>(event.ked.key)];
                 
                 if(matched_cmd != PLAYER_CMD::INVALID) {

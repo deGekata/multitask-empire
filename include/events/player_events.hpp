@@ -2,6 +2,8 @@
 #define H_PlAYER_EVENTS
 
 #include <string>
+#include <sstream>
+
 #include <ecs/event.hpp>
 
 #include <components/player_components.hpp>
@@ -16,7 +18,9 @@ enum class PLAYER_CMD {
     ATTACK_TWO,
     DEATH,
     JUMP,
+    TEXT_INSERT_REQUEST
 };
+
 const size_t MAX_N_CMDS = 200;
 
 struct PlayerInitiatedEvent : public ecs::Event<PlayerInitiatedEvent> {
@@ -42,6 +46,18 @@ struct PlayerCommandEvent : public ecs::Event<PlayerCommandEvent> {
 
     PLAYER_CMD  cmd_;
     ecs::Entity entity_;
+};
+
+struct PlayerTextRequestEvent : public ecs::Event<PlayerTextRequestEvent> {
+    explicit PlayerTextRequestEvent(std::stringstream ss): cmd_(std::istream_iterator<std::string>(ss), std::istream_iterator<std::string>()) {
+    }
+
+    PlayerTextRequestEvent(const PlayerTextRequestEvent& other) = default;
+
+    ~PlayerTextRequestEvent() override{
+    }
+
+    std::vector<std::string>  cmd_;
 };
 
 struct SpriteSheetLoadRequest : public ecs::Event<SpriteSheetLoadRequest> {

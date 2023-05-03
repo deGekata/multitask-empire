@@ -29,7 +29,7 @@ RendererSystem::RendererSystem() :
     ADD_CMD_STR_MATCH(JUMP)
 }
 
-void RendererSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
+void RendererSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     // events.Subscribe<PendingMovementEvent>(*this);
     // events.Subscribe<LandingEvent>(*this);
     // events.Subscribe<MovementStopEvent>(*this);
@@ -52,7 +52,7 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
     auto tmp = animation_data.sprite_sheet_->sprite_.Crop(rect);
 
     int x_coord = static_cast<int>(cur_pos.x_) - static_cast<int>(frame_pos.x_offset_);
-    int y_coord = static_cast<int>(window_.GetSurfRect().h) - static_cast<int>(frame_pos.h_) * SPRITE_SCALE - (static_cast<int>(cur_pos.y_));
+    int y_coord = static_cast<int>(static_cast<int>(window_.GetSurfRect().h) - static_cast<int>(frame_pos.h_) * SPRITE_SCALE) - (static_cast<int>(cur_pos.y_));
 
     if(is_flipped) {
         tmp.SetScale(-SPRITE_SCALE, SPRITE_SCALE);
@@ -203,9 +203,9 @@ void RendererSystem::Recieve(const PlayerInitiatedEvent& event) {
     // };
 
     RenderFrameData data = {
+        .n_new_state_  = 0,
         .idle_request_ = true,
-        .is_flipped_   = false,
-        .n_new_state_  = 0
+        .is_flipped_   = false
     };
 
     ecs::Entity entity = event.entity_;

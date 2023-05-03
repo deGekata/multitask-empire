@@ -259,7 +259,7 @@ void XmlParser::ShowFailedParseWarning(RetCode res) {
     }
 }
 
-bool XmlParser::Parse(const std::string& xml_path, ecs::Entity entity) {
+bool XmlParser::Parse(const std::string& xml_path, ecs::EntityManager* entities) {
     // todo: to ostream
 
     FILE* xml_file = fopen(xml_path.c_str(), "r");
@@ -287,19 +287,36 @@ bool XmlParser::Parse(const std::string& xml_path, ecs::Entity entity) {
 
     SpriteSheet component;
 
-    while ((res = ParseTexture(GetPathStr(xml_path), &component)) == RetCode::PARSED) {
-        component.texture_ = igraphicslib::Texture(component.img_path_.c_str());
-        component.sprite_.SetTexture(igraphicslib::Texture(component.img_path_.c_str()));
-        entity.AssignFromCopy(std::move(component));
-    }
+    // todo: refactor(error handling)
+    do {
+        res = ParseTexture(GetPathStr(xml_path), &component);
 
-    if (res == RetCode::PARSE_END) {
+        if(res != RET_CODE::PARSED && res != RET_CODE::PARSE_END) {
+            ShowFailedParseWarning(res);
+            return false;       
+        }
+
         component.texture_ = igraphicslib::Texture(component.img_path_.c_str());
         component.sprite_.SetTexture(igraphicslib::Texture(component.img_path_.c_str()));
-        entity.AssignFromCopy(std::move(component));
-    } else {
-        ShowFailedParseWarning(res);
-        return false;
-    }
+        // if(entity.HasComponent<SpriteSheet>()) {
+        //     auto storage = entities->GetEntitiesWithComponents<ObjectAnimationData>();
+        //     SpriteSheet* p_spritesheet = entity.GetComponent<SpriteSheet>().Get();
+            
+        //     for(auto entity_iter = storage.begin(); entity_iter != storage.end(); entity_iter.operator++()) {
+        //         if((*entity_iter).GetComponent<ObjectAnimationData>().Get()->sprite_sheet_ == p_spritesheet) {
+
+        //             (*entity_iter).Remove<ObjectAnimationData>();
+        //         }
+        //     }
+        //     entity.Remove<SpriteSheet>();
+        // }
+        
+        ecs::Entity spritesheet_storage = entities->Create();
+        spritesheet_storage.Assign<SpriteSheetStorageTag>();
+
+        spritesheet_storage.AssignFromCopy(std::move(component));
+
+    } while(res != RetCode::PARSE_END);
+
     return true;
 }

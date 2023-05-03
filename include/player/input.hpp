@@ -49,7 +49,10 @@ private:
     std::mutex                      pooling_lock_;
     std::mutex                      system_members_access_lock_;
     std::atomic<bool>               is_request_to_stop_pooling_;
-    std::atomic<bool>               is_pooling_is_stopped_;                
+    std::atomic<bool>               is_pooling_is_stopped_;      
+
+    // todo: remove
+    igraphicslib::KeyboardKey       cur_key_;          
 };
 
 #endif // INPUT_SYSTEM_HPP
