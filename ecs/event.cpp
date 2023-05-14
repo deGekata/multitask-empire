@@ -2,10 +2,9 @@
 
 namespace ecs {
 
-EventBase::FamilyType EventBase::family_counter_ = 0;
+EventBase::FamilyType EventBase::family_counter = 0;
 
-ReceiverBase::ReceiverBase()
-    : connections_() {
+ReceiverBase::ReceiverBase() : connections_() {
 }
 
 ReceiverBase::~ReceiverBase() {
@@ -33,9 +32,7 @@ ReceiverBase::ConnectionsInfo ReceiverBase::ConnectionsList() {
     return connections_;
 }
 
-EventManager::EventManager()
-	: utility::NonCopiable(),
-	  tracker_() {
+EventManager::EventManager() : utility::NonCopiable(), tracker_() {
 }
 
 size_t EventManager::RecieversCount() const {
@@ -49,14 +46,13 @@ size_t EventManager::RecieversCount() const {
 }
 
 EventTrackingManager& EventManager::Tracker() {
-	return tracker_;
+    return tracker_;
 }
 
 std::shared_ptr<EventSignal>& EventManager::SignalFromFamily(EventBase::FamilyType family) {
-	if (family >= handlers_.size()) {
-		handlers_.resize(family + 1);
-
-	}
+    if (family >= handlers_.size()) {
+        handlers_.resize(family + 1);
+    }
 
     if (!handlers_[family]) {
         handlers_[family] = std::make_shared<EventSignal>();
@@ -66,7 +62,7 @@ std::shared_ptr<EventSignal>& EventManager::SignalFromFamily(EventBase::FamilyTy
 }
 
 EventTrackingManager::EventTrackingManager() {
-	tracking_events_.reset();
+    tracking_events_.reset();
 }
 
-} // namespace ecs
+}  // namespace ecs

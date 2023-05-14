@@ -18,8 +18,6 @@ public:
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
     void Recieve(const PlayerCommandEvent& event);
-private:
-    std::deque<PlayerCommandEvent> events_queue_;
 };
 
 #endif

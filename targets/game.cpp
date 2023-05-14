@@ -11,8 +11,13 @@
 
 #include <bot/bot.hpp>
 
+#include <battle/attack.hpp>
+#include <battle/health.hpp>
+
 #include <collision/collision.hpp>
 #include <collision/stopper.hpp>
+
+#include <gameplay/controller.hpp>
 
 #include <physics/movement.hpp>
 #include <physics/mv_commands.hpp>
@@ -49,8 +54,13 @@ public:
         systems_.Add<CollisionSystem>();
         systems_.Add<CollisionStopperSystem>();
 
+        systems_.Add<AttackSystem>();
+        systems_.Add<HealthSystem>();
+
         systems_.Add<PlayerSystem>();
         systems_.Add<BotSystem>();
+
+        systems_.Add<ControllerSystem>();
 
         systems_.Configure();
 
@@ -67,15 +77,15 @@ public:
 
     void Pool() {
         while (GetState()) {
-                // auto new_timer = std::chrono::steady_clock::now();
-                // auto dt = std::chrono::duration_cast<std::chrono::seconds>(new_timer - prev_timer);
+            // auto new_timer = std::chrono::steady_clock::now();
+            // auto dt = std::chrono::duration_cast<std::chrono::seconds>(new_timer - prev_timer);
 
-                // std::cout << "Delta is " << dt.count() << std::endl;
-                
-                Update(1);
+            // std::cout << "Delta is " << dt.count() << std::endl;
 
-                // prev_timer = new_timer;
-            }
+            Update(1);
+
+            // prev_timer = new_timer;
+        }
     }
 
     void Init() {
@@ -118,9 +128,8 @@ public:
 //         window.DrawRect({700, 2, 250, 97}, igraphicslib::colors::kMagenta);
 //         window.Update();
 //         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        
-//     }
 
+//     }
 
 // }
 

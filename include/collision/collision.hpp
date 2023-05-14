@@ -12,7 +12,7 @@
 
 struct CollideInfo {
   Position pos_;
-  Collidable box_;
+  HitBox box_;
 };
 
 class CollisionSystem : public ecs::System<CollisionSystem>, public ecs::Reciever<CollisionSystem> {

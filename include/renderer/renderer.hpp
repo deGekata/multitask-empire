@@ -38,7 +38,6 @@ private:
     void LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos, bool is_flipped);
 
 private:    
-    std::unordered_set<ecs::Entity> inspected_entities_;
     // todo: to entities??
     igraphicslib::Window            window_;
 

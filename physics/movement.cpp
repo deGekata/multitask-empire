@@ -25,19 +25,26 @@ void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& eve
             vel.vy_ += acc.ay_ * dt;
         });
 
-    entities.Each<Position, Velocity>([dt, &events](ecs::Entity entity, Position& pos, Velocity& vel) {
-        pos.y_ = std::max(0l, pos.y_ + vel.vy_ * dt);
-        pos.x_ += vel.vx_ * dt;
+    entities.Each<Position, Velocity, Rotation>(
+        [dt, &events](ecs::Entity entity, Position& pos, Velocity& vel, Rotation& rotation) {
+            pos.y_ = std::max(0l, pos.y_ + vel.vy_ * dt);
+            pos.x_ += vel.vx_ * dt;
 
-        if ((pos.y_ == 0) && (vel.vy_ != 0)) {
-            LandingEvent landing_event{entity};
-            events.Emit<LandingEvent>(landing_event);
-
-            if (vel.vx_ == 0) {
-                events.Emit<MovementStopEvent>();
+            if (vel.vx_ < 0) {
+                rotation.is_flipped_ = true;
+            } else if (vel.vx_ > 0) {
+                rotation.is_flipped_ = false;
             }
-        }
-    });
+
+            if ((pos.y_ == 0) && (vel.vy_ != 0)) {
+                LandingEvent landing_event{entity};
+                events.Emit<LandingEvent>(landing_event);
+
+                if (vel.vx_ == 0) {
+                    events.Emit<MovementStopEvent>();
+                }
+            }
+        });
 }
 
 void MovementSystem::Recieve(const PlayerInitiatedEvent& new_player) {
@@ -46,4 +53,5 @@ void MovementSystem::Recieve(const PlayerInitiatedEvent& new_player) {
     player_entity.Assign<Position>();
     player_entity.Assign<Velocity>();
     player_entity.Assign<Acceleration>();
+    player_entity.Assign<Rotation>();
 }

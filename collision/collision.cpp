@@ -16,7 +16,7 @@ void CollisionSystem::Update(ecs::EntityManager& entities, ecs::EventManager& ev
 }
 
 void CollisionSystem::CollectCandidates(ecs::EntityManager& entities) {
-    entities.Each<Position, Collidable>([this](const ecs::Entity& entity, const Position& pos, const Collidable& box) {
+    entities.Each<Position, HitBox>([this](const ecs::Entity& entity, const Position& pos, const HitBox& box) {
         candidates_[entity] = {pos, box};
     });
 }
@@ -43,5 +43,6 @@ bool CollisionSystem::IsCollide(const CollideInfo& lhs, const CollideInfo& rhs) 
 void CollisionSystem::Recieve(const PlayerInitiatedEvent& new_player) {
     ecs::Entity entity = new_player.entity_;
 
-    entity.Assign<Collidable>(kDefaultWidth, kDefaultHeight);
+    entity.Assign<HitBox>(kDefaultWidth, kDefaultHeight);
+    entity.Assign<CollidableTag>();
 }

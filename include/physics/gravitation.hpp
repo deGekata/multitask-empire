@@ -18,10 +18,6 @@ public:
 
     void Recieve(const PlayerCommandEvent& event);
     void Recieve(const LandingEvent& event);
-
-private:
-    std::deque<ecs::Entity> jumpers_queue_;
-    std::deque<ecs::Entity> landers_queue_;
 };
 
 #endif

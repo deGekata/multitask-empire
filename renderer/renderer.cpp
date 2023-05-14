@@ -65,7 +65,7 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
     window_.DrawSprite({x_coord, y_coord}, tmp);
 }
 
-void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
+void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
     if (metrics::CheckDuration(rerender_timestamp_, metrics::kNSecForGapBetweenRenders)) {
         return;
     }
@@ -77,21 +77,17 @@ void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDe
 
     window_.Clear();
 
-    for (auto target : inspected_entities_) {
-        if (target.HasComponent<ObjectAnimationData>()) {
-            auto cur_pos = *target.GetComponent<Position>();
-            auto player_animation_data = target.GetComponent<ObjectAnimationData>().Get();
-            auto frame_data = *target.GetComponent<RenderFrameData>();
-
-            LaunchAnimationFrame(*player_animation_data, cur_pos, frame_data.is_flipped_);
+    entities.Each<ObjectAnimationData, RenderFrameData, Position, Rotation>(
+        [this, is_frame_change](ecs::Entity, ObjectAnimationData& player_animation_data, RenderFrameData& frame_data,
+                                Position& cur_pos, Rotation& rotation) {
+            LaunchAnimationFrame(player_animation_data, cur_pos, rotation.is_flipped_);
 
             if (is_frame_change) {
-                if (player_animation_data->UpdateFrame() && frame_data.idle_request_) {
-                    player_animation_data->n_sprite_sheet_state_ = frame_data.n_new_state_;
+                if (player_animation_data.UpdateFrame() && frame_data.idle_request_) {
+                    player_animation_data.n_sprite_sheet_state_ = frame_data.n_new_state_;
                 }
             }
-        }
-    }
+        });
 
     window_.Update();
     // std::this_thread::sleep_for(std::chrono::milliseconds(ANIMATION_FREEZE_TIME));
@@ -102,7 +98,7 @@ void RendererSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDe
 // }
 
 void RendererSystem::Recieve(const PlayerCommandEvent& event) {
-    if (inspected_entities_.find(event.entity_) == inspected_entities_.end()) {
+    if (!event.entity_.HasComponent<RenderFrameData>()) {
         return;
     }
 
@@ -115,8 +111,6 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
     if (event.cmd_ == cur_player_state_) {
         return;
     }
-
-    assert(event.entity_.HasComponent<RenderFrameData>());
 
     ecs::Entity entity = event.entity_;
     auto frame_data = entity.GetComponent<RenderFrameData>().Get();
@@ -131,17 +125,10 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
 
             break;
         }
-        case PlayerCommand::WALK_LEFT: {
-            frame_data->is_flipped_ = true;
+        case PlayerCommand::WALK_LEFT:
             event_cmd = PlayerCommand::WALK_RIGHT;
-
-            break;
-        }
-        case PlayerCommand::WALK_RIGHT: {
-            frame_data->is_flipped_ = false;
-
-            break;
-        }
+            FMT_FALLTHROUGH;
+        case PlayerCommand::WALK_RIGHT:
         case PlayerCommand::INVALID:
         case PlayerCommand::ATTACK_ONE:
         case PlayerCommand::ATTACK_TWO:
@@ -149,42 +136,40 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
             cur_player_state_ = event_cmd;
     }
 
-    for (auto target : inspected_entities_) {
-        if (!target.HasComponent<PlayerTag>() || !target.HasComponent<ObjectAnimationData>()) {
-            continue;
+    if (!entity.HasComponent<ObjectAnimationData>()) {
+        return;
+    }
+
+    ObjectAnimationData* animation_storage = entity.GetComponent<ObjectAnimationData>().Get();
+
+    if (animation_storage->sprite_sheet_ == nullptr) {
+        std::cout << "player doesn't have attached spritesheet, so new state won't appear on da screan\n";
+        return;
+    }
+
+    std::string str_cmd = command_converter_[event_cmd];
+    uint n_state_in_sprite_sheet = UINT32_MAX;
+
+    size_t n_states_in_spritesheet = animation_storage->sprite_sheet_->states_.size();
+    std::vector<typename SpriteSheet::StateData>* sprite_sheet_states = &animation_storage->sprite_sheet_->states_;
+
+    for (uint n_state = 0; n_state < n_states_in_spritesheet; n_state++) {
+        if (sprite_sheet_states->at(n_state).name_ == str_cmd) {
+            n_state_in_sprite_sheet = n_state;
+            break;
         }
+    }
 
-        ObjectAnimationData* animation_storage = target.GetComponent<ObjectAnimationData>().Get();
+    if (n_state_in_sprite_sheet == UINT32_MAX) {
+        std::cout << "state data not found on xml " << animation_storage->sprite_sheet_->img_path_ << ", exiting\n";
+        assert(0);
+    }
 
-        if (animation_storage->sprite_sheet_ == nullptr) {
-            std::cout << "player doesn't have attached spritesheet, so new state won't appear on da screan\n";
-            return;
-        }
-
-        std::string str_cmd = command_converter_[event_cmd];
-        uint n_state_in_sprite_sheet = UINT32_MAX;
-
-        size_t n_states_in_spritesheet = animation_storage->sprite_sheet_->states_.size();
-        std::vector<typename SpriteSheet::StateData>* sprite_sheet_states = &animation_storage->sprite_sheet_->states_;
-
-        for (uint n_state = 0; n_state < n_states_in_spritesheet; n_state++) {
-            if (sprite_sheet_states->at(n_state).name_ == str_cmd) {
-                n_state_in_sprite_sheet = n_state;
-                break;
-            }
-        }
-
-        if (n_state_in_sprite_sheet == UINT32_MAX) {
-            std::cout << "state data not found on xml " << animation_storage->sprite_sheet_->img_path_ << ", exiting\n";
-            assert(0);
-        }
-
-        if (frame_data->idle_request_) {
-            frame_data->n_new_state_ = n_state_in_sprite_sheet;
-        } else {
-            animation_storage->n_sprite_sheet_state_ = n_state_in_sprite_sheet;
-            animation_storage->cur_frame_ = 0;
-        }
+    if (frame_data->idle_request_) {
+        frame_data->n_new_state_ = n_state_in_sprite_sheet;
+    } else {
+        animation_storage->n_sprite_sheet_state_ = n_state_in_sprite_sheet;
+        animation_storage->cur_frame_ = 0;
     }
 }
 
@@ -207,12 +192,11 @@ void RendererSystem::Recieve(const PlayerInitiatedEvent& event) {
     //     .is_flipped_    = false
     // };
 
-    RenderFrameData data = {.n_new_state_ = 0, .idle_request_ = true, .is_flipped_ = false};
+    RenderFrameData data = {.n_new_state_ = 0, .idle_request_ = true};
 
     ecs::Entity entity = event.entity_;
 
     entity.Assign<RenderFrameData>(data);
-    inspected_entities_.insert(event.entity_);
 }
 
 // void RendererSystem::Recieve(const LandingEvent& event) {

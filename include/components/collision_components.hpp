@@ -3,8 +3,10 @@
 
 #include <cstdint>
 
-struct Collidable {
-    explicit Collidable(int64_t width = 0, int64_t height = 0) : width_(width), height_(height) {
+struct CollidableTag {};
+
+struct HitBox {
+    explicit HitBox(int64_t width = 0, int64_t height = 0) : width_(width), height_(height) {
     }
 
     int64_t width_;

@@ -1,7 +1,7 @@
 TARGET_DIR := targets
 TEST_DIR := tests
 
-SRC_DIRS := src ecs signal player physics renderer logger geometry graphics/SFML spritesheet utility bot collision
+SRC_DIRS := src ecs signal player physics renderer logger geometry graphics/SFML spritesheet utility bot collision gameplay battle
 VPATH += $(SRC_DIRS) $(TEST_DIR) $(TARGET_DIR)
 
 INC_DIRS := include
@@ -26,7 +26,7 @@ CXX_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 -Wno-nested-anon-types -Wno-gnu-anonymous-struct -Wno-missing-prototypes\
 -Wno-documentation -Wno-documentation-unknown-command -Wno-weak-vtables\
 -Wno-unused-const-variable -Wno-format-nonliteral -Wno-global-constructors\
--Wno-exit-time-destructors -Wno-error=padded -Wno-padded
+-Wno-exit-time-destructors -Wno-error=padded -Wno-padded -Wno-deprecated-copy-with-dtor
 
 LD_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 -fcheck-new -fsized-deallocation -fstack-protector -fstrict-overflow\
