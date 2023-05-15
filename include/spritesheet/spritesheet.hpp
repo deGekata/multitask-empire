@@ -16,6 +16,12 @@ public:
     void LoadSpriteSheet(const std::string& xml_path);
 
     void Recieve(const SpriteSheetLoadRequest& event);
+    void Recieve(const PlayerTextRequestEvent& event);
+    void Recieve(const SkinChangeRequest& event);
+    
+private:
+    void ChangeSkin(ecs::Entity entity, std::string skin_path);
+    void LoadSprites();
 private:
     // todo: remove, cause system shouldn't storage any data
     XmlParser parser_;

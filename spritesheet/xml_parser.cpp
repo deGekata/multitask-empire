@@ -202,23 +202,30 @@ RetCode XmlParser::ParseSubTexture(SpriteSheet* component) {
     CHECK(GetArg("height", height_str))
 
     SpriteSheet::StateFrame frame;
-    frame.x_ = std::stoi(x_str);
-    frame.y_ = std::stoi(y_str);
-    frame.w_ = std::stoi(width_str);
-    frame.h_ = std::stoi(height_str);
-
-    p_poses->push_back(frame);
+    frame.x_ = static_cast<uint>(std::stoi(x_str));
+    frame.y_ = static_cast<uint>(std::stoi(y_str));
+    frame.w_ = static_cast<uint>(std::stoi(width_str));
+    frame.h_ = static_cast<uint>(std::stoi(height_str));
 
     if (*buf_iter_ == '/') {
+        p_poses->push_back(frame);
         CHECK(Skip("/>"))
         return RetCode::PARSED;
     }
 
-    CHECK(SkipArg("frameX"))
-    CHECK(SkipArg("frameY"))
-    CHECK(SkipArg("frameWidth"))
-    CHECK(SkipArg("frameHeight"))
+    std::string frameX_str, frameY_str, frameW_str, frameH_str;
 
+    CHECK(GetArg("frameX", frameX_str))
+    CHECK(GetArg("frameY", frameY_str))
+    CHECK(GetArg("frameWidth", frameW_str))
+    CHECK(GetArg("frameHeight", frameH_str))
+
+    frame.x_offset_ = (std::stoi(frameX_str));
+    frame.y_offset_ = (std::stoi(frameY_str));
+    frame.frame_w_  = static_cast<uint>(std::stoi(frameW_str));
+    frame.frame_h_  = static_cast<uint>(std::stoi(frameH_str));
+
+    p_poses->push_back(frame);
     CHECK(Skip("/>"))
 
     return RetCode::PARSED;
@@ -252,7 +259,7 @@ void XmlParser::ShowFailedParseWarning(RetCode res) {
     }
 }
 
-bool XmlParser::Parse(const std::string& xml_path, ecs::Entity entity) {
+bool XmlParser::Parse(const std::string& xml_path, ecs::EntityManager* entities) {
     // todo: to ostream
 
     FILE* xml_file = fopen(xml_path.c_str(), "r");
@@ -280,15 +287,36 @@ bool XmlParser::Parse(const std::string& xml_path, ecs::Entity entity) {
 
     SpriteSheet component;
 
-    while ((res = ParseTexture(GetPathStr(xml_path), &component)) == RetCode::PARSED) {
-        entity.AssignFromCopy(std::move(component));
-    }
+    // todo: refactor(error handling)
+    do {
+        res = ParseTexture(GetPathStr(xml_path), &component);
 
-    if (res == RetCode::PARSE_END) {
-        entity.AssignFromCopy(std::move(component));
-    } else {
-        ShowFailedParseWarning(res);
-        return false;
-    }
+        if(res != RET_CODE::PARSED && res != RET_CODE::PARSE_END) {
+            ShowFailedParseWarning(res);
+            return false;       
+        }
+
+        component.texture_ = igraphicslib::Texture(component.img_path_.c_str());
+        component.sprite_.SetTexture(igraphicslib::Texture(component.img_path_.c_str()));
+        // if(entity.HasComponent<SpriteSheet>()) {
+        //     auto storage = entities->GetEntitiesWithComponents<ObjectAnimationData>();
+        //     SpriteSheet* p_spritesheet = entity.GetComponent<SpriteSheet>().Get();
+            
+        //     for(auto entity_iter = storage.begin(); entity_iter != storage.end(); entity_iter.operator++()) {
+        //         if((*entity_iter).GetComponent<ObjectAnimationData>().Get()->sprite_sheet_ == p_spritesheet) {
+
+        //             (*entity_iter).Remove<ObjectAnimationData>();
+        //         }
+        //     }
+        //     entity.Remove<SpriteSheet>();
+        // }
+        
+        ecs::Entity spritesheet_storage = entities->Create();
+        spritesheet_storage.Assign<SpriteSheetStorageTag>();
+
+        spritesheet_storage.AssignFromCopy(std::move(component));
+
+    } while(res != RetCode::PARSE_END);
+
     return true;
 }

@@ -6,38 +6,48 @@
 #include <components/movement_components.hpp>
 
 void MovementCommandsSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
-    events.Subscribe<PendingMovementEvent>(*this);
+    events.Subscribe<PlayerCommandEvent>(*this);
 }
 
 void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
-    for (auto event = events_queue_.front(); !events_queue_.empty(); events_queue_.pop_front()) {
-        switch (event.type_) {
-            case MovementCommand::Jump: {
-                auto position = event.target_.GetComponent<Position>();
-                if (position->y_ == 0) {
-                    auto velocity = event.target_.GetComponent<Velocity>();
-                    velocity->vy_ = kJumpSpeed;
-                }
-                break;
-            }
-
-            case MovementCommand::Left: {
-                auto velocity = event.target_.GetComponent<Velocity>();
-                velocity->vx_ = -kMoveSpeed;
-
-                break;
-            }
-
-            case MovementCommand::Right: {
-                auto velocity = event.target_.GetComponent<Velocity>();
-                velocity->vx_ = kMoveSpeed;
-
-                break;
-            }
-        }
-    }
 }
 
-void MovementCommandsSystem::Recieve(const PendingMovementEvent& event) {
-    events_queue_.push_back(event);
+void MovementCommandsSystem::Recieve(const PlayerCommandEvent& event) {
+    ecs::Entity entity = event.entity_;
+
+    switch (event.cmd_) {
+        case PlayerCommand::JUMP: {
+            auto position = entity.GetComponent<Position>();
+            if (position->y_ == 0) {
+                auto velocity = entity.GetComponent<Velocity>();
+                velocity->vy_ = kJumpSpeed;
+            }
+            break;
+        }
+
+        case PlayerCommand::WALK_LEFT: {
+            auto velocity = entity.GetComponent<Velocity>();
+            velocity->vx_ = -kMoveSpeed;
+
+            break;
+        }
+
+        case PlayerCommand::WALK_RIGHT: {
+            auto velocity = entity.GetComponent<Velocity>();
+            velocity->vx_ = kMoveSpeed;
+
+            break;
+        }
+
+        case PlayerCommand::IDLE: { 
+            if (entity.GetComponent<Position>()->y_ == 0) {
+                entity.GetComponent<Velocity>()->vx_ = 0;
+            }
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
 }

@@ -88,7 +88,7 @@ public:
      */
     template <typename System, typename... Args>
     System* Add(Args&&... args) {
-        System* s = new System(std::forward<Args>(args)...);
+        auto* s = new System(std::forward<Args>(args)...);
         Add(s);
         return s;
     }
@@ -109,7 +109,7 @@ public:
             return nullptr;
         }
 
-        return it->second;
+        return reinterpret_cast<System*>(it->second);
     }
 
     /**

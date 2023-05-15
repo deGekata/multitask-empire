@@ -3,14 +3,14 @@
 
 namespace ecs {
 
-const Entity::Id Entity::INVALID_ID;
-BaseComponent::Family BaseComponent::family_counter_ = 0;
+const Entity::Id Entity::kInvalidId;
+BaseComponent::Family BaseComponent::family_counter = 0;
 
 Entity::Id::Id(const uint64_t id) : id_(id) {
 }
 
 Entity::Id::Id(const uint32_t index, const uint32_t generation)
-    : id_(uint64_t(index) | (uint64_t(generation) << 32ul)) {
+    : id_(static_cast<uint64_t>(index) | (static_cast<uint64_t>(generation) << 32ul)) {
 }
 
 uint64_t Entity::Id::GetId() const {
@@ -35,13 +35,10 @@ uint32_t Entity::Id::GetGeneration() const {
     return static_cast<uint32_t>(id_ >> 32);
 }
 
-Entity::Entity() : manager_(nullptr), id_(INVALID_ID) {
+Entity::Entity() : manager_(nullptr), id_(kInvalidId) {
 }
 
 Entity::Entity(EntityManager* manager, Id id) : manager_(manager), id_(id) {
-}
-
-Entity::~Entity() {
 }
 
 bool Entity::operator==(const Entity& other) const {
@@ -62,7 +59,7 @@ bool Entity::IsValid() const {
 
 void Entity::Invalidate() {
     manager_ = nullptr;
-    id_ = INVALID_ID;
+    id_ = kInvalidId;
 }
 
 Entity::Id Entity::GetId() const {
@@ -90,15 +87,11 @@ void EntityManager::Reset() {
     }
 
     for (BasePool* pool : component_pools_) {
-        if (pool) {
-            delete pool;
-        }
+        delete pool;
     }
 
-    for (BaseComponentHelper* helper : component_helpers_) {
-        if (helper) {
-            delete helper;
-        }
+    for (IBaseComponentHelper* helper : component_helpers_) {
+        delete helper;
     }
 
     component_pools_.clear();
@@ -130,12 +123,6 @@ void Entity::Destroy() {
 
 ComponentMask Entity::GetComponentMask() const {
     return manager_->GetComponentMask(id_);
-}
-
-EntityCreatedEvent::~EntityCreatedEvent() {
-}
-
-EntityDestroyedEvent::~EntityDestroyedEvent() {
 }
 
 Entity EntityManager::Create() {
@@ -171,7 +158,7 @@ Entity EntityManager::CreateFromCopy(const Entity original) {
     auto mask = original.GetComponentMask();
 
     for (uint64_t component_idx = 0; component_idx < component_helpers_.size(); component_idx++) {
-        BaseComponentHelper* helper = component_helpers_[component_idx];
+        IBaseComponentHelper* helper = component_helpers_[component_idx];
 
         if (helper && mask.test(component_idx)) {
             helper->CopyComponentTo(original, clone);
@@ -188,7 +175,7 @@ void EntityManager::Destroy(const Entity::Id entity) {
     auto mask = entity_component_mask_[index];
 
     for (uint64_t component_idx = 0; component_idx < component_helpers_.size(); component_idx++) {
-        BaseComponentHelper* helper = component_helpers_[component_idx];
+        IBaseComponentHelper* helper = component_helpers_[component_idx];
 
         if (helper && mask.test(component_idx)) {
             helper->RemoveComponent({this, entity});
@@ -246,8 +233,7 @@ void BaseComponent::operator delete[](void*) {
     std::abort();
 }
 
-TrackingManager::TrackingManager(EntityManager* tracking_manager):
-    tracking_manager_(tracking_manager) {
+TrackingManager::TrackingManager(EntityManager* tracking_manager) : tracking_manager_(tracking_manager) {
 
     tracking_entities_.reset();
     tracking_components_on_adding_.reset();
@@ -255,17 +241,17 @@ TrackingManager::TrackingManager(EntityManager* tracking_manager):
 }
 
 void TrackingManager::TrackEntity(uint32_t index) {
-    assert(index < tracking_entities_.size() && tracking_manager_); 
+    assert(index < tracking_entities_.size() && tracking_manager_);
     tracking_entities_.set(index);
 }
 
 void TrackingManager::UnTrackEntity(uint32_t index) {
-    assert(index < tracking_entities_.size() && tracking_manager_); 
+    assert(index < tracking_entities_.size() && tracking_manager_);
     tracking_entities_.reset(index);
 }
 
 bool TrackingManager::IsEntityTracking(uint32_t index) {
-    assert(index < tracking_entities_.size() && tracking_manager_); 
+    assert(index < tracking_entities_.size() && tracking_manager_);
     return tracking_entities_.test(index);
 }
 

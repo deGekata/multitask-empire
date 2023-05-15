@@ -22,6 +22,7 @@ WindowPImpl::WindowPImpl(uint32_t width, uint32_t height, const char* title)
 
 Window::Window(uint32_t width, uint32_t height, const char* title) : wp_(new WindowPImpl(width, height, title)) {
     assert(wp_ != nullptr);
+    
 }
 
 Window::~Window() {

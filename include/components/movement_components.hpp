@@ -18,4 +18,8 @@ struct Acceleration {
     int64_t ay_;
 };
 
+struct Rotation {
+    bool is_flipped_;
+};
+
 #endif

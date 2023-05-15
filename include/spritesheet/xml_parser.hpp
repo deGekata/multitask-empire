@@ -8,7 +8,7 @@
 class XmlParser {
 public:
 
-    bool Parse(const std::string& xml_path, ecs::Entity entity);
+    bool Parse(const std::string& xml_path, ecs::EntityManager* entities);
 
     enum class RET_CODE {
         PARSED,

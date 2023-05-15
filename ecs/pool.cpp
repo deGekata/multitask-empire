@@ -3,8 +3,7 @@
 namespace ecs {
 
 BasePool::BasePool(const uint64_t element_size, const uint64_t chunk_size)
-    : element_size_(element_size),
-      chunk_size_(chunk_size) {
+    : element_size_(element_size), chunk_size_(chunk_size) {
 }
 
 BasePool::~BasePool() {
@@ -53,7 +52,7 @@ void* BasePool::GetElement(const uint64_t idx) {
 
 const void* BasePool::GetElement(const uint64_t idx) const {
     assert(idx < size_);
-    
+
     void* ret = const_cast<BasePool*>(this)->GetElement(idx);
     return const_cast<const void*>(ret);
 }

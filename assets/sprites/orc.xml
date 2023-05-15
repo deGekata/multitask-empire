@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"/>
+<TextureAtlas imagePath="orc.png">
+<SubTexture name="ATTACK_ONE0000" x="0" y="0" width="82" height="61" frameX="-9" frameY="-35" frameWidth="96" frameHeight="96" />
+<SubTexture name="ATTACK_ONE0001" x="82" y="0" width="37" height="60" frameX="-30" frameY="-36" frameWidth="96" frameHeight="96" />
+<SubTexture name="ATTACK_ONE0002" x="119" y="0" width="67" height="60" frameX="-28" frameY="-36" frameWidth="96" frameHeight="96" />
+<SubTexture name="ATTACK_ONE0003" x="186" y="0" width="61" height="60" frameX="-27" frameY="-36" frameWidth="96" frameHeight="96" />
+<SubTexture name="ATTACK_TWO0000" x="247" y="0" width="61" height="60" frameX="-25" frameY="-36" frameWidth="96" frameHeight="96" />
+<SubTexture name="ATTACK_TWO0001" x="0" y="61" width="47" height="60" frameX="-22" frameY="-36" frameWidth="96" frameHeight="96" />
+<SubTexture name="ATTACK_TWO0002" x="47" y="61" width="39" height="60" frameX="-21" frameY="-36" frameWidth="96" frameHeight="96" />
+<SubTexture name="ATTACK_TWO0003" x="86" y="61" width="71" height="67" frameX="-21" frameY="-29" frameWidth="96" frameHeight="96" />
+<SubTexture name="ATTACK_TWO0004" x="157" y="61" width="68" height="60" frameX="-20" frameY="-36" frameWidth="96" frameHeight="96" />
+<SubTexture name="GET_DOWN0000" x="225" y="61" width="39" height="59" frameX="-9" frameY="-37" frameWidth="96" frameHeight="96" />
+<SubTexture name="GET_DOWN0001" x="0" y="128" width="39" height="54" frameX="-9" frameY="-42" frameWidth="96" frameHeight="96" />
+<SubTexture name="GET_DOWN0002" x="39" y="128" width="52" height="50" frameX="-9" frameY="-46" frameWidth="96" frameHeight="96" />
+<SubTexture name="GET_DOWN0003" x="91" y="128" width="70" height="27" frameX="-9" frameY="-69" frameWidth="96" frameHeight="96" />
+<SubTexture name="IDLE0000" x="161" y="128" width="63" height="61" frameX="-17" frameY="-35" frameWidth="96" frameHeight="96" />
+<SubTexture name="IDLE0001" x="224" y="128" width="63" height="61" frameX="-17" frameY="-35" frameWidth="96" frameHeight="96" />
+<SubTexture name="IDLE0002" x="0" y="189" width="63" height="61" frameX="-17" frameY="-35" frameWidth="96" frameHeight="96" />
+<SubTexture name="IDLE0003" x="63" y="189" width="63" height="62" frameX="-17" frameY="-34" frameWidth="96" frameHeight="96" />
+<SubTexture name="IDLE0004" x="126" y="189" width="63" height="62" frameX="-17" frameY="-34" frameWidth="96" frameHeight="96" />
+<SubTexture name="JUMP0000" x="189" y="189" width="63" height="60" frameX="-21" frameY="-36" frameWidth="96" frameHeight="96" />
+<SubTexture name="JUMP0001" x="252" y="189" width="63" height="60" frameX="-20" frameY="-36" frameWidth="96" frameHeight="96" />
+<SubTexture name="JUMP0002" x="0" y="251" width="55" height="65" frameX="-16" frameY="-20" frameWidth="96" frameHeight="96" />
+<SubTexture name="JUMP0003" x="55" y="251" width="55" height="66" frameX="-16" frameY="-19" frameWidth="96" frameHeight="96" />
+<SubTexture name="JUMP0004" x="110" y="251" width="59" height="59" frameX="-17" frameY="-37" frameWidth="96" frameHeight="96" />
+<SubTexture name="WALK_RIGHT0000" x="169" y="251" width="46" height="62" frameX="-27" frameY="-34" frameWidth="96" frameHeight="96" />
+<SubTexture name="WALK_RIGHT0001" x="215" y="251" width="45" height="61" frameX="-28" frameY="-35" frameWidth="96" frameHeight="96" />
+<SubTexture name="WALK_RIGHT0002" x="0" y="317" width="44" height="62" frameX="-29" frameY="-34" frameWidth="96" frameHeight="96" />
+<SubTexture name="WALK_RIGHT0003" x="44" y="317" width="42" height="63" frameX="-30" frameY="-33" frameWidth="96" frameHeight="96" />
+<SubTexture name="WALK_RIGHT0004" x="86" y="317" width="42" height="62" frameX="-30" frameY="-34" frameWidth="96" frameHeight="96" />
+<SubTexture name="WALK_RIGHT0005" x="128" y="317" width="42" height="61" frameX="-29" frameY="-35" frameWidth="96" frameHeight="96" />
+<SubTexture name="WALK_RIGHT0006" x="170" y="317" width="42" height="63" frameX="-28" frameY="-33" frameWidth="96" frameHeight="96" />
+</TextureAtlas>

@@ -9,13 +9,24 @@
 
 #include <ecs/quick.hpp>
 
+#include <bot/bot.hpp>
+
+#include <battle/attack.hpp>
+#include <battle/health.hpp>
+
+#include <collision/collision.hpp>
+#include <collision/stopper.hpp>
+
+#include <gameplay/controller.hpp>
+
 #include <physics/movement.hpp>
 #include <physics/mv_commands.hpp>
 #include <physics/friction.hpp>
 #include <physics/gravitation.hpp>
 
-#include <player/dispatcher.hpp>
 #include <player/player.hpp>
+#include <player/input.hpp>
+#include <player/text_input.hpp>
 
 #include <renderer/renderer.hpp>
 
@@ -24,27 +35,33 @@
 
 #include <spritesheet/spritesheet.hpp>
 
-// #include <graphics/aWindow.hpp>
-// #include <graphics/aSprite.hpp>
-// #include <graphics/aText.hpp>
-// #include <graphics/aTexture.hpp>
-// #include <graphics/color.hpp>
-
 class Application : public ecs::ECS {
 public:
-    Application() : running_(true) {
+    Application() {
         systems_.Add<EcsFullLogger>();
-        systems_.Add<PlayerSystem>();
 
-        systems_.Add<DispatcherSystem>(running_);
+        systems_.Add<KeyboardInputSystem>();
+        systems_.Add<RendererSystem>();
+        systems_.Add<SpriteSheetSystem>();
+        systems_.Add<TextInputSystem>();
+
         systems_.Add<MovementCommandsSystem>();
 
         systems_.Add<GravitationSystem>();
         systems_.Add<FrictionSystem>();
         systems_.Add<MovementSystem>();
 
-        systems_.Add<RendererSystem>();
-        systems_.Add<SpriteSheetSystem>();
+        systems_.Add<CollisionSystem>();
+        systems_.Add<CollisionStopperSystem>();
+
+        systems_.Add<AttackSystem>();
+        systems_.Add<HealthSystem>();
+
+        systems_.Add<PlayerSystem>();
+        systems_.Add<BotSystem>();
+
+        systems_.Add<ControllerSystem>();
+
         systems_.Configure();
 
         logger::Print(kInfo, "Application sucessfully created\n");
@@ -55,11 +72,31 @@ public:
     }
 
     bool GetState() {
-        return running_;
+        return true;
     }
 
-private:
-    bool running_;
+    void Pool() {
+        while (GetState()) {
+            // auto new_timer = std::chrono::steady_clock::now();
+            // auto dt = std::chrono::duration_cast<std::chrono::seconds>(new_timer - prev_timer);
+
+            // std::cout << "Delta is " << dt.count() << std::endl;
+
+            Update(1);
+
+            // prev_timer = new_timer;
+        }
+    }
+
+    void Init() {
+        auto* system = reinterpret_cast<KeyboardInputSystem*>(systems_.GetSystem<KeyboardInputSystem>());
+        std::thread input_thread(&KeyboardInputSystem::Pool, system);
+        std::thread main_thread(&Application::Pool, this);
+
+        input_thread.join();
+        main_thread.join();
+    }
+    // bool running_;
 };
 
 // [[noreturn]] void TestWindow() {
@@ -70,8 +107,7 @@ private:
 //     igraphicslib::Sprite player_sprite(player_texture);
 //     igraphicslib::Rect first_pos(0u, 0u, 40u, 100u);
 //     igraphicslib::Rect second_pos(0u, 120u, 40u, 100u);
-//     bool changed = false;
-//     while (true) {
+//     bool changed = false     while (true) {
 //         window.Clear();
 //         window.DrawPoint({100, 100}, igraphicslib::colors::kGreen);
 //         window.DrawLine({14, 40}, {500, 500}, igraphicslib::colors::kRed);
@@ -92,23 +128,13 @@ private:
 //         window.DrawRect({700, 2, 250, 97}, igraphicslib::colors::kMagenta);
 //         window.Update();
 //         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        
-//     }
 
+//     }
 
 // }
 
 int main() {
     Application game;
-    
+    game.Init();
     // auto prev_timer = std::chrono::steady_clock::now();
-    while (game.GetState()) {
-        // auto new_timer = std::chrono::steady_clock::now();
-        // auto dt = std::chrono::duration_cast<std::chrono::seconds>(new_timer - prev_timer);
-
-        // std::cout << "Delta is " << dt.count() << std::endl;
-        game.Update(1);
-
-        // prev_timer = new_timer;
-    }
 }
