@@ -7,6 +7,8 @@
 #include <components/movement_components.hpp>
 #include <components/player_components.hpp>
 
+static void FillStatesNameMap(std::map<std::string, int>* storage);
+
 void BotSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<SpawnBotEvent>(*this);
 }
@@ -23,6 +25,9 @@ void BotSystem::ProcessQueue(ecs::EntityManager& entities, ecs::EventManager& ev
     if (spawn_queue_.empty()) {
         return;
     }
+
+    std::map<std::string, int> state_name_to_player_state_id;
+    FillStatesNameMap(&state_name_to_player_state_id);
 
     for (auto spawn_event = spawn_queue_.front(); !spawn_queue_.empty(); spawn_queue_.pop()) {
         ecs::Entity bot = entities.Create();
@@ -41,14 +46,26 @@ void BotSystem::ProcessQueue(ecs::EntityManager& entities, ecs::EventManager& ev
         bot.Assign<BotBehaviour>(BotBehaviour{std::move(spawn_event.behaviour_)});
         logger::Print("Set bot's behaviour\n");
 
-        events.Emit<SkinChangeRequest>(spawn_event.bot_skin_, bot);
+        events.Emit<SkinChangeRequest>(state_name_to_player_state_id, static_cast<int>(PlayerCommand::IDLE), spawn_event.bot_skin_, bot);
         logger::Print("Set bot's skin\n");
-        
-        events.Emit<PlayerCommandEvent>(PlayerCommand::IDLE, bot);
-        logger::Print("Idle event sent\n");
+
+        // events.Emit<PlayerCommandEvent>(PlayerCommand::IDLE, bot);
+        // logger::Print("Idle event sent\n");
     }
 }
 
 void BotSystem::Recieve(const SpawnBotEvent& event) {
     spawn_queue_.push(event);
+}
+
+#define ADD_CMD_STR_MATCH(cmd) storage->operator[](#cmd) = static_cast<int>(PlayerCommand::cmd);
+
+static void FillStatesNameMap(std::map<std::string, int>* storage) {
+    ADD_CMD_STR_MATCH(IDLE)
+    ADD_CMD_STR_MATCH(WALK_LEFT)
+    ADD_CMD_STR_MATCH(WALK_RIGHT)
+    ADD_CMD_STR_MATCH(ATTACK_ONE)
+    ADD_CMD_STR_MATCH(ATTACK_TWO)
+    ADD_CMD_STR_MATCH(DEATH)
+    ADD_CMD_STR_MATCH(JUMP)    
 }

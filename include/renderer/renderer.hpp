@@ -14,6 +14,7 @@
 #include <events/movement_events.hpp>
 #include <events/gravitation_events.hpp>
 #include <events/player_events.hpp>
+#include <events/renderer_events.hpp>
 
 #include <graphics/aWindow.hpp>
 #include <graphics/event.hpp>
@@ -33,6 +34,7 @@ public:
     // void Recieve(const MovementStopEvent& cmd);
     void Recieve(const PlayerCommandEvent& event);
     void Recieve(const PlayerInitiatedEvent& event);
+    void Recieve(const SpriteSheetStateChangedEvent& event);
 
 private:
     void LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos, bool is_flipped);

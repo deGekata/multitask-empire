@@ -16,11 +16,10 @@ public:
     void LoadSpriteSheet(const std::string& xml_path);
 
     void Recieve(const SpriteSheetLoadRequest& event);
-    void Recieve(const PlayerTextRequestEvent& event);
     void Recieve(const SkinChangeRequest& event);
     
 private:
-    void ChangeSkin(ecs::Entity entity, std::string skin_path);
+    void ChangeSkin(ecs::Entity entity_to_skin, const std::string& skin_path, const std::map<std::string, int>& state_name_to_id, int init_state);
     void LoadSprites();
 private:
     // todo: remove, cause system shouldn't storage any data

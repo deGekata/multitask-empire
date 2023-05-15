@@ -27,18 +27,26 @@ struct SpriteSheet {
 };
 
 struct SpriteSheetStorageTag {};
+#include <map>
+
+struct ObjectSpriteSheet {
+    SpriteSheet*        sprite_sheet_;
+    std::map<int, uint> id_to_n_state_mapping_;
+};
 
 struct ObjectAnimationData {
-    SpriteSheet* sprite_sheet_;
+    // todo: rename
+    ObjectSpriteSheet sprite_sheet_;
+    
     uint n_sprite_sheet_state_;
     uint cur_frame_;
 
     // @brief Updates frame and returns true if animation is ended
     bool UpdateFrame() {
-        assert(sprite_sheet_);
+        assert(sprite_sheet_.sprite_sheet_);
 
         cur_frame_++;
-        if (cur_frame_ == sprite_sheet_->states_[n_sprite_sheet_state_].positions_.size()) {
+        if (cur_frame_ == sprite_sheet_.sprite_sheet_->states_[n_sprite_sheet_state_].positions_.size()) {
             cur_frame_ = 0;
 
             return true;
