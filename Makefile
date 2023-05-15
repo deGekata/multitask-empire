@@ -28,6 +28,8 @@ CXX_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 -Wno-unused-const-variable -Wno-format-nonliteral -Wno-global-constructors\
 -Wno-exit-time-destructors -Wno-error=padded -Wno-padded -Wno-deprecated-copy-with-dtor
 
+LD = ld
+
 LD_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 -fcheck-new -fsized-deallocation -fstack-protector -fstrict-overflow\
 -fno-omit-frame-pointer -fPIE \
@@ -37,13 +39,13 @@ all: $(DEFAULT_TARGET)
 
 $(TARGETS): prepare $(OBJ)
 	@$(eval TARGET := $(addprefix $(BIN_DIR)/, $(addsuffix .o, $@)))
-	@make $(TARGET)
+	@+make $(TARGET)
 	@$(CXX) $(OBJ) $(TARGET) -o $(APPLICATION) $(LD_FLAGS)
-	@echo = $(APPLICATION)
+	@echo + $(LD) $(APPLICATION)
 
 $(BIN_DIR)/%.o: %.cpp
 	@$(CXX) $< -c -MD -o $@ $(CXX_FLAGS)
-	@echo + $@
+	@echo + $(CXX) $@
 
 -include $(wildcard $(BIN_DIR)/*.d)
 
