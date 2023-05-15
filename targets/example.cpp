@@ -314,7 +314,7 @@
 //         }
 //     }
 
-//     void Recieve(const CollisionEvent &collision) {
+//     void Receive(const CollisionEvent &collision) {
 //         // Events are immutable, so we can't destroy the entities here. We defer
 //         // the work until the update loop.
 //         collided.insert(collision.left_);

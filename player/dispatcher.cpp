@@ -46,6 +46,6 @@
 //     });
 // }
 
-// void DispatcherSystem::Recieve(const PlayerCommandEvent& cmd) {
+// void DispatcherSystem::Receive(const PlayerCommandEvent& cmd) {
 //     events_queue_.push_back(cmd);
 // }

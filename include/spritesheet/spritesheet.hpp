@@ -15,9 +15,9 @@ public:
     // parses xml file at path xml_path, creates component Spritesheet
     void LoadSpriteSheet(const std::string& xml_path);
 
-    void Recieve(const SpriteSheetLoadRequest& event);
-    void Recieve(const PlayerTextRequestEvent& event);
-    void Recieve(const SkinChangeRequest& event);
+    void Receive(const SpriteSheetLoadRequest& event);
+    void Receive(const PlayerTextRequestEvent& event);
+    void Receive(const SkinChangeRequest& event);
     
 private:
     void ChangeSkin(ecs::Entity entity, std::string skin_path);

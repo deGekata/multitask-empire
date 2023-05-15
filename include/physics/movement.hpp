@@ -11,7 +11,7 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Recieve(const PlayerInitiatedEvent& new_player);
+    void Receive(const PlayerInitiatedEvent& new_player);
 private:
     metrics::TimeStorage timestamp_;
 };

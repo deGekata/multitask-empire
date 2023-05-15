@@ -12,7 +12,7 @@ void MovementCommandsSystem::Configure(ecs::EntityManager&, ecs::EventManager& e
 void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
 }
 
-void MovementCommandsSystem::Recieve(const PlayerCommandEvent& event) {
+void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
     ecs::Entity entity = event.entity_;
 
     switch (event.cmd_) {

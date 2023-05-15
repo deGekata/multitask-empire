@@ -10,7 +10,7 @@ void TextInputSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) 
 void TextInputSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
 }
 
-void TextInputSystem::Recieve(const PlayerCommandEvent& event) {
+void TextInputSystem::Receive(const PlayerCommandEvent& event) {
     if (event.cmd_ == PlayerCommand::TEXT_INSERT_REQUEST) {
         std::string cmd;
         std::cout << "> ";

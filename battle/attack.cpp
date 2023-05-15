@@ -76,7 +76,7 @@ void AttackSystem::UpdateFrames(ecs::TimeDelta dt) {
     }
 }
 
-void AttackSystem::Recieve(const PlayerInitiatedEvent& event) {
+void AttackSystem::Receive(const PlayerInitiatedEvent& event) {
     ecs::Entity entity = event.entity_;
 
     entity.Assign<Health>(Health{kBasicHealth});
@@ -85,7 +85,7 @@ void AttackSystem::Recieve(const PlayerInitiatedEvent& event) {
     entity.Assign<AttackPower>(AttackPower{kBasicAttackPower});
 }
 
-void AttackSystem::Recieve(const PlayerCommandEvent& event) {
+void AttackSystem::Receive(const PlayerCommandEvent& event) {
     if ((event.cmd_ == PlayerCommand::ATTACK_ONE) || (event.cmd_ == PlayerCommand::ATTACK_TWO)) {
         attackers_queue_.push(event.entity_);
     }

@@ -12,25 +12,25 @@
 class EcsBaseLogger : public ecs::System<EcsBaseLogger>, public ecs::ReceiverBase{
 public:
     // entity
-    virtual void Recieve(const ecs::EntityCreatedEvent& event);
-    virtual void Recieve(const ecs::EntityDestroyedEvent& event);
+    virtual void Receive(const ecs::EntityCreatedEvent& event);
+    virtual void Receive(const ecs::EntityDestroyedEvent& event);
     
     // player_components.hpp
-    virtual void Recieve(const ecs::ComponentAddedEvent<PlayerTag>& event);
-    virtual void Recieve(const ecs::ComponentRemovedEvent<PlayerTag>& event);
+    virtual void Receive(const ecs::ComponentAddedEvent<PlayerTag>& event);
+    virtual void Receive(const ecs::ComponentRemovedEvent<PlayerTag>& event);
     
     // // movement_components.hpp
-    virtual void Recieve(const ecs::ComponentAddedEvent<Position>& event);
-    virtual void Recieve(const ecs::ComponentRemovedEvent<Position>& event);
+    virtual void Receive(const ecs::ComponentAddedEvent<Position>& event);
+    virtual void Receive(const ecs::ComponentRemovedEvent<Position>& event);
     
-    virtual void Recieve(const ecs::ComponentAddedEvent<Velocity>& event);
-    virtual void Recieve(const ecs::ComponentRemovedEvent<Velocity>& event);
+    virtual void Receive(const ecs::ComponentAddedEvent<Velocity>& event);
+    virtual void Receive(const ecs::ComponentRemovedEvent<Velocity>& event);
     
-    virtual void Recieve(const ecs::ComponentAddedEvent<Acceleration>& event);
-    virtual void Recieve(const ecs::ComponentRemovedEvent<Acceleration>& event);
+    virtual void Receive(const ecs::ComponentAddedEvent<Acceleration>& event);
+    virtual void Receive(const ecs::ComponentRemovedEvent<Acceleration>& event);
 
-    virtual void Recieve(const ecs::ComponentAddedEvent<SpriteSheet>& event);
-    virtual void Recieve(const ecs::ComponentRemovedEvent<SpriteSheet>& event);
+    virtual void Receive(const ecs::ComponentAddedEvent<SpriteSheet>& event);
+    virtual void Receive(const ecs::ComponentRemovedEvent<SpriteSheet>& event);
 };
 
 class EcsFullLogger : public EcsBaseLogger{

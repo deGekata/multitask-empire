@@ -46,7 +46,7 @@ void KeyboardInputSystem::Update(ecs::EntityManager& entities, ecs::EventManager
     });
 }
 
-void KeyboardInputSystem::Recieve(const WindowInitiatedEvent& event) {
+void KeyboardInputSystem::Receive(const WindowInitiatedEvent& event) {
     if (!pooling_lock_.try_lock()) {
         std::cout << "WARNING, unable to link window to keyboard input system, because pooling is online\n";
         return;
@@ -56,7 +56,7 @@ void KeyboardInputSystem::Recieve(const WindowInitiatedEvent& event) {
     pooling_lock_.unlock();
 }
 
-void KeyboardInputSystem::Recieve(const WindowClosedEvent& event) {
+void KeyboardInputSystem::Receive(const WindowClosedEvent& event) {
     if (!pooling_lock_.try_lock()) {
         std::cout << "WARNING, unable to link window to keyboard input system, because pooling is online\n";
         return;
