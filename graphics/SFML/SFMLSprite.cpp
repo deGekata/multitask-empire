@@ -4,8 +4,10 @@ namespace igraphicslib {
 
 Sprite::Sprite() : sp_(new Sprite_) {
 }
+
 Sprite::Sprite(const Texture& texture) : sp_(new Sprite_(texture)) {
 }
+
 Sprite::Sprite(const Texture& texture, Rect rect) : sp_(new Sprite_(texture, rect)) {
 }
 
@@ -67,4 +69,5 @@ void Sprite::SetRotation(double angle) {
 void Sprite::SetScale(double scale_x, double scale_y) {
     sp_->setScale(static_cast<float>(scale_x), static_cast<float>(scale_y));
 }
+
 }  // namespace igraphicslib

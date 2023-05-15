@@ -1,6 +1,8 @@
 #include "graphics/SFML/SFMLTexture.hpp"
 #include "graphics/SFML/SFMLImage.hpp"
+
 #include <SFML/Graphics.hpp>
+
 namespace igraphicslib {
 
 Texture::Texture() : tp_(new Texture::Texture_) {
@@ -36,4 +38,5 @@ Texture::Texture(const Texture_& tp) : tp_(new Texture::Texture_(tp)) {
 void Texture::LoadFromImage(const Image& img) {
     tp_->loadFromImage(*(img.ip_));
 }
+
 }  // namespace igraphicslib
