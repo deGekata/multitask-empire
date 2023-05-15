@@ -20,10 +20,15 @@ void BotSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, 
 }
 
 void BotSystem::ProcessQueue(ecs::EntityManager& entities, ecs::EventManager& events) {
+    if (spawn_queue_.empty()) {
+        return;
+    }
+
     for (auto spawn_event = spawn_queue_.front(); !spawn_queue_.empty(); spawn_queue_.pop()) {
         ecs::Entity bot = entities.Create();
 
         entities.Tracker().TrackEntity(bot.GetId().GetIndex());
+
         //! remove
         events.Emit<PlayerInitiatedEvent>(bot);
         logger::Print("Initialized bot\n");
