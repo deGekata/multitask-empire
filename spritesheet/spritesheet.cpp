@@ -25,11 +25,11 @@ void SpriteSheetSystem::LoadSpriteSheet(const std::string& xml_path) {
     parser_.Parse(xml_path, entities_);
 }
 
-void SpriteSheetSystem::Recieve(const SpriteSheetLoadRequest& event) {
+void SpriteSheetSystem::Receive(const SpriteSheetLoadRequest& event) {
     LoadSpriteSheet(event.xml_path_);
 }
 
-void SpriteSheetSystem::Recieve(const PlayerTextRequestEvent& event) {
+void SpriteSheetSystem::Receive(const PlayerTextRequestEvent& event) {
     if (event.cmd_.empty()) {
         return;
     }
@@ -52,7 +52,7 @@ void SpriteSheetSystem::Recieve(const PlayerTextRequestEvent& event) {
     }
 }
 
-void SpriteSheetSystem::Recieve(const SkinChangeRequest& event) {
+void SpriteSheetSystem::Receive(const SkinChangeRequest& event) {
     ChangeSkin(event.entity_, event.skin_name_);
 }
 

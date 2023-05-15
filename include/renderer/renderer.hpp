@@ -28,11 +28,11 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    // void Recieve(const PendingMovementEvent& cmd);
-    // void Recieve(const LandingEvent& cmd);
-    // void Recieve(const MovementStopEvent& cmd);
-    void Recieve(const PlayerCommandEvent& event);
-    void Recieve(const PlayerInitiatedEvent& event);
+    // void Receive(const PendingMovementEvent& cmd);
+    // void Receive(const LandingEvent& cmd);
+    // void Receive(const MovementStopEvent& cmd);
+    void Receive(const PlayerCommandEvent& event);
+    void Receive(const PlayerInitiatedEvent& event);
 
 private:
     void LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos, bool is_flipped);

@@ -34,7 +34,7 @@ namespace ecs {
 
 template <typename Class, typename EventType>
 concept Receivable = requires(Class object, const EventType& event) {
-                         { object.Recieve(event) } -> std::same_as<void>;
+                         { object.Receive(event) } -> std::same_as<void>;
                      };
 
 using EventSignal = signal::Signal<void(const void*)>;
@@ -168,9 +168,9 @@ public:
 
     template <typename EventType, typename RecieverType>
     void Subscribe(RecieverType& reciever) {
-        static_assert(Receivable<RecieverType, EventType>, "Reciever must implement Recieve() method.");
+        static_assert(Receivable<RecieverType, EventType>, "Reciever must implement Receive() method.");
 
-        void (RecieverType::*receive)(const EventType& event) = &RecieverType::Recieve;
+        void (RecieverType::*receive)(const EventType& event) = &RecieverType::Receive;
         EventBase::FamilyType family = Event<EventType>::Family();
 
         // Prepare subscriber info to insert into connections list

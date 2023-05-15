@@ -93,11 +93,11 @@ void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ec
     // std::this_thread::sleep_for(std::chrono::milliseconds(ANIMATION_FREEZE_TIME));
 }
 
-// void RendererSystem::Recieve(const PendingMovementEvent& event) {
+// void RendererSystem::Receive(const PendingMovementEvent& event) {
 //     inspected_entities_.insert(event.target_);
 // }
 
-void RendererSystem::Recieve(const PlayerCommandEvent& event) {
+void RendererSystem::Receive(const PlayerCommandEvent& event) {
     if (!event.entity_.HasComponent<RenderFrameData>()) {
         return;
     }
@@ -173,17 +173,17 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
     }
 }
 
-// void RendererSystem::Recieve(const LandingEvent& event) {
+// void RendererSystem::Receive(const LandingEvent& event) {
 //     logger::Print(kInfo, "{} landed\n", event.target_.GetId().GetIndex());
 // }
 
-// void RendererSystem::Recieve(const MovementStopEvent& event) {
+// void RendererSystem::Receive(const MovementStopEvent& event) {
 //     inspected_entities_.erase(event.target_);
 
 //     logger::Print(kInfo, "{} stopped moving\n", event.target_.GetId().GetIndex());
 // }
 
-void RendererSystem::Recieve(const PlayerInitiatedEvent& event) {
+void RendererSystem::Receive(const PlayerInitiatedEvent& event) {
     // RenderFrameData data = {
     //     .cur_player_state_     = PLAYER_CMD::IDLE,
     //     .entity_        = event.entity_,
@@ -199,11 +199,11 @@ void RendererSystem::Recieve(const PlayerInitiatedEvent& event) {
     entity.Assign<RenderFrameData>(data);
 }
 
-// void RendererSystem::Recieve(const LandingEvent& event) {
+// void RendererSystem::Receive(const LandingEvent& event) {
 //     log(INFO, "{} landed\n", event.target_.GetId().GetIndex());
 // }
 
-// void RendererSystem::Recieve(const MovementStopEvent& event) {
+// void RendererSystem::Receive(const MovementStopEvent& event) {
 //     inspected_entities_.erase(event.target_);
 
 //     log(INFO, "{} stopped moving\n", event.target_.GetId().GetIndex());

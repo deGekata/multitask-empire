@@ -10,7 +10,7 @@ void CollisionStopperSystem::Configure(ecs::EntityManager&, ecs::EventManager& e
 void CollisionStopperSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
 }
 
-void CollisionStopperSystem::Recieve(const CollisionEvent& collided_pair) {
+void CollisionStopperSystem::Receive(const CollisionEvent& collided_pair) {
     ecs::Entity first_entity = collided_pair.first_collided_;
     ecs::Entity second_entity = collided_pair.second_collided_;
 

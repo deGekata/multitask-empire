@@ -5,18 +5,18 @@
 #define ENTITY_ID_STR ("<" + std::to_string(event.entity_.GetId().GetIndex()) + ":" + std::to_string(event.entity_.GetId().GetGeneration()) + ">")
 
 // define is required because we have to write the identical method on each component, that we want to log.
-// So otherwise there would be huge amount of identical methods Recieve on every type of component
+// So otherwise there would be huge amount of identical methods Receive on every type of component
 // If you see the better way how to implement this without macroses, please make your suggestion
 
 #define BASE_COMP_ADD_RESPONSE(T_COMPONENT)                                                          \
-void EcsBaseLogger::Recieve(const ecs::ComponentAddedEvent<T_COMPONENT>& event) {                                    \
+void EcsBaseLogger::Receive(const ecs::ComponentAddedEvent<T_COMPONENT>& event) {                                    \
     assert(event.entity_.IsValid());                                                                                  \
     \
     logger::Print(kInfo, "Entity{} gained {} {} \n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))), fmt::styled(#T_COMPONENT, fmt::fg(fmt::color(logger::kEcsComponentHex))), *(event.component_.Get())); \
 }
 
 #define BASE_COMP_REMOVE_RESPONSE(T_COMPONENT)                                         \
-void EcsBaseLogger::Recieve(const ecs::ComponentRemovedEvent<T_COMPONENT>& event) {                    \
+void EcsBaseLogger::Receive(const ecs::ComponentRemovedEvent<T_COMPONENT>& event) {                    \
     assert(event.entity_.IsValid());                                                                    \
                                                                                                          \
     logger::Print(kInfo, "Entity{} lost {}[ {} \n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))), fmt::styled(#T_COMPONENT, fmt::fg(fmt::color(logger::kEcsComponentHex))), *(event.component_.Get())); \
@@ -27,12 +27,12 @@ void EcsBaseLogger::Recieve(const ecs::ComponentRemovedEvent<T_COMPONENT>& event
 BASE_COMP_ADD_RESPONSE(T_COMPONENT)  \
 BASE_COMP_REMOVE_RESPONSE(T_COMPONENT)
 
-void EcsBaseLogger::Recieve(const ecs::EntityCreatedEvent& event) {
+void EcsBaseLogger::Receive(const ecs::EntityCreatedEvent& event) {
     assert(event.entity_.IsValid());
     logger::Print(kInfo, "Entity{} was created\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
 }
 
-void EcsBaseLogger::Recieve(const ecs::EntityDestroyedEvent& event) {
+void EcsBaseLogger::Receive(const ecs::EntityDestroyedEvent& event) {
     assert(event.entity_.IsValid());
     logger::Print(kInfo, "Entity{} was destroyed\n", fmt::styled(ENTITY_ID_STR, fmt::fg(fmt::color(logger::kEcsSystemHex))));
 }

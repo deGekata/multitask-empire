@@ -17,7 +17,7 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Recieve(const PlayerCommandEvent& event);
+    void Receive(const PlayerCommandEvent& event);
 };
 
 #endif

@@ -11,7 +11,7 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Recieve(const SpawnBotEvent& event);
+    void Receive(const SpawnBotEvent& event);
 
 private:
     void ProcessQueue(ecs::EntityManager& entities, ecs::EventManager& events);

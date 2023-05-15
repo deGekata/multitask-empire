@@ -40,7 +40,7 @@ bool CollisionSystem::IsCollide(const CollideInfo& lhs, const CollideInfo& rhs) 
            (std::abs(lhs.pos_.y_ - rhs.pos_.y_) <= ((lhs.box_.height_ + rhs.box_.height_) / 2));
 }
 
-void CollisionSystem::Recieve(const PlayerInitiatedEvent& new_player) {
+void CollisionSystem::Receive(const PlayerInitiatedEvent& new_player) {
     ecs::Entity entity = new_player.entity_;
 
     entity.Assign<HitBox>(kDefaultWidth, kDefaultHeight);

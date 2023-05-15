@@ -20,35 +20,25 @@ void BotSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, 
 }
 
 void BotSystem::ProcessQueue(ecs::EntityManager& entities, ecs::EventManager& events) {
-    if (spawn_queue_.empty()) {
-        return;
-    }
+    while (!spawn_queue_.empty()) {
+        auto spawn_event = spawn_queue_.front();
+        spawn_queue_.pop();
 
-    for (auto spawn_event = spawn_queue_.front(); !spawn_queue_.empty(); spawn_queue_.pop()) {
+        // Create new bot and start tracking it
         ecs::Entity bot = entities.Create();
-
         entities.Tracker().TrackEntity(bot.GetId().GetIndex());
-
-        //! remove
         events.Emit<PlayerInitiatedEvent>(bot);
-        logger::Print("Initialized bot\n");
 
+        bot.Assign<BotBehaviour>(BotBehaviour{std::move(spawn_event.behaviour_)});
         if (bot.HasComponent<Position>()) {
             *bot.GetComponent<Position>() = spawn_event.spawn_position_;
         }
-        logger::Print("Set bot's position\n");
-
-        bot.Assign<BotBehaviour>(BotBehaviour{std::move(spawn_event.behaviour_)});
-        logger::Print("Set bot's behaviour\n");
 
         events.Emit<SkinChangeRequest>(spawn_event.bot_skin_, bot);
-        logger::Print("Set bot's skin\n");
-        
         events.Emit<PlayerCommandEvent>(PlayerCommand::IDLE, bot);
-        logger::Print("Idle event sent\n");
     }
 }
 
-void BotSystem::Recieve(const SpawnBotEvent& event) {
+void BotSystem::Receive(const SpawnBotEvent& event) {
     spawn_queue_.push(event);
 }

@@ -34,8 +34,8 @@ public:
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
     /// @brief these methods mustn't be called during pooling
-    void Recieve(const WindowInitiatedEvent& event);
-    void Recieve(const WindowClosedEvent& event);
+    void Receive(const WindowInitiatedEvent& event);
+    void Receive(const WindowClosedEvent& event);
 
     /**
      * @return true, if pooling began successfuly. false, if root_window_ wasn't initiated.

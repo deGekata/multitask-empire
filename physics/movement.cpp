@@ -47,7 +47,7 @@ void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& eve
         });
 }
 
-void MovementSystem::Recieve(const PlayerInitiatedEvent& new_player) {
+void MovementSystem::Receive(const PlayerInitiatedEvent& new_player) {
     ecs::Entity player_entity = new_player.entity_;
 
     player_entity.Assign<Position>();

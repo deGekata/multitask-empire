@@ -14,7 +14,7 @@ void HealthSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs:
     });
 }
 
-void HealthSystem::Recieve(const CollisionEvent& event) {
+void HealthSystem::Receive(const CollisionEvent& event) {
     if ((event.first_collided_.HasComponent<DamagerTag>()) || (event.second_collided_.HasComponent<DamagerTag>())) {
         auto damaged_entity = event.second_collided_;
         auto damager_entity = event.first_collided_;
