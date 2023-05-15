@@ -1,7 +1,9 @@
 TARGET_DIR := targets
 TEST_DIR := tests
 
-SRC_DIRS := src ecs signal player physics renderer logger geometry graphics/SFML spritesheet utility bot collision gameplay battle
+SRC_DIRS := src ecs signal player physics renderer logger geometry\
+graphics/SFML spritesheet utility bot collision gameplay battle
+
 VPATH += $(SRC_DIRS) $(TEST_DIR) $(TARGET_DIR)
 
 INC_DIRS := include
@@ -26,14 +28,18 @@ CXX_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 -Wno-nested-anon-types -Wno-gnu-anonymous-struct -Wno-missing-prototypes\
 -Wno-documentation -Wno-documentation-unknown-command -Wno-weak-vtables\
 -Wno-unused-const-variable -Wno-format-nonliteral -Wno-global-constructors\
--Wno-exit-time-destructors -Wno-error=padded -Wno-padded -Wno-deprecated-copy-with-dtor
+-Wno-deprecated-copy-with-dtor -Wno-exit-time-destructors -Wno-error=padded\
+-Wno-padded
 
 LD = ld
 
+DYNAMIC_LIBS := -lsfml-system -lsfml-window -lsfml-graphics -lfmt
+
 LD_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 -fcheck-new -fsized-deallocation -fstack-protector -fstrict-overflow\
--fno-omit-frame-pointer -fPIE \
--lsfml-system -lsfml-window -lsfml-graphics -lfmt
+-fno-omit-frame-pointer -fPIE $(DYNAMIC_LIBS)
+
+.PHONY: all
 
 all: $(DEFAULT_TARGET)
 
@@ -49,7 +55,7 @@ $(BIN_DIR)/%.o: %.cpp
 
 -include $(wildcard $(BIN_DIR)/*.d)
 
-.PHONY: all prepare clean info run gdb valgrind
+.PHONY: run gdb valgrind prepare clean info
 
 run: all
 	@$(APPLICATION)
