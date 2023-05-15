@@ -9,6 +9,8 @@
 
 #include <events/player_events.hpp>
 
+void FillPlayerStatesNameMap(std::map<std::string, int>* storage);
+
 class PlayerSystem : public ecs::System<PlayerSystem>, public ecs::Reciever<PlayerSystem> {
 public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;

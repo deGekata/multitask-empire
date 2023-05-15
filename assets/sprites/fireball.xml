@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"/>
+<TextureAtlas imagePath="fireball.png">
+<SubTexture name="fireball FLYING0000" x="0" y="0" width="93" height="25" frameX="-2" frameY="0" frameWidth="95" frameHeight="25" />
+<SubTexture name="fireball FLYING0001" x="93" y="0" width="95" height="25" frameX="0" frameY="0" frameWidth="95" frameHeight="25" />
+<SubTexture name="fireball FLYING0002" x="0" y="25" width="93" height="25" frameX="-2" frameY="0" frameWidth="95" frameHeight="25" />
+<SubTexture name="fireball FLYING0003" x="93" y="25" width="95" height="25" frameX="0" frameY="0" frameWidth="95" frameHeight="25" />
+</TextureAtlas>

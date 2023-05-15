@@ -1,6 +1,7 @@
 #ifndef H_BOT
 #define H_BOT
 
+#include <map>
 #include <queue>
 
 #include <events/bot_events.hpp>
@@ -16,6 +17,7 @@ public:
 private:
     void ProcessQueue(ecs::EntityManager& entities, ecs::EventManager& events);
 
+    std::map<std::string, int> state_name_to_player_state_id_;
     std::queue<SpawnBotEvent> spawn_queue_;
 };
 
