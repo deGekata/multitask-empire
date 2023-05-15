@@ -22,4 +22,5 @@ struct WindowClosedEvent : public ecs::Event<WindowClosedEvent> {
     igraphicslib::Window* p_window_;
 };
 
+
 #endif  // H_GRAPHIC_EVENTS
