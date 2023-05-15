@@ -1,6 +1,7 @@
 #include <bot/bot.hpp>
 
 #include <events/player_events.hpp>
+#include <events/renderer_events.hpp>
 
 #include <components/bot_components.hpp>
 #include <components/movement_components.hpp>
