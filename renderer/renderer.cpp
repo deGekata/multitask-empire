@@ -3,34 +3,22 @@
 #include <algorithm>
 #include <thread>
 #include <limits>
+#include <cassert>
 
 #include <components/movement_components.hpp>
 #include <components/graphic_components.hpp>
 #include <components/player_components.hpp>
 
 #include <events/graphic_events.hpp>
-#include <cassert>
+#include <events/renderer_events.hpp>
 
 static constexpr double kSpriteScale = 3.0;
 
-#define ADD_CMD_STR_MATCH(cmd) command_converter_[PlayerCommand::cmd] = #cmd;
-
-RendererSystem::RendererSystem() : window_(1000, 800, "Simple"), cur_player_state_(PlayerCommand::INVALID) {
-    ADD_CMD_STR_MATCH(IDLE)
-    ADD_CMD_STR_MATCH(WALK_LEFT)
-    ADD_CMD_STR_MATCH(WALK_RIGHT)
-    ADD_CMD_STR_MATCH(ATTACK_ONE)
-    ADD_CMD_STR_MATCH(ATTACK_TWO)
-    ADD_CMD_STR_MATCH(DEATH)
-    ADD_CMD_STR_MATCH(JUMP)
+RendererSystem::RendererSystem() : window_(1000, 800, "Simple") {
 }
 
 void RendererSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
-    // events.Subscribe<PendingMovementEvent>(*this);
-    // events.Subscribe<LandingEvent>(*this);
-    // events.Subscribe<MovementStopEvent>(*this);
     events.Subscribe<PlayerInitiatedEvent>(*this);
-    events.Subscribe<PlayerCommandEvent>(*this);
     window_.Show();
 
     events.Emit<WindowInitiatedEvent>(&window_);
@@ -43,12 +31,12 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
                                           bool is_flipped) {
 
     typename SpriteSheet::StateFrame frame_pos =
-        animation_data.sprite_sheet_->states_[animation_data.n_sprite_sheet_state_]
+        animation_data.sprite_sheet_.sprite_sheet_->states_[animation_data.n_sprite_sheet_state_]
             .positions_[animation_data.cur_frame_];
 
     igraphicslib::Rect rect(frame_pos.x_, frame_pos.y_, frame_pos.w_, frame_pos.h_);
-    animation_data.sprite_sheet_->sprite_.SetTexture(animation_data.sprite_sheet_->texture_);
-    auto tmp = animation_data.sprite_sheet_->sprite_.Crop(rect);
+    animation_data.sprite_sheet_.sprite_sheet_->sprite_.SetTexture(animation_data.sprite_sheet_.sprite_sheet_->texture_);
+    auto tmp = animation_data.sprite_sheet_.sprite_sheet_->sprite_.Crop(rect);
 
     int x_coord = static_cast<int>(cur_pos.x_) - frame_pos.x_offset_;
     int y_coord =
@@ -97,7 +85,32 @@ void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ec
 //     inspected_entities_.insert(event.target_);
 // }
 
-void RendererSystem::Receive(const PlayerCommandEvent& event) {
+void RendererSystem::Recieve(const SpriteSheetStateChangedEvent& event) {
+    
+    ecs::Entity changing_object = event.entity_;
+    if (!changing_object.HasComponent<ObjectAnimationData>()) {
+        return;
+    }
+
+    ObjectAnimationData* animation_storage = changing_object.GetComponent<ObjectAnimationData>().Get();
+
+    if (animation_storage->sprite_sheet_.sprite_sheet_ == nullptr) {
+        logger::Print("player doesn't have attached spritesheet, so new state won't appear on da screan\n");
+        return;
+    }
+
+    if (animation_storage->sprite_sheet_.id_to_n_state_mapping_.count(event.state_id_) == 0) {
+        logger::Print(kWarning, "there no spritesheet state, attached to value {}\n", event.state_id_);
+        return;
+    }
+
+    animation_storage->n_sprite_sheet_state_ = animation_storage->sprite_sheet_.id_to_n_state_mapping_[event.state_id_];
+    animation_storage->cur_frame_ = 0;
+}
+
+
+/*
+void RendererSystem::Recieve(const PlayerCommandEvent& event) {
     if (!event.entity_.HasComponent<RenderFrameData>()) {
         return;
     }
@@ -143,7 +156,7 @@ void RendererSystem::Receive(const PlayerCommandEvent& event) {
     ObjectAnimationData* animation_storage = entity.GetComponent<ObjectAnimationData>().Get();
 
     if (animation_storage->sprite_sheet_ == nullptr) {
-        std::cout << "player doesn't have attached spritesheet, so new state won't appear on da screan\n";
+        logger::Print(kWarning, "player doesn't have attached spritesheet, so new state won't appear on da screan\n");
         return;
     }
 
@@ -172,6 +185,7 @@ void RendererSystem::Receive(const PlayerCommandEvent& event) {
         animation_storage->cur_frame_ = 0;
     }
 }
+*/
 
 // void RendererSystem::Receive(const LandingEvent& event) {
 //     logger::Print(kInfo, "{} landed\n", event.target_.GetId().GetIndex());

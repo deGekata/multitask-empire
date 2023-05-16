@@ -14,6 +14,10 @@ void AttackSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs:
 }
 
 void AttackSystem::ProcessAttackers(ecs::EntityManager& entities) {
+    if (attackers_queue_.empty()) {
+        return;
+    }
+    
     for (auto attacker = attackers_queue_.front(); !attackers_queue_.empty(); attackers_queue_.pop()) {
         ecs::Entity attack_frame;
 

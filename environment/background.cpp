@@ -6,8 +6,9 @@ void BackgroundSystem::Configure(ecs::EntityManager& entities, ecs::EventManager
     background.Assign<Background>();
 
     //! remove
-    events.Emit<SkinChangeRequest>("./assets/sprites/orc_berserk.png", background);
-    events.Emit<PlayerCommandEvent>(PlayerCommand::IDLE, player);
+    //???
+    // events.Emit<SkinChangeRequest>("./assets/sprites/orc_berserk.png", background);
+    // events.Emit<PlayerCommandEvent>(PlayerCommand::IDLE, player);
 }
 
 void BackgroundSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {

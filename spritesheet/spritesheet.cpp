@@ -4,14 +4,10 @@
 
 static constexpr auto kSpritesPath = "./assets/sprites/";
 
-static constexpr auto kSpriteAdd = "sprite";
-static constexpr auto kSpriteLoad = "load_sprite";
-
 void SpriteSheetSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     // LoadSpriteSheet("default_player_skin.png", "default_player_xml.png");
     events.Subscribe<SpriteSheetLoadRequest, SpriteSheetSystem>(*this);
     events.Subscribe<SkinChangeRequest, SpriteSheetSystem>(*this);
-    events.Subscribe<PlayerTextRequestEvent, SpriteSheetSystem>(*this);
 
     entities_ = &entities;
     // todo: remove
@@ -29,58 +25,50 @@ void SpriteSheetSystem::Receive(const SpriteSheetLoadRequest& event) {
     LoadSpriteSheet(event.xml_path_);
 }
 
-void SpriteSheetSystem::Receive(const PlayerTextRequestEvent& event) {
-    if (event.cmd_.empty()) {
-        return;
-    }
-
-    if (event.cmd_[0] != kSpriteAdd && event.cmd_[0] != kSpriteLoad) {
-        return;
-    }
-
-    if (event.cmd_.size() == 1) {
-        logger::Print(kWarning, "Specify what skin do you wanna load after command\n");
-        return;
-    }
-
-    // todo: refactor
-    if (event.cmd_[0] == kSpriteAdd) {
-        ecs::Entity player_entity = *entities_->GetEntitiesWithComponents<PlayerTag>().begin();
-        ChangeSkin(player_entity, event.cmd_[1]);
-    } else if (event.cmd_[0] == kSpriteLoad) {
-        LoadSpriteSheet(event.cmd_[1]);
-    }
+void SpriteSheetSystem::Recieve(const SkinChangeRequest& event) {
+    ChangeSkin(event.entity_, event.skin_name_, event.state_name_to_id_, event.init_state_);
 }
 
-void SpriteSheetSystem::Receive(const SkinChangeRequest& event) {
-    ChangeSkin(event.entity_, event.skin_name_);
-}
+void SpriteSheetSystem::ChangeSkin(ecs::Entity entity_to_skin, const std::string& skin_path, const std::map<std::string, int>& state_name_to_id, int init_state) {
 
-void SpriteSheetSystem::ChangeSkin(ecs::Entity entity_to_skin, std::string skin_path) {
-    bool was_found = false;
+    SpriteSheet* sprite_sheet = nullptr;
 
     entities_->Each<SpriteSheetStorageTag, SpriteSheet>(
-        [&was_found, &skin_path, &entity_to_skin](ecs::Entity entity, SpriteSheetStorageTag&,
-                                                  SpriteSheet& sprite_sheet) {
-            if (sprite_sheet.img_path_ == skin_path) {
-                ObjectAnimationData animation_data = {
-                    .sprite_sheet_ = entity.GetComponent<SpriteSheet>().Get(),
-                    .n_sprite_sheet_state_ = 0,
-                    .cur_frame_ = 0  // todo;
-                };
-                
-                if (entity_to_skin.HasComponent<ObjectAnimationData>()) {
-                    entity_to_skin.Replace<ObjectAnimationData>(std::move(animation_data));
-                } else {
-                    entity_to_skin.Assign<ObjectAnimationData>(animation_data);
-                }
-                was_found = true;
-            }
-        });
+    [&sprite_sheet, &skin_path](ecs::Entity entity, SpriteSheetStorageTag&,SpriteSheet& stored_sprite_sheet) {
 
-    if (!was_found) {
+        if (stored_sprite_sheet.img_path_ == skin_path) {
+            sprite_sheet = entity.GetComponent<SpriteSheet>().Get();
+        }
+    });
+
+    if(sprite_sheet == nullptr) {
         logger::Print(kWarning, "unable to find requested sprite sheet: {}\n", skin_path);
         return;
+    }
+
+    ObjectAnimationData animation_data;
+    animation_data.cur_frame_                     = 0;
+    animation_data.n_sprite_sheet_state_          = init_state;
+    animation_data.sprite_sheet_.sprite_sheet_    = sprite_sheet;
+
+    const auto& states_storage = animation_data.sprite_sheet_.sprite_sheet_->states_;
+    for(uint n_state = 0; n_state < states_storage.size(); n_state++) {
+        if(state_name_to_id.count(states_storage[n_state].name_) == 0) {
+            continue; //logger::Print(kWarning, );
+        }
+
+        int id = state_name_to_id.at(states_storage[n_state].name_);
+        if(animation_data.sprite_sheet_.id_to_n_state_mapping_.count(id) == 0){
+            //?
+            continue;
+        }
+        animation_data.sprite_sheet_.id_to_n_state_mapping_[id] = n_state;
+    }   
+
+    if (entity_to_skin.HasComponent<ObjectAnimationData>()) {
+        entity_to_skin.Replace<ObjectAnimationData>(std::move(animation_data));
+    } else {
+        entity_to_skin.Assign<ObjectAnimationData>(animation_data);
     }
 }
 

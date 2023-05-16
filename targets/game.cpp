@@ -12,6 +12,7 @@
 #include <bot/bot.hpp>
 
 #include <battle/attack.hpp>
+#include <battle/fire.hpp>
 #include <battle/health.hpp>
 
 #include <collision/collision.hpp>
@@ -56,6 +57,7 @@ public:
 
         systems_.Add<AttackSystem>();
         systems_.Add<HealthSystem>();
+        systems_.Add<FireSystem>();
 
         systems_.Add<PlayerSystem>();
         systems_.Add<BotSystem>();

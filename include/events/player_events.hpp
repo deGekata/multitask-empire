@@ -9,7 +9,7 @@
 
 #include <components/player_components.hpp>
 
-enum class PlayerCommand {
+enum class PlayerCommand : int {
     INVALID = -1,
     IDLE,
     WALK_LEFT,
@@ -18,6 +18,7 @@ enum class PlayerCommand {
     ATTACK_TWO,
     DEATH,
     JUMP,
+    FIRE,
     TEXT_INSERT_REQUEST
 };
 
