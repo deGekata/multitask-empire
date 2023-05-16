@@ -7,13 +7,13 @@
 
 #include <events/renderer_events.hpp>
 
-void FireSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
+void FireSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerCommandEvent>(*this);
 
     state_name_converter_["FIRE"] = MissleStates::FLYING;
 }
 
-void FireSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) {
+void FireSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
     ProcessFires(entities, events);
 }
 
@@ -55,7 +55,7 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
     }
 }
 
-void FireSystem::Recieve(const PlayerCommandEvent& event) {
+void FireSystem::Receive(const PlayerCommandEvent& event) {
     if (event.cmd_ == PlayerCommand::FIRE) {
         fires_queue_.push(event.entity_);
     }

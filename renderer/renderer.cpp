@@ -85,7 +85,7 @@ void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ec
 //     inspected_entities_.insert(event.target_);
 // }
 
-void RendererSystem::Recieve(const SpriteSheetStateChangedEvent& event) {
+void RendererSystem::Receive(const SpriteSheetStateChangedEvent& event) {
     
     ecs::Entity changing_object = event.entity_;
     if (!changing_object.HasComponent<ObjectAnimationData>()) {

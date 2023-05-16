@@ -25,7 +25,7 @@ void SpriteSheetSystem::Receive(const SpriteSheetLoadRequest& event) {
     LoadSpriteSheet(event.xml_path_);
 }
 
-void SpriteSheetSystem::Recieve(const SkinChangeRequest& event) {
+void SpriteSheetSystem::Receive(const SkinChangeRequest& event) {
     ChangeSkin(event.entity_, event.skin_name_, event.state_name_to_id_, event.init_state_);
 }
 
@@ -48,7 +48,7 @@ void SpriteSheetSystem::ChangeSkin(ecs::Entity entity_to_skin, const std::string
 
     ObjectAnimationData animation_data;
     animation_data.cur_frame_                     = 0;
-    animation_data.n_sprite_sheet_state_          = init_state;
+    animation_data.n_sprite_sheet_state_          = static_cast<uint>(init_state);
     animation_data.sprite_sheet_.sprite_sheet_    = sprite_sheet;
 
     const auto& states_storage = animation_data.sprite_sheet_.sprite_sheet_->states_;

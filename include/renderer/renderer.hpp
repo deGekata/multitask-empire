@@ -32,9 +32,9 @@ public:
     // void Recieve(const PendingMovementEvent& cmd);
     // void Recieve(const LandingEvent& cmd);
     // void Recieve(const MovementStopEvent& cmd);
-    void Recieve(const PlayerCommandEvent& event);
-    void Recieve(const PlayerInitiatedEvent& event);
-    void Recieve(const SpriteSheetStateChangedEvent& event);
+    void Receive(const PlayerCommandEvent& event);
+    void Receive(const PlayerInitiatedEvent& event);
+    void Receive(const SpriteSheetStateChangedEvent& event);
 
 private:
     void LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos, bool is_flipped);

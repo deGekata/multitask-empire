@@ -28,7 +28,7 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
                                    "./assets/sprites/orc_berserk.png", player_);
 }
 
-void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
+void PlayerSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
     if (changed_state_ != static_cast<int>(PlayerCommand::INVALID)) {
         // events.Emit<SpriteSheetStateChangedEvent>(changed_state_,
         // *entities.GetEntitiesWithComponents<PlayerTag>().begin());
@@ -37,7 +37,7 @@ void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& event
 }
 
 // todo: move to smth like player_switch_state_handler
-void PlayerSystem::Recieve(const PlayerCommandEvent& event) {
+void PlayerSystem::Receive(const PlayerCommandEvent& event) {
 
     switch (event.cmd_) {
         case PlayerCommand::IDLE:
@@ -54,7 +54,7 @@ void PlayerSystem::Recieve(const PlayerCommandEvent& event) {
     }
 }
 
-void PlayerSystem::Recieve(const PlayerTextRequestEvent& event) {
+void PlayerSystem::Receive(const PlayerTextRequestEvent& event) {
     if (event.cmd_.empty()) {
         return;
     }
