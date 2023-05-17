@@ -7,6 +7,12 @@
 
 #include <events/renderer_events.hpp>
 
+static const uint32_t kBasicMissleWidth = 50;
+static const uint32_t kBasicMissleHeight = 50;
+static const int64_t kBasicMissleSpeed = 40;
+
+static const double kBasicFireballMultiplier = 2.0;
+
 void FireSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerCommandEvent>(*this);
 

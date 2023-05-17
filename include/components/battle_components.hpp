@@ -19,7 +19,7 @@ struct Health {
 struct SpecialAbility {
     enum class Type {
         Fireball,
-        Spell,
+        Slime,
     };
 
     Type type_;

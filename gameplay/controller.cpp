@@ -37,7 +37,7 @@ void ControllerSystem::SwitchGameState(ecs::EntityManager& entities, ecs::EventM
     switch (current_state_) {
         case GameState::Init:
             entities.Each<PlayerTag>([](ecs::Entity entity, PlayerTag&) {
-                entity.Assign<SpecialAbility>(SpecialAbility{SpecialAbility::Type::Fireball});
+                entity.Assign<SpecialAbility>(SpecialAbility{SpecialAbility::Type::Slime});
             });
 
             current_state_ = GameState::Knight;

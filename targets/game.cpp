@@ -14,6 +14,7 @@
 #include <battle/attack.hpp>
 #include <battle/block.hpp>
 #include <battle/fire.hpp>
+#include <battle/slime.hpp>
 #include <battle/health.hpp>
 
 #include <collision/collision.hpp>
@@ -59,6 +60,7 @@ public:
         systems_.Add<AttackSystem>();
         systems_.Add<BlockSystem>();
         systems_.Add<FireSystem>();
+        systems_.Add<SlimeSystem>();
         systems_.Add<HealthSystem>();
 
         systems_.Add<PlayerSystem>();
