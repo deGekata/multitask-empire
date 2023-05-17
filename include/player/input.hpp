@@ -54,9 +54,6 @@ private:
     std::atomic<bool>               is_request_to_stop_pooling_;
     std::atomic<bool>               is_pooling_is_stopped_;  
 
-    // Map which gives command by taking keyboard key
-    std::map<uint32_t, PlayerCommand> key_to_cmd_matcher_;   
-
     // todo: remove
     igraphicslib::KeyboardKey       cur_key_;          
 };

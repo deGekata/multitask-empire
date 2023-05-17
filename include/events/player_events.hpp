@@ -7,6 +7,8 @@
 #include <ecs/entity.hpp>
 #include <ecs/event.hpp>
 
+#include <graphics/event.hpp>
+
 #include <components/player_components.hpp>
 
 enum class PlayerCommand : int {
@@ -52,6 +54,22 @@ struct PlayerTextRequestEvent : public ecs::Event<PlayerTextRequestEvent> {
     ~PlayerTextRequestEvent() override = default;
 
     std::vector<std::string> cmd_;
+};
+
+struct KeyPressedEvent : public ecs::Event<KeyPressedEvent> {
+    explicit KeyPressedEvent(igraphicslib::KeyEventData data)
+        : data_(data) {
+    }
+
+    igraphicslib::KeyEventData data_;
+};
+
+struct KeyReleasedEvent : public ecs::Event<KeyReleasedEvent> {
+    explicit KeyReleasedEvent(igraphicslib::KeyEventData data)
+        : data_(data) {
+    }
+
+    igraphicslib::KeyEventData data_;
 };
 
 #endif
