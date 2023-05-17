@@ -61,7 +61,7 @@ void SlimeSystem::ProcessSlimes(ecs::EntityManager& entities, ecs::EventManager&
         slime.Assign<FlyingSlimeTag>();
 
         slime.Assign<RenderFrameData>(RenderFrameData{0, true});
-        events.Emit<SkinChangeRequest>(state_name_converter_, SlimeStates::FLYING, "./assets/sprites/fireball.png",
+        events.Emit<SkinChangeRequest>(state_name_converter_, SlimeStates::FLYING, "./assets/sprites/slime.png",
                                        slime);
     }
 }
@@ -71,7 +71,7 @@ void SlimeSystem::ProcessAttach(ecs::EntityManager& entities, ecs::EventManager&
         ecs::Entity slime_to_change = state_change_queue_.front();
         state_change_queue_.pop();
 
-        events.Emit<SpriteSheetStateChangedEvent>(SlimeStates::FLYING, slime_to_change);
+        events.Emit<SpriteSheetStateChangedEvent>(SlimeStates::ATTACHED, slime_to_change);
     }
 }
 
