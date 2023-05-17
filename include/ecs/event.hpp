@@ -128,12 +128,12 @@ private:
  * @tparam     Derived  Custom Receiver class.
  */
 template <typename Derived>
-class Reciever : public ReceiverBase {
+class Receiver : public ReceiverBase {
 public:
-    Reciever() : ReceiverBase() {
+    Receiver() : ReceiverBase() {
     }
 
-    ~Reciever() override = default;
+    ~Receiver() override = default;
 };
 
 /**
@@ -166,27 +166,27 @@ public:
     EventManager();
     virtual ~EventManager() = default;
 
-    template <typename EventType, typename RecieverType>
-    void Subscribe(RecieverType& reciever) {
-        static_assert(Receivable<RecieverType, EventType>, "Reciever must implement Receive() method.");
+    template <typename EventType, typename ReceiverType>
+    void Subscribe(ReceiverType& receiver) {
+        static_assert(Receivable<ReceiverType, EventType>, "Receiver must implement Receive() method.");
 
-        void (RecieverType::*receive)(const EventType& event) = &RecieverType::Receive;
+        void (ReceiverType::*receive)(const EventType& event) = &ReceiverType::Receive;
         EventBase::FamilyType family = Event<EventType>::Family();
 
         // Prepare subscriber info to insert into connections list
         std::shared_ptr<EventSignal>& signal = SignalFromFamily(family);
-        EventCallbackWrapper<EventType> wrapper(std::bind(receive, &reciever, std::placeholders::_1));
+        EventCallbackWrapper<EventType> wrapper(std::bind(receive, &receiver, std::placeholders::_1));
         signal::CallBackId id = signal->Connect(wrapper);
 
-        ReceiverBase& base = reciever;
+        ReceiverBase& base = receiver;
         std::weak_ptr<EventSignal> pointer(signal);
         std::pair<std::weak_ptr<EventSignal>, signal::CallBackId> connection(pointer, id);
         base.ConnectionsList().insert(std::make_pair(family, connection));
     }
 
-    template <typename EventType, typename RecieverType>
-    void Unsubscribe(RecieverType& reciever) {
-        ReceiverBase& base = reciever;
+    template <typename EventType, typename ReceiverType>
+    void Unsubscribe(ReceiverType& receiver) {
+        ReceiverBase& base = receiver;
         auto connections = base.ConnectionsList();
         EventBase::FamilyType family = Event<EventType>::Family();
 
@@ -238,7 +238,7 @@ public:
         }
     }
 
-    size_t RecieversCount() const;
+    size_t ReceiversCount() const;
 
     EventTrackingManager& Tracker();
 

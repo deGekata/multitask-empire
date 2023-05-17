@@ -271,7 +271,7 @@
 // };
 
 // // For any two colliding bodies, destroys the bodies and emits a bunch of bodgy explosion particles.
-// class ExplosionSystem : public ecs::System<ExplosionSystem>, public ecs::Reciever<ExplosionSystem> {
+// class ExplosionSystem : public ecs::System<ExplosionSystem>, public ecs::Receiver<ExplosionSystem> {
 // public:
 //     void Configure(ecs::EntityManager &, ecs::EventManager &events) override {
 //         events.Subscribe<CollisionEvent>(*this);

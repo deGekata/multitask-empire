@@ -22,16 +22,16 @@
 #include <components/graphic_components.hpp>
 #include <components/movement_components.hpp>
 
-class RendererSystem : public ecs::System<RendererSystem>, public ecs::Reciever<RendererSystem> {
+class RendererSystem : public ecs::System<RendererSystem>, public ecs::Receiver<RendererSystem> {
 public:
     RendererSystem();
 
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    // void Recieve(const PendingMovementEvent& cmd);
-    // void Recieve(const LandingEvent& cmd);
-    // void Recieve(const MovementStopEvent& cmd);
+    // void Receive(const PendingMovementEvent& cmd);
+    // void Receive(const LandingEvent& cmd);
+    // void Receive(const MovementStopEvent& cmd);
     void Receive(const PlayerCommandEvent& event);
     void Receive(const PlayerInitiatedEvent& event);
     void Receive(const SpriteSheetStateChangedEvent& event);

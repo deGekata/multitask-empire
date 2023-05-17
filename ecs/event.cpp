@@ -35,7 +35,7 @@ ReceiverBase::ConnectionsInfo ReceiverBase::ConnectionsList() {
 EventManager::EventManager() : utility::NonCopiable(), tracker_() {
 }
 
-size_t EventManager::RecieversCount() const {
+size_t EventManager::ReceiversCount() const {
     size_t count = 0;
     for (std::shared_ptr<EventSignal> handler : handlers_) {
         if (handler) {

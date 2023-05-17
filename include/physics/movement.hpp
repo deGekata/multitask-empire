@@ -6,7 +6,7 @@
 #include <ecs/system.hpp>
 
 #include <events/player_events.hpp>
-class MovementSystem : public ecs::System<MovementSystem>, public ecs::Reciever<MovementSystem> {
+class MovementSystem : public ecs::System<MovementSystem>, public ecs::Receiver<MovementSystem> {
 public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;

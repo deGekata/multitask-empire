@@ -29,8 +29,8 @@ void SpriteSheetSystem::Receive(const SkinChangeRequest& event) {
     ChangeSkin(event.entity_, event.skin_name_, event.state_name_to_id_, event.init_state_);
 }
 
-void SpriteSheetSystem::ChangeSkin(ecs::Entity entity_to_skin, const std::string& skin_path, const std::map<std::string, int>& state_name_to_id, int init_state) {
-
+void SpriteSheetSystem::ChangeSkin(ecs::Entity entity_to_skin, const std::string& skin_path,
+                                   const std::map<std::string, int>& state_name_to_id, int init_state) {
     SpriteSheet* sprite_sheet = nullptr;
 
     entities_->Each<SpriteSheetStorageTag, SpriteSheet>(

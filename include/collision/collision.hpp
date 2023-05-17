@@ -15,17 +15,19 @@ struct CollideInfo {
   HitBox box_;
 };
 
-class CollisionSystem : public ecs::System<CollisionSystem>, public ecs::Reciever<CollisionSystem> {
+class CollisionSystem : public ecs::System<CollisionSystem>, public ecs::Receiver<CollisionSystem> {
 public:  
   void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
   void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
   void Receive(const PlayerInitiatedEvent& new_player);
+
 private:
   void CollectCandidates(ecs::EntityManager& entities);
   void ProcessCandidates(ecs::EventManager& events);
 
   static bool IsCollide(const CollideInfo& lhs, const CollideInfo& rhs);
+
 private:
   std::map<ecs::Entity, CollideInfo> candidates_;
 };

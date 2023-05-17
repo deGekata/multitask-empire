@@ -7,7 +7,7 @@
 #include <events/renderer_events.hpp>
 #include <spritesheet/xml_parser.hpp>
 
-class SpriteSheetSystem : public ecs::System<SpriteSheetSystem>, public ecs::Reciever<SpriteSheetSystem> {
+class SpriteSheetSystem : public ecs::System<SpriteSheetSystem>, public ecs::Receiver<SpriteSheetSystem>{
 public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
@@ -16,6 +16,7 @@ public:
     void LoadSpriteSheet(const std::string& xml_path);
 
     void Receive(const SpriteSheetLoadRequest& event);
+    void Receive(const PlayerTextRequestEvent& event);
     void Receive(const SkinChangeRequest& event);
 
 private:

@@ -10,7 +10,7 @@
 
 #include <ecs/quick.hpp>
 
-class AttackSystem : public ecs::System<AttackSystem>, public ecs::Reciever<AttackSystem> {
+class AttackSystem : public ecs::System<AttackSystem>, public ecs::Receiver<AttackSystem> {
     static constexpr uint32_t kBasicHealth = 100;
     static constexpr uint32_t kBasicAttackPower = 10;
 

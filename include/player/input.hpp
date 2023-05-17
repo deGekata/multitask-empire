@@ -27,7 +27,7 @@ const size_t MAX_N_KEYS = 200;
  * System has to work on the additional thread, so if you want to use it, just create std::thread on method Pool
  * 
  */
-class KeyboardInputSystem : public ecs::System<KeyboardInputSystem>, public ecs::Reciever<KeyboardInputSystem> {
+class KeyboardInputSystem : public ecs::System<KeyboardInputSystem>, public ecs::Receiver<KeyboardInputSystem> {
 public:
     
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;

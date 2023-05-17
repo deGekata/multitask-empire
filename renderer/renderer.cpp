@@ -110,7 +110,7 @@ void RendererSystem::Receive(const SpriteSheetStateChangedEvent& event) {
 
 
 /*
-void RendererSystem::Recieve(const PlayerCommandEvent& event) {
+void RendererSystem::Receive(const PlayerCommandEvent& event) {
     if (!event.entity_.HasComponent<RenderFrameData>()) {
         return;
     }

@@ -7,7 +7,7 @@
 
 // #include <events/player_events.hpp>
 
-// class DispatcherSystem : public ecs::System<DispatcherSystem>, public ecs::Reciever<DispatcherSystem> {
+// class DispatcherSystem : public ecs::System<DispatcherSystem>, public ecs::Receiver<DispatcherSystem> {
 // public:
 //     DispatcherSystem(bool& running_flag);
 

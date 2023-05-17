@@ -11,7 +11,7 @@
 
 constexpr int64_t kAttraction = 20;
 
-class GravitationSystem : public ecs::System<GravitationSystem>, public ecs::Reciever<GravitationSystem> {
+class GravitationSystem : public ecs::System<GravitationSystem>, public ecs::Receiver<GravitationSystem> {
 public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;

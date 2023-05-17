@@ -9,7 +9,7 @@
 
 #include <events/player_events.hpp>
 
-class TextInputSystem : public ecs::System<TextInputSystem>, public ecs::Reciever<TextInputSystem> {
+class TextInputSystem : public ecs::System<TextInputSystem>, public ecs::Receiver<TextInputSystem> {
 public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;

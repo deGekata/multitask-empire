@@ -7,6 +7,7 @@
 #include <ecs/system.hpp>
 
 namespace ecs {
+
 class ECS {
 public:
     ECS();
@@ -15,6 +16,7 @@ public:
     EntityManager entities_;
     SystemManager systems_;
 };
+
 };  // namespace ecs
 
 #endif

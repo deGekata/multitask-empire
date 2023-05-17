@@ -7,7 +7,7 @@
 #include <events/bot_events.hpp>
 #include <ecs/system.hpp>
 
-class BotSystem : public ecs::System<BotSystem>, public ecs::Reciever<BotSystem> {
+class BotSystem : public ecs::System<BotSystem>, public ecs::Receiver<BotSystem> {
 public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
