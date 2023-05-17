@@ -3,6 +3,7 @@
 #include <events/bot_events.hpp>
 #include <events/player_events.hpp>
 
+#include <components/battle_components.hpp>
 #include <components/bot_components.hpp>
 #include <components/player_components.hpp>
 
@@ -32,16 +33,19 @@ void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager&,
     }
 }
 
-void ControllerSystem::SwitchGameState(ecs::EntityManager&, ecs::EventManager& events, ecs::TimeDelta) {
+void ControllerSystem::SwitchGameState(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
     switch (current_state_) {
         case GameState::Init:
-            events.Emit<SpawnBotEvent>(Position{500, 0}, "./assets/sprites/knight.png",
-                                       &ControllerSystem::KnightBehaviour);
+            entities.Each<PlayerTag>([](ecs::Entity entity, PlayerTag&) {
+                entity.Assign<SpecialAbility>(SpecialAbility{SpecialAbility::Type::Fireball});
+            });
 
+            current_state_ = GameState::Knight;
             break;
 
         case GameState::Knight:
-            current_state_ = GameState::Final;
+            events.Emit<SpawnBotEvent>(Position{500, 0}, "./assets/sprites/knight.png",
+                                       &ControllerSystem::KnightBehaviour);
             break;
 
         case GameState::Final:

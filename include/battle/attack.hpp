@@ -10,13 +10,13 @@
 
 #include <ecs/quick.hpp>
 
+const uint32_t kBasicHealth = 100;
+const uint32_t kBasicAttackPower = 10;
+
+const double kBasicAttackSpeed = 5;
+const double kBasicAttackDistance = 20;
+
 class AttackSystem : public ecs::System<AttackSystem>, public ecs::Reciever<AttackSystem> {
-    static constexpr uint32_t kBasicHealth = 100;
-    static constexpr uint32_t kBasicAttackPower = 10;
-
-    static constexpr uint32_t kBasicAttackSpeed = 5;
-    static constexpr uint32_t kBasicAttackDistance = 20;
-
     struct AttackFrame {
         ecs::Entity entity_;
 

@@ -20,7 +20,8 @@ enum class PlayerCommand : int {
     ATTACK_TWO,
     DEATH,
     JUMP,
-    FIRE,
+    SPECIAL,
+    BLOCK,
     TEXT_INSERT_REQUEST
 };
 

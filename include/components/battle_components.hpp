@@ -4,6 +4,10 @@
 #include <ecs/config.hpp>
 #include <ecs/entity.hpp>
 
+struct BlockedTag {
+    ecs::TimeDelta remain_time_;
+};
+
 struct DamagerTag {
     ecs::Entity creator_;
 };
@@ -12,16 +16,34 @@ struct Health {
     int32_t health_;
 };
 
+struct SpecialAbility {
+    enum class Type {
+        Fireball,
+        Spell,
+    };
+
+    Type type_;
+};
+
 struct AttackSpeed {
-    int32_t speed_;
+    AttackSpeed() : speed_multiplier(1.0) {
+    }
+
+    double speed_multiplier;
 };
 
 struct AttackDistance {
-    int32_t distance_;
+    AttackDistance() : distance_multiplier(1.0) {
+    }
+
+    double distance_multiplier;
 };
 
 struct AttackPower {
-    int32_t power_;
+    explicit AttackPower(double multiplier = 1.0) : power_multiplier(multiplier) {
+    }
+
+    double power_multiplier;
 };
 
 #endif

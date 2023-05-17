@@ -32,7 +32,8 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
     ADD_CMD_MATCH(ATTACK_TWO, K)
     ADD_CMD_MATCH(DEATH, S)
     ADD_CMD_MATCH(JUMP, W)
-    ADD_CMD_MATCH(FIRE, F)
+    ADD_CMD_MATCH(SPECIAL, F)
+    ADD_CMD_MATCH(BLOCK, B)
     ADD_CMD_MATCH(TEXT_INSERT_REQUEST, T)
 
     //! remove

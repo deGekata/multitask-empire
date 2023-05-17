@@ -1,3 +1,4 @@
+#include <battle/attack.hpp>
 #include <battle/health.hpp>
 
 #include <components/battle_components.hpp>
@@ -29,7 +30,8 @@ void HealthSystem::Receive(const CollisionEvent& event) {
 
         if (damaged_entity.HasComponent<Health>()) {
             auto health = damaged_entity.GetComponent<Health>();
-            health->health_ -= damager_entity.GetComponent<AttackPower>()->power_;
+            health->health_ -=
+                static_cast<int64_t>(damager_entity.GetComponent<AttackPower>()->power_multiplier * kBasicAttackPower);
 
             logger::Print("{} now has health {}\n", damaged_entity.GetId().GetIndex(), health->health_);
         }

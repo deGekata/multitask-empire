@@ -47,7 +47,8 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
         missle.Assign<HitBox>(kBasicMissleWidth, kBasicMissleHeight);
 
         missle.AssignFromCopy<DamagerTag>(DamagerTag{firing_entity});
-        missle.AssignFromCopy<AttackPower>(*firing_entity.GetComponent<AttackPower>());
+        missle.AssignFromCopy<AttackPower>(
+            AttackPower{kBasicFireballMultiplier * firing_entity.GetComponent<AttackPower>()->power_multiplier});
 
         missle.Assign<RenderFrameData>(RenderFrameData{0, true});
         events.Emit<SkinChangeRequest>(state_name_converter_, MissleStates::FLYING, "./assets/sprites/fireball.png",
@@ -56,7 +57,10 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
 }
 
 void FireSystem::Receive(const PlayerCommandEvent& event) {
-    if (event.cmd_ == PlayerCommand::FIRE) {
-        fires_queue_.push(event.entity_);
+    if (event.cmd_ == PlayerCommand::SPECIAL) {
+        ecs::Entity entity = event.entity_;
+        if (entity.GetComponent<SpecialAbility>()->type_ == SpecialAbility::Type::Fireball) {
+            fires_queue_.push(event.entity_);
+        }
     }
 }

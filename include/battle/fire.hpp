@@ -13,6 +13,8 @@ const uint32_t kBasicMissleWidth = 50;
 const uint32_t kBasicMissleHeight = 50;
 const int64_t kBasicMissleSpeed = 40;
 
+const double kBasicFireballMultiplier = 2.0;
+
 class FireSystem : public ecs::System<FireSystem>, public ecs::Reciever<FireSystem> {
     enum MissleStates : int { FLYING };
 

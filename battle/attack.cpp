@@ -17,7 +17,7 @@ void AttackSystem::ProcessAttackers(ecs::EntityManager& entities) {
     if (attackers_queue_.empty()) {
         return;
     }
-    
+
     for (auto attacker = attackers_queue_.front(); !attackers_queue_.empty(); attackers_queue_.pop()) {
         ecs::Entity attack_frame;
 
@@ -38,7 +38,7 @@ void AttackSystem::ProcessAttackers(ecs::EntityManager& entities) {
         }
 
         auto power = attack_frame.GetComponent<AttackPower>();
-        power->power_ = attacker.GetComponent<AttackPower>()->power_;
+        power->power_multiplier = attacker.GetComponent<AttackPower>()->power_multiplier;
 
         auto collide_frame = attack_frame.GetComponent<HitBox>();
 
@@ -57,9 +57,10 @@ void AttackSystem::UpdateFrames(ecs::TimeDelta dt) {
         auto frame = attacker.GetComponent<HitBox>();
 
         auto attack_frame = it->second.entity_.GetComponent<HitBox>();
-        attack_frame->width_ += it->second.speed_.speed_ * dt;
+        attack_frame->width_ += static_cast<int64_t>(kBasicAttackSpeed * it->second.speed_.speed_multiplier) * dt;
 
-        if (attack_frame->width_ > it->second.distance_.distance_) {
+        if (attack_frame->width_ >
+            static_cast<int64_t>(kBasicAttackDistance * it->second.distance_.distance_multiplier)) {
             it->second.entity_.Destroy();
             delete_candidates.push_back(attacker);
 
@@ -84,9 +85,9 @@ void AttackSystem::Receive(const PlayerInitiatedEvent& event) {
     ecs::Entity entity = event.entity_;
 
     entity.Assign<Health>(Health{kBasicHealth});
-    entity.Assign<AttackSpeed>(AttackSpeed{kBasicAttackSpeed});
-    entity.Assign<AttackDistance>(AttackDistance{kBasicAttackDistance});
-    entity.Assign<AttackPower>(AttackPower{kBasicAttackPower});
+    entity.Assign<AttackSpeed>(AttackSpeed{});
+    entity.Assign<AttackDistance>(AttackDistance{});
+    entity.Assign<AttackPower>(AttackPower{});
 }
 
 void AttackSystem::Receive(const PlayerCommandEvent& event) {
