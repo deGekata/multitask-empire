@@ -8,8 +8,8 @@
 
 #include <events/player_events.hpp>
 
-const int64_t kJumpSpeed = 100;
-const int64_t kMoveSpeed = 20;
+static constexpr double kJumpSpeed = 0.005;
+static constexpr double kMoveSpeed = 0.0005;
 
 class MovementCommandsSystem : public ecs::System<MovementCommandsSystem>,
                                public ecs::Reciever<MovementCommandsSystem> {

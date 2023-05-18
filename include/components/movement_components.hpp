@@ -4,18 +4,18 @@
 #include <cstdint>
 
 struct Position {
-    int64_t x_;
-    int64_t y_;
+    double x_;
+    double y_;
 };
 
 struct Velocity {
-    int64_t vx_;
-    int64_t vy_;
+    double vx_;
+    double vy_;
 };
 
 struct Acceleration {
-    int64_t ax_;
-    int64_t ay_;
+    double ax_;
+    double ay_;
 };
 
 struct Rotation {

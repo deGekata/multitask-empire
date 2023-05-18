@@ -71,10 +71,9 @@ void AttackSystem::UpdateFrames(ecs::TimeDelta dt) {
         ecs::Entity attacker = it->first;
 
         auto attack_frame = it->second.entity_.GetComponent<HitBox>();
-        attack_frame->width_ += static_cast<int64_t>(kBasicAttackSpeed * it->second.speed_.speed_multiplier) * dt;
+        attack_frame->width_ += kBasicAttackSpeed * it->second.speed_.speed_multiplier * dt;
 
-        if (attack_frame->width_ >
-            static_cast<int64_t>(kBasicAttackDistance * it->second.distance_.distance_multiplier)) {
+        if (attack_frame->width_ > (kBasicAttackDistance * it->second.distance_.distance_multiplier)) {
             it->second.entity_.Destroy();
             delete_candidates.push_back(attacker);
 

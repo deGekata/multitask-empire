@@ -9,7 +9,7 @@
 #include <events/player_events.hpp>
 #include <events/gravitation_events.hpp>
 
-constexpr int64_t kAttraction = 20;
+static constexpr double kAttraction = 0.00000005;
 
 class GravitationSystem : public ecs::System<GravitationSystem>, public ecs::Reciever<GravitationSystem> {
 public:

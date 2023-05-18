@@ -5,7 +5,7 @@
 #include <physics/movement.hpp>
 
 constexpr int64_t kFrictionCoefficient = 3;
-constexpr int64_t kFrictionStopValue = 10;
+constexpr double kFrictionStopValue = 10.0;
 
 class FrictionSystem : public ecs::System<FrictionSystem> {
 public:

@@ -86,15 +86,15 @@ public:
     }
 
     void Pool() {
+        auto prev_timer = std::chrono::steady_clock::now();
+
         while (GetState()) {
-            // auto new_timer = std::chrono::steady_clock::now();
-            // auto dt = std::chrono::duration_cast<std::chrono::seconds>(new_timer - prev_timer);
+            auto new_timer = std::chrono::steady_clock::now();
+            auto dt = std::chrono::duration_cast<std::chrono::nanoseconds>(new_timer - prev_timer);
 
-            // std::cout << "Delta is " << dt.count() << std::endl;
+            Update(static_cast<double>(dt.count()) / 1000.0);
 
-            Update(1);
-
-            // prev_timer = new_timer;
+            prev_timer = new_timer;
         }
     }
 

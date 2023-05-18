@@ -2,8 +2,8 @@
 
 #include <events/collision_events.hpp>
 
-constexpr static int64_t kDefaultWidth = 100;
-constexpr static int64_t kDefaultHeight = 100;
+constexpr static double kDefaultWidth = 100.0;
+constexpr static double kDefaultHeight = 100.0;
 
 void CollisionSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerInitiatedEvent>(*this);

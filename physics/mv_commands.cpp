@@ -5,6 +5,8 @@
 #include <components/player_components.hpp>
 #include <components/movement_components.hpp>
 
+#include <utility/utilities.hpp>
+
 void MovementCommandsSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerCommandEvent>(*this);
 }
@@ -18,8 +20,9 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
     switch (event.cmd_) {
         case PlayerCommand::JUMP: {
             auto position = entity.GetComponent<Position>();
-            if (position->y_ == 0) {
+            if (IsEqual(position->y_, 0.0)) {
                 auto velocity = entity.GetComponent<Velocity>();
+
                 velocity->vy_ = kJumpSpeed;
             }
             break;
@@ -39,9 +42,9 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
             break;
         }
 
-        case PlayerCommand::IDLE: { 
-            if (entity.GetComponent<Position>()->y_ == 0) {
-                entity.GetComponent<Velocity>()->vx_ = 0;
+        case PlayerCommand::IDLE: {
+            if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
+                entity.GetComponent<Velocity>()->vx_ = 0.0;
             }
             break;
         }

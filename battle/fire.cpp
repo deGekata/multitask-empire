@@ -7,11 +7,11 @@
 
 #include <events/renderer_events.hpp>
 
-static const uint32_t kBasicMissleWidth = 50;
-static const uint32_t kBasicMissleHeight = 50;
-static const int64_t kBasicMissleSpeed = 40;
+static constexpr double kBasicMissleWidth = 50.0;
+static constexpr double kBasicMissleHeight = 50.0;
+static constexpr double kBasicMissleSpeed = 0.0005;
 
-static const double kBasicFireballMultiplier = 2.0;
+static constexpr double kBasicFireballMultiplier = 2.0;
 
 void FireSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerCommandEvent>(*this);
@@ -35,7 +35,7 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
         auto firing_rotation = firing_entity.GetComponent<Rotation>();
 
         Position missle_position = *firing_position;
-        Velocity missle_velocity = {-kBasicMissleSpeed, 0};
+        Velocity missle_velocity = {-kBasicMissleSpeed, 0.0};
 
         missle_position.y_ += kBasicMissleHeight;
         if (!firing_rotation->is_flipped_) {

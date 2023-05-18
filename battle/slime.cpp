@@ -7,14 +7,14 @@
 
 #include <events/renderer_events.hpp>
 
-static const uint32_t kBasicMissleWidth = 50;
-static const uint32_t kBasicMissleHeight = 50;
-static const int64_t kBasicMissleSpeed = 20;
+static constexpr double kBasicMissleWidth = 50.0;
+static constexpr double kBasicMissleHeight = 50.0;
+static constexpr double kBasicMissleSpeed = 0.0005;
 
-static const ecs::TimeDelta kBasicSlimeHoldTime = 1000000;
+static constexpr ecs::TimeDelta kBasicSlimeHoldTime = 1000000.0;
 
-static const double kBasicDamageMultiplier = 0.1;
-static const double kBasicSpeedDecrease = 0.5;
+static constexpr double kBasicDamageMultiplier = 0.1;
+static constexpr double kBasicSpeedDecrease = 0.5;
 
 void SlimeSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<CollisionEvent>(*this);

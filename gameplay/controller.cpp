@@ -22,15 +22,28 @@ void ControllerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& e
     }
 }
 
-void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager&, ecs::EventManager& events,
+void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager& entities, ecs::EventManager& events,
                                        ecs::TimeDelta dt) {
-    static ecs::TimeDelta time_since = 0;
+    // static ecs::TimeDelta time_since = 0;
+    // static uint32_t behaviour_iteration = 0;
 
-    if ((time_since += dt) >= 1000) {
-        events.Emit<PlayerCommandEvent>(PlayerCommand::JUMP, current);
+    // if ((time_since += dt) >= 1000) {
+    //     if (behaviour_iteration++ % 4) {
+    //         Position player_pos;
+    //         entities.Each<PlayerTag, Position>(
+    //             [&player_pos](ecs::Entity, PlayerTag&, Position& pos) { player_pos = pos; });
 
-        time_since = 0;
-    }
+    //         auto cur_pos = current.GetComponent<Position>();
+
+    //         if (player_pos.x_ >= cur_pos->x_) {
+    //             events.Emit<PlayerCommandEvent>(PlayerCommand::WALK_RIGHT, current);
+    //         } else {
+    //             events.Emit<PlayerCommandEvent>(PlayerCommand::WALK_LEFT, current);
+    //         }
+    //     }
+
+    //     time_since = 0;
+    // }
 }
 
 void ControllerSystem::SwitchGameState(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
