@@ -28,6 +28,10 @@ void HealthSystem::Receive(const CollisionEvent& event) {
             return;
         }
 
+        if (damaged_entity.HasComponent<BlockedTag>()) {
+            return;
+        }
+
         if (damaged_entity.HasComponent<Health>()) {
             auto health = damaged_entity.GetComponent<Health>();
             health->health_ -=

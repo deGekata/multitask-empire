@@ -18,6 +18,9 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
     player_.Assign<PlayerTag>();
 
     event_manager_ = &events;
+
+    events.Subscribe<PlayerCommandEvent>(*this);
+    events.Subscribe<PlayerInitiatedEvent>(*this);
     events.Subscribe<PlayerTextRequestEvent>(*this);
     events.Subscribe<KeyPressedEvent>(*this);
     events.Subscribe<KeyReleasedEvent>(*this);
@@ -43,7 +46,7 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
 }
 
 void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
-    
+
     // todo: fix cycle
     entities.Each<PlayerTag>([this, &events](ecs::Entity player, PlayerTag&) {
         for (auto cmd = commands_queue_.front(); !commands_queue_.empty(); commands_queue_.pop_front()) {
@@ -79,17 +82,17 @@ void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& event
 void PlayerSystem::Receive(const KeyPressedEvent& event) {
 
     PlayerCommand matched_cmd = key_to_cmd_matcher_[static_cast<uint>(event.data_.key)];
-    
-    if (matched_cmd != PlayerCommand::INVALID) {                    
+
+    if (matched_cmd != PlayerCommand::INVALID) {
         commands_queue_.push_back(matched_cmd);
     }
 }
 
 void PlayerSystem::Receive(const KeyReleasedEvent& event) {
-    
+
     PlayerCommand matched_cmd = key_to_cmd_matcher_[static_cast<uint>(event.data_.key)];
-    
-    if (matched_cmd != PlayerCommand::INVALID) {                    
+
+    if (matched_cmd != PlayerCommand::INVALID) {
         commands_queue_.push_back(PlayerCommand::IDLE);
     }
 }
@@ -116,6 +119,18 @@ void PlayerSystem::Receive(const PlayerTextRequestEvent& event) {
     } else if (event.cmd_[0] == kSpriteLoad) {
         event_manager_->Emit<SpriteSheetLoadRequest>(event.cmd_[1]);
     }
+}
+
+void PlayerSystem::Receive(const PlayerCommandEvent& event) {
+    ecs::Entity entity = event.entity_;
+
+    entity.GetComponent<LastPlayerCommand>()->cmd = event.cmd_;
+}
+
+void PlayerSystem::Receive(const PlayerInitiatedEvent& event) {
+    ecs::Entity entity = event.entity_;
+
+    entity.Assign<LastPlayerCommand>(LastPlayerCommand{PlayerCommand::INVALID});
 }
 
 #define ADD_CMD_STR_MATCH(cmd) storage->operator[](#cmd) = static_cast<int>(PlayerCommand::cmd);

@@ -1,9 +1,9 @@
 #include <battle/slime.hpp>
 
 #include <components/battle_components.hpp>
-#include <components/movement_components.hpp>
 #include <components/collision_components.hpp>
 #include <components/graphic_components.hpp>
+#include <components/utility_components.hpp>
 
 #include <events/renderer_events.hpp>
 
@@ -16,7 +16,7 @@ static const ecs::TimeDelta kBasicSlimeHoldTime = 1000000;
 static const double kBasicDamageMultiplier = 0.1;
 static const double kBasicSpeedDecrease = 0.5;
 
-void SlimeSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
+void SlimeSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<CollisionEvent>(*this);
     events.Subscribe<PlayerCommandEvent>(*this);
 
@@ -26,7 +26,7 @@ void SlimeSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& eve
 
 void SlimeSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) {
     ProcessSlimes(entities, events);
-    ProcessAttach(entities, events);
+    ProcessAttach(events);
     UpdateAttached(entities, dt);
 }
 
@@ -61,12 +61,11 @@ void SlimeSystem::ProcessSlimes(ecs::EntityManager& entities, ecs::EventManager&
         slime.Assign<FlyingSlimeTag>();
 
         slime.Assign<RenderFrameData>(RenderFrameData{0, true});
-        events.Emit<SkinChangeRequest>(state_name_converter_, SlimeStates::FLYING, "./assets/sprites/slime.png",
-                                       slime);
+        events.Emit<SkinChangeRequest>(state_name_converter_, SlimeStates::FLYING, "./assets/sprites/slime.png", slime);
     }
 }
 
-void SlimeSystem::ProcessAttach(ecs::EntityManager& entities, ecs::EventManager& events) {
+void SlimeSystem::ProcessAttach(ecs::EventManager& events) {
     while (!state_change_queue_.empty()) {
         ecs::Entity slime_to_change = state_change_queue_.front();
         state_change_queue_.pop();
@@ -78,15 +77,12 @@ void SlimeSystem::ProcessAttach(ecs::EntityManager& entities, ecs::EventManager&
 void SlimeSystem::UpdateAttached(ecs::EntityManager& entities, ecs::TimeDelta dt) {
     std::vector<ecs::Entity> slimes_to_destroy;
 
-    entities.Each<AttachedSlimeTag, Position>(
-        [dt, &slimes_to_destroy](ecs::Entity slime, AttachedSlimeTag& attached, Position& pos) {
-            pos = *attached.owner.GetComponent<Position>();
-
-            attached.time_left -= dt;
-            if (attached.time_left <= 0) {
-                slimes_to_destroy.push_back(slime);
-            }
-        });
+    entities.Each<AttachedSlimeTag>([dt, &slimes_to_destroy](ecs::Entity slime, AttachedSlimeTag& attached) {
+        attached.time_left -= dt;
+        if (attached.time_left <= 0) {
+            slimes_to_destroy.push_back(slime);
+        }
+    });
 
     for (auto& slime : slimes_to_destroy) {
         slime.Destroy();
@@ -116,8 +112,14 @@ void SlimeSystem::Receive(const CollisionEvent& event) {
         }
 
         slime_entity.Remove<FlyingSlimeTag>();
-        slime_entity.Assign<AttachedSlimeTag>(AttachedSlimeTag{owner_entity, kBasicSlimeHoldTime});
+
+        slime_entity.Assign<AttachedSlimeTag>(AttachedSlimeTag{kBasicSlimeHoldTime});
+        slime_entity.Assign<Attached>(Attached{owner_entity, &GetAttachedPosition});
 
         state_change_queue_.push(slime_entity);
     }
+}
+
+Position SlimeSystem::GetAttachedPosition(Position owner_position) {
+    return owner_position;
 }

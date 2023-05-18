@@ -3,6 +3,8 @@
 
 #include <queue>
 
+#include <components/movement_components.hpp>
+
 #include <ecs/quick.hpp>
 
 #include <events/collision_events.hpp>
@@ -11,8 +13,6 @@
 struct FlyingSlimeTag {};
 
 struct AttachedSlimeTag {
-    ecs::Entity owner;
-
     ecs::TimeDelta time_left;
 };
 
@@ -28,8 +28,10 @@ public:
 
 private:
     void ProcessSlimes(ecs::EntityManager& entities, ecs::EventManager& events);
-    void ProcessAttach(ecs::EntityManager& entities, ecs::EventManager& events);
+    void ProcessAttach(ecs::EventManager& events);
     void UpdateAttached(ecs::EntityManager& entities, ecs::TimeDelta dt);
+
+    static Position GetAttachedPosition(Position owner_position);
 
     std::map<std::string, int> state_name_converter_;
 

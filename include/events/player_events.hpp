@@ -11,20 +11,6 @@
 
 #include <components/player_components.hpp>
 
-enum class PlayerCommand : int {
-    INVALID = -1,
-    IDLE,
-    WALK_LEFT,
-    WALK_RIGHT,
-    ATTACK_ONE,
-    ATTACK_TWO,
-    DEATH,
-    JUMP,
-    SPECIAL,
-    BLOCK,
-    TEXT_INSERT_REQUEST
-};
-
 struct PlayerInitiatedEvent : public ecs::Event<PlayerInitiatedEvent> {
     explicit PlayerInitiatedEvent(ecs::Entity player_entity) : entity_(player_entity) {
     }

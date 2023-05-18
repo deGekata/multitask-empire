@@ -19,7 +19,10 @@ public:
 
     void Receive(const KeyPressedEvent& event);
     void Receive(const KeyReleasedEvent& event);
+
+    void Receive(const PlayerInitiatedEvent& event);
     void Receive(const PlayerTextRequestEvent& event);
+    void Receive(const PlayerCommandEvent& event);
 private:
     // int changed_state_;
     ecs::Entity player_;

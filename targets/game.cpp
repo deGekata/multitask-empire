@@ -38,6 +38,8 @@
 
 #include <spritesheet/spritesheet.hpp>
 
+#include <utility/attach.hpp>
+
 class Application : public ecs::ECS {
 public:
     Application() {
@@ -65,6 +67,8 @@ public:
 
         systems_.Add<PlayerSystem>();
         systems_.Add<BotSystem>();
+
+        systems_.Add<AttachSystem>();
 
         systems_.Add<ControllerSystem>();
 

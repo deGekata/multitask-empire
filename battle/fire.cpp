@@ -24,11 +24,10 @@ void FireSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events,
 }
 
 void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& events) {
-    if (fires_queue_.empty()) {
-        return;
-    }
-
-    for (auto firing_entity = fires_queue_.front(); !fires_queue_.empty(); fires_queue_.pop()) {
+    while (!fires_queue_.empty()) {
+        ecs::Entity firing_entity = fires_queue_.front();
+        fires_queue_.pop();
+        
         ecs::Entity missle = entities.Create();
 
         auto firing_position = firing_entity.GetComponent<Position>();

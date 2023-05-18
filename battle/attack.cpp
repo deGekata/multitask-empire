@@ -2,6 +2,7 @@
 
 #include <components/collision_components.hpp>
 #include <components/movement_components.hpp>
+#include <components/utility_components.hpp>
 
 void AttackSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerInitiatedEvent>(*this);
@@ -14,11 +15,10 @@ void AttackSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs:
 }
 
 void AttackSystem::ProcessAttackers(ecs::EntityManager& entities) {
-    if (attackers_queue_.empty()) {
-        return;
-    }
+    while (!attackers_queue_.empty()) {
+        auto attacker = attackers_queue_.front();
+        attackers_queue_.pop();
 
-    for (auto attacker = attackers_queue_.front(); !attackers_queue_.empty(); attackers_queue_.pop()) {
         ecs::Entity attack_frame;
 
         if (attack_frame_map_.find(attacker) == attack_frame_map_.end()) {
@@ -28,6 +28,23 @@ void AttackSystem::ProcessAttackers(ecs::EntityManager& entities) {
             attack_frame.Assign<Position>();
             attack_frame.Assign<HitBox>();
             attack_frame.Assign<AttackPower>();
+
+            auto attach_strategy = [attack_frame, attacker](Position pos) mutable {
+                auto rotation = attacker.GetComponent<Rotation>();
+                auto frame = attack_frame.GetComponent<HitBox>();
+
+                Position new_position;
+                new_position.y_ = pos.y_;
+                if (rotation->is_flipped_) {
+                    new_position.x_ = pos.x_ - frame->width_;
+                } else {
+                    new_position.x_ = pos.x_ + frame->width_;
+                }
+
+                return new_position;
+            };
+
+            attack_frame.Assign<Attached>(Attached{attacker, std::move(attach_strategy)});
 
             auto speed = attacker.GetComponent<AttackSpeed>();
             auto distance = attacker.GetComponent<AttackDistance>();
@@ -52,9 +69,6 @@ void AttackSystem::UpdateFrames(ecs::TimeDelta dt) {
 
     for (auto it = attack_frame_map_.begin(); it != attack_frame_map_.end(); it++) {
         ecs::Entity attacker = it->first;
-        auto position = attacker.GetComponent<Position>();
-        auto rotation = attacker.GetComponent<Rotation>();
-        auto frame = attacker.GetComponent<HitBox>();
 
         auto attack_frame = it->second.entity_.GetComponent<HitBox>();
         attack_frame->width_ += static_cast<int64_t>(kBasicAttackSpeed * it->second.speed_.speed_multiplier) * dt;
@@ -65,14 +79,6 @@ void AttackSystem::UpdateFrames(ecs::TimeDelta dt) {
             delete_candidates.push_back(attacker);
 
             continue;
-        }
-
-        auto attack_position = it->second.entity_.GetComponent<Position>();
-        attack_position->y_ = position->y_;
-        if (rotation->is_flipped_) {
-            attack_position->x_ = position->x_ - frame->width_;
-        } else {
-            attack_position->x_ = position->x_ + frame->width_;
         }
     }
 
