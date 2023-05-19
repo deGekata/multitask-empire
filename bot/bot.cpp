@@ -31,9 +31,10 @@ void BotSystem::ProcessQueue(ecs::EntityManager& entities, ecs::EventManager& ev
         // Create new bot and start tracking it
         ecs::Entity bot = entities.Create();
         entities.Tracker().TrackEntity(bot.GetId().GetIndex());
+        
+        bot.Assign<BotBehaviour>(BotBehaviour{std::move(spawn_event.behaviour_)});
         events.Emit<PlayerInitiatedEvent>(bot);
 
-        bot.Assign<BotBehaviour>(BotBehaviour{std::move(spawn_event.behaviour_)});
         if (bot.HasComponent<Position>()) {
             *bot.GetComponent<Position>() = spawn_event.spawn_position_;
         }

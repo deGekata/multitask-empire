@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"/>
+<TextureAtlas imagePath="hpbar.png">
+<SubTexture name="TEN0000" x="0" y="21" width="98" height="20" frameX="-5" frameY="-29" frameWidth="113" frameHeight="85" />
+<SubTexture name="TWENTY0000" x="0" y="41" width="98" height="20" frameX="-5" frameY="-29" frameWidth="113" frameHeight="85" />
+<SubTexture name="THIRTY0000" x="0" y="61" width="98" height="20" frameX="-5" frameY="-29" frameWidth="113" frameHeight="85" />
+<SubTexture name="FOURTY0000" x="98" y="0" width="98" height="20" frameX="-5" frameY="-29" frameWidth="113" frameHeight="85" />
+<SubTexture name="FIFTY0000" x="98" y="20" width="98" height="20" frameX="-5" frameY="-29" frameWidth="113" frameHeight="85" />
+<SubTexture name="SIXTY0000" x="98" y="40" width="98" height="20" frameX="-5" frameY="-29" frameWidth="113" frameHeight="85" />
+<SubTexture name="SEVENTY0000" x="98" y="60" width="98" height="20" frameX="-5" frameY="-29" frameWidth="113" frameHeight="85" />
+<SubTexture name="EIGHTY0000" x="0" y="0" width="98" height="21" frameX="-5" frameY="-28" frameWidth="113" frameHeight="85" />
+<SubTexture name="NINTY0000" x="0" y="81" width="98" height="20" frameX="-5" frameY="-29" frameWidth="113" frameHeight="85" />
+<SubTexture name="HUNDRED0000" x="98" y="81" width="98" height="20" frameX="-5" frameY="-29" frameWidth="113" frameHeight="85" />
+</TextureAtlas>

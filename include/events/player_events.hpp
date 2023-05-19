@@ -17,7 +17,8 @@ struct PlayerInitiatedEvent : public ecs::Event<PlayerInitiatedEvent> {
 
     PlayerInitiatedEvent(const PlayerInitiatedEvent& other) = default;
     ~PlayerInitiatedEvent() override = default;
-
+    
+    std::string player_name_;
     ecs::Entity entity_;
 };
 

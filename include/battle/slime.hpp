@@ -7,8 +7,8 @@
 
 #include <ecs/quick.hpp>
 
+#include <events/battle_events.hpp>
 #include <events/collision_events.hpp>
-#include <events/player_events.hpp>
 
 struct FlyingSlimeTag {};
 
@@ -23,7 +23,7 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Receive(const PlayerCommandEvent& event);
+    void Receive(const SpecialTriggerEvent& event);
     void Receive(const CollisionEvent& event);
 
 private:
