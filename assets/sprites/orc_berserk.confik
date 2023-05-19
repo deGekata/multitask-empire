@@ -1,0 +1,21 @@
+name: "azog the defiler",
+spriteSheetPath: "assets/sprites/orc_berserk.png",
+xmlPath: "assets/sprites/orc_berserk.xml",
+hpLvl: 120,     # instead of basic 100
+jmpRatio: 1.5,  # can jump in 1.5 times higher
+speedRatio: 1.2, # same
+BasicFrames: {
+    Run: "WALK_RIGHT",
+    Idle: "IDLE",
+    Death: "DEATH",
+    Jump: "JUMP"
+},
+Replics: {
+    "suck my cock",
+    "u look like lopatin's mommy"
+},
+Attacks: {
+    {"ATTACK_ONE", "Justice hit", "j", 20, no-effect},
+    {"ATTACK_TWO", "Berserk technique", "k", 30, no-effect},
+    {"ATTACK_THREE", "give me your blood", "l", 5, bleeding}
+}
