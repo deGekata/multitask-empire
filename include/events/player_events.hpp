@@ -72,4 +72,44 @@ struct KeyReleasedEvent : public ecs::Event<KeyReleasedEvent> {
     igraphicslib::KeyEventData data_;
 };
 
+struct MouseMovedEvent : public ecs::Event<MouseMovedEvent> {
+    explicit MouseMovedEvent(igraphicslib::MouseMoveEventData data)
+        : mouse_data(data) {
+    }
+
+    igraphicslib::MouseMoveEventData mouse_data;
+};
+
+struct MouseButtonPressedEvent : public ecs::Event<MouseButtonPressedEvent> {
+    explicit MouseButtonPressedEvent(igraphicslib::MouseButtonEventData data)
+        : button_data(data) {
+    }
+
+    igraphicslib::MouseButtonEventData button_data;
+};
+
+struct MouseButtonReleasedEvent : public ecs::Event<MouseButtonReleasedEvent> {
+    explicit MouseButtonReleasedEvent(igraphicslib::MouseButtonEventData data)
+        : button_data(data) {
+    }
+
+    igraphicslib::MouseButtonEventData button_data;
+};
+
+struct MouseWheelScrolledEvent : public ecs::Event<MouseWheelScrolledEvent> {
+    explicit MouseWheelScrolledEvent(igraphicslib::MouseWheelEventData data)
+        : wheel_data(data) {
+    }
+
+    igraphicslib::MouseWheelEventData wheel_data;
+};
+
+struct TimerTickedEvent : public ecs::Event<TimerTickedEvent> {
+    explicit TimerTickedEvent(igraphicslib::Event::Timepoint data)
+        : time_data(data) {
+    }
+
+    igraphicslib::Event::Timepoint time_data;
+};
+
 #endif
