@@ -13,7 +13,7 @@ struct DamagerTag {
 };
 
 struct Health {
-    int32_t health_;
+    double health_;
 };
 
 struct SpecialAbility {
@@ -26,24 +26,15 @@ struct SpecialAbility {
 };
 
 struct AttackSpeed {
-    AttackSpeed() : speed_multiplier(1.0) {
-    }
-
-    double speed_multiplier;
+    double speed_;
 };
 
 struct AttackDistance {
-    AttackDistance() : distance_multiplier(1.0) {
-    }
-
-    double distance_multiplier;
+    double distance_;
 };
 
 struct AttackPower {
-    explicit AttackPower(double multiplier = 1.0) : power_multiplier(multiplier) {
-    }
-
-    double power_multiplier;
+    double power_;
 };
 
 #endif

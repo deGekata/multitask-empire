@@ -36,8 +36,8 @@ void CollisionSystem::ProcessCandidates(ecs::EventManager& events) {
 }
 
 bool CollisionSystem::IsCollide(const CollideInfo& lhs, const CollideInfo& rhs) {
-    return (std::abs(lhs.pos_.x_ - rhs.pos_.x_) <= ((lhs.box_.width_ + rhs.box_.width_) / 2)) &&
-           (std::abs(lhs.pos_.y_ - rhs.pos_.y_) <= ((lhs.box_.height_ + rhs.box_.height_) / 2));
+    return (std::abs(lhs.pos_.x_ - rhs.pos_.x_) <= ((lhs.box_.width_ + rhs.box_.width_) / 2.0)) &&
+           (std::abs(lhs.pos_.y_ - rhs.pos_.y_) <= ((lhs.box_.height_ + rhs.box_.height_) / 2.0));
 }
 
 void CollisionSystem::Receive(const PlayerInitiatedEvent& new_player) {

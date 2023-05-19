@@ -4,6 +4,12 @@
 #include <components/movement_components.hpp>
 #include <components/utility_components.hpp>
 
+static constexpr double kBasicHealth = 100.0;
+static constexpr double kBasicAttackPower = 10.0;
+
+static constexpr double kBasicAttackSpeed = 1.0;
+static constexpr double kBasicAttackDistance = 50;
+
 void AttackSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerInitiatedEvent>(*this);
     events.Subscribe<PlayerCommandEvent>(*this);
@@ -31,6 +37,8 @@ void AttackSystem::ProcessAttackers(ecs::EntityManager& entities) {
 
             auto attach_strategy = [attack_frame, attacker](Position pos) mutable {
                 auto rotation = attacker.GetComponent<Rotation>();
+
+                auto attacker_box = attacker.GetComponent<HitBox>();
                 auto frame = attack_frame.GetComponent<HitBox>();
 
                 Position new_position;
@@ -38,7 +46,7 @@ void AttackSystem::ProcessAttackers(ecs::EntityManager& entities) {
                 if (rotation->is_flipped_) {
                     new_position.x_ = pos.x_ - frame->width_;
                 } else {
-                    new_position.x_ = pos.x_ + frame->width_;
+                    new_position.x_ = pos.x_ + attacker_box->width_;
                 }
 
                 return new_position;
@@ -55,7 +63,7 @@ void AttackSystem::ProcessAttackers(ecs::EntityManager& entities) {
         }
 
         auto power = attack_frame.GetComponent<AttackPower>();
-        power->power_multiplier = attacker.GetComponent<AttackPower>()->power_multiplier;
+        power->power_ = attacker.GetComponent<AttackPower>()->power_;
 
         auto collide_frame = attack_frame.GetComponent<HitBox>();
 
@@ -71,9 +79,9 @@ void AttackSystem::UpdateFrames(ecs::TimeDelta dt) {
         ecs::Entity attacker = it->first;
 
         auto attack_frame = it->second.entity_.GetComponent<HitBox>();
-        attack_frame->width_ += kBasicAttackSpeed * it->second.speed_.speed_multiplier * dt;
+        attack_frame->width_ += it->second.speed_.speed_ * dt;
 
-        if (attack_frame->width_ > (kBasicAttackDistance * it->second.distance_.distance_multiplier)) {
+        if (attack_frame->width_ > it->second.distance_.distance_) {
             it->second.entity_.Destroy();
             delete_candidates.push_back(attacker);
 
@@ -90,9 +98,9 @@ void AttackSystem::Receive(const PlayerInitiatedEvent& event) {
     ecs::Entity entity = event.entity_;
 
     entity.Assign<Health>(Health{kBasicHealth});
-    entity.Assign<AttackSpeed>(AttackSpeed{});
-    entity.Assign<AttackDistance>(AttackDistance{});
-    entity.Assign<AttackPower>(AttackPower{});
+    entity.Assign<AttackSpeed>(AttackSpeed{kBasicAttackSpeed});
+    entity.Assign<AttackDistance>(AttackDistance{kBasicAttackDistance});
+    entity.Assign<AttackPower>(AttackPower{kBasicAttackPower});
 }
 
 void AttackSystem::Receive(const PlayerCommandEvent& event) {

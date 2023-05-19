@@ -27,7 +27,7 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
     while (!fires_queue_.empty()) {
         ecs::Entity firing_entity = fires_queue_.front();
         fires_queue_.pop();
-        
+
         ecs::Entity missle = entities.Create();
 
         auto firing_position = firing_entity.GetComponent<Position>();
@@ -53,7 +53,7 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
 
         missle.AssignFromCopy<DamagerTag>(DamagerTag{firing_entity});
         missle.AssignFromCopy<AttackPower>(
-            AttackPower{kBasicFireballMultiplier * firing_entity.GetComponent<AttackPower>()->power_multiplier});
+            AttackPower{kBasicFireballMultiplier * firing_entity.GetComponent<AttackPower>()->power_});
 
         missle.Assign<RenderFrameData>(RenderFrameData{0, true});
         events.Emit<SkinChangeRequest>(state_name_converter_, MissleStates::FLYING, "./assets/sprites/fireball.png",
