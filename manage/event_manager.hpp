@@ -16,12 +16,16 @@
 
 namespace manage {
 
-class EventManager : public ecs::Receiver<EventManager> {
+class EventManager final : public ecs::Receiver<EventManager> {
 	using Priority = uint64_t;
 
 public:
 	EventManager();
 	explicit EventManager(EventManager* previous);
+
+	~EventManager() final;
+
+	static EventManager* Current();
 
 	// O(log N)
 	void Subscribe(objects::IObject* object, Priority priority);
@@ -51,6 +55,7 @@ public:
 
 private:
 	EventManager* previous_;
+	static EventManager* current;
 
 	std::multimap<Priority, objects::IObject*> subscribers_;
 };
