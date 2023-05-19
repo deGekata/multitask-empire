@@ -119,10 +119,6 @@ void EventManager::Receive(const MouseWheelScrolledEvent& event) {
 }
 
 void EventManager::Receive(const TimerTickedEvent& event) {
-	if (current != this) {
-		return;
-	}
-
 	for (auto& subscriber : subscribers_) {
 		subscriber.second->OnTimerTick(event.time_data);
 	}
