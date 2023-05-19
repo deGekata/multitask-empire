@@ -12,6 +12,9 @@ public:
 
     void Receive(const PlayerCommandEvent& event);
     void Receive(const PlayerInitiatedEvent& event);
+
+private:
+    ecs::EventManager* events_;
 };
 
 #endif

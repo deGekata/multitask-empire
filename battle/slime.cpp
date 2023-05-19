@@ -11,7 +11,7 @@ static constexpr double kBasicMissleWidth = 50.0;
 static constexpr double kBasicMissleHeight = 50.0;
 static constexpr double kBasicMissleSpeed = 0.0005;
 
-static constexpr ecs::TimeDelta kBasicSlimeHoldTime = 1000000.0;
+static constexpr ecs::TimeDelta kBasicSlimeHoldTime = 5000000.0;
 
 static constexpr double kBasicDamageMultiplier = 0.1;
 static constexpr double kBasicSpeedDecrease = 0.5;
@@ -60,7 +60,7 @@ void SlimeSystem::ProcessSlimes(ecs::EntityManager& entities, ecs::EventManager&
         slime.Assign<HitBox>(kBasicMissleWidth, kBasicMissleHeight);
         slime.Assign<FlyingSlimeTag>();
 
-        slime.Assign<RenderFrameData>(RenderFrameData{0, true});
+        slime.Assign<RenderFrameData>(RenderFrameData{0, false});
         events.Emit<SkinChangeRequest>(state_name_converter_, SlimeStates::FLYING, "./assets/sprites/slime.png", slime);
     }
 }

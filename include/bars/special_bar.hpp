@@ -1,39 +1,29 @@
-#ifndef H_BARS
-#define H_BARS
+#ifndef H_SPECIAL_BAR
+#define H_SPECIAL_BAR
 
 #include <ecs/quick.hpp>
 
+#include <components/bars_components.hpp>
 #include <components/movement_components.hpp>
 
-#include <events/battle_events.hpp>
 #include <events/player_events.hpp>
 
-class BarsSystem : public ecs::System<BarsSystem>, public ecs::Reciever<BarsSystem> {
-    enum BarState : int {
-      PERCENTS_10,
-      PERCENTS_20,
-      PERCENTS_30,
-      PERCENTS_40,
-      PERCENTS_50,
-      PERCENTS_60,
-      PERCENTS_70,
-      PERCENTS_80,
-      PERCENTS_90,
-      PERCENTS_100,
-    };
+class SpecialBarSystem : public ecs::System<SpecialBarSystem>, public ecs::Reciever<SpecialBarSystem> {
+    enum SpecialBarState : int { FIRST, SECOND, THIRD, FOURTH, FIFTH, SIXTH, SEVENTH, STATES_AMOUNT };
 
-    struct BarProperties {
+    struct SpecialBarProperties {
         ecs::Entity bar_entity;
-        bool is_enemy;        
+
+        bool is_enemy;
+        int32_t last_state;
     };
 
 public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Receive(const ecs::EntityDestroyedEvent& event);
     void Receive(const PlayerInitiatedEvent& event);
-    void Receive(const DamageTakenEvent& event);
+    void Receive(const ecs::EntityDestroyedEvent& event);
 
 private:
     void FillBarsStates();
@@ -44,10 +34,10 @@ private:
 
     std::map<std::string, int> state_name_converter_;
 
-    std::map<ecs::Entity, BarProperties> bar_of_entity_;
+    std::map<ecs::Entity, SpecialBarProperties> bar_of_entity_;
 
-    ecs::EntityManager* entities_;
     ecs::EventManager* events_;
+    ecs::EntityManager* entities_;
 };
 
 #endif
