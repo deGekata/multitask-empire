@@ -19,6 +19,7 @@ RendererSystem::RendererSystem() : window_(1000, 800, "Simple") {
 
 void RendererSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerInitiatedEvent>(*this);
+    events.Subscribe<SpriteSheetStateChangedEvent>(*this);
     window_.Show();
 
     events.Emit<WindowInitiatedEvent>(&window_);
