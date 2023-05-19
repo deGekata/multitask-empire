@@ -4,7 +4,10 @@
 #include <components/battle_components.hpp>
 
 void HealthSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
-    events.Subscribe<CollisionEvent>(*this);
+    events_ = &events;
+
+    events_->Subscribe<CollisionEvent>(*this);
+    events_->Subscribe<DamageTakenEvent>(*this);
 }
 
 void HealthSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
@@ -28,15 +31,21 @@ void HealthSystem::Receive(const CollisionEvent& event) {
             return;
         }
 
-        if (damaged_entity.HasComponent<BlockedTag>()) {
-            return;
-        }
+        events_->Emit<DamageTakenEvent>(damaged_entity, damager_entity.GetComponent<AttackPower>()->power_);
+    }
+}
 
-        if (damaged_entity.HasComponent<Health>()) {
-            auto health = damaged_entity.GetComponent<Health>();
-            health->health_ -= damager_entity.GetComponent<AttackPower>()->power_;
+void HealthSystem::Receive(const DamageTakenEvent& event) {
+    ecs::Entity damaged_entity = event.damaged_entity_;
 
-            logger::Print("{} now has health {}\n", damaged_entity.GetId().GetIndex(), health->health_);
-        }
+    if (damaged_entity.HasComponent<BlockedTag>()) {
+        return;
+    }
+
+    if (damaged_entity.HasComponent<Health>()) {
+        auto health = damaged_entity.GetComponent<Health>();
+        health->health_ -= event.damage_amount_;
+
+        logger::Print("{} now has health {}\n", damaged_entity.GetId().GetIndex(), health->health_);
     }
 }

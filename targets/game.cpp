@@ -12,6 +12,7 @@
 #include <bot/bot.hpp>
 
 #include <battle/attack.hpp>
+#include <battle/bars.hpp>
 #include <battle/block.hpp>
 #include <battle/fire.hpp>
 #include <battle/slime.hpp>
@@ -59,11 +60,12 @@ public:
         systems_.Add<CollisionSystem>();
         systems_.Add<CollisionStopperSystem>();
 
+        systems_.Add<HealthSystem>();
+        systems_.Add<BarsSystem>();
         systems_.Add<AttackSystem>();
         systems_.Add<BlockSystem>();
         systems_.Add<FireSystem>();
         systems_.Add<SlimeSystem>();
-        systems_.Add<HealthSystem>();
 
         systems_.Add<PlayerSystem>();
         systems_.Add<BotSystem>();
