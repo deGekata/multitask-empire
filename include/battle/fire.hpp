@@ -7,7 +7,7 @@
 
 #include <ecs/quick.hpp>
 
-#include <events/player_events.hpp>
+#include <events/battle_events.hpp>
 
 class FireSystem : public ecs::System<FireSystem>, public ecs::Reciever<FireSystem> {
     enum MissleStates : int { FLYING };
@@ -16,7 +16,7 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Receive(const PlayerCommandEvent& event);
+    void Receive(const SpecialTriggerEvent& event);
 
 private:
     void ProcessFires(ecs::EntityManager& entities, ecs::EventManager& events);

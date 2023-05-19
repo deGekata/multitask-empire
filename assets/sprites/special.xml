@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="special.png">
+<SubTexture name="special SECOND0000" x="0" y="12" width="50" height="12" frameX="0" frameY="0" frameWidth="50" frameHeight="12" />
+<SubTexture name="special THIRD0000" x="0" y="24" width="50" height="12" frameX="0" frameY="0" frameWidth="50" frameHeight="12" />
+<SubTexture name="special FOURTH0000" x="0" y="36" width="50" height="12" frameX="0" frameY="0" frameWidth="50" frameHeight="12" />
+<SubTexture name="special FIFTH0000" x="50" y="0" width="50" height="12" frameX="0" frameY="0" frameWidth="50" frameHeight="12" />
+<SubTexture name="special SIXTH0000" x="50" y="12" width="50" height="12" frameX="0" frameY="0" frameWidth="50" frameHeight="12" />
+<SubTexture name="special SEVENTH0000" x="50" y="24" width="50" height="12" frameX="0" frameY="0" frameWidth="50" frameHeight="12" />
+<SubTexture name="special FIRST0000" x="0" y="0" width="50" height="12" frameX="0" frameY="0" frameWidth="50" frameHeight="12" />
+</TextureAtlas>

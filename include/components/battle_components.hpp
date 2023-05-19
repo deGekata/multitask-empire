@@ -16,6 +16,10 @@ struct Health {
     double health_;
 };
 
+struct Special {
+    double experience_;
+};
+
 struct SpecialAbility {
     enum class Type {
         Fireball,

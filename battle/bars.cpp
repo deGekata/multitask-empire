@@ -9,10 +9,10 @@
 static constexpr uint32_t kMaxBarsAmount = 2;
 
 static constexpr uint32_t kBarHeight = 250;
-static constexpr uint32_t kBarWidth = 500;
+static constexpr uint32_t kBarWidth = 670;
 
 static constexpr uint32_t kDefaultBarX = 10;
-static constexpr uint32_t kDefaultBarY = 200;
+static constexpr uint32_t kDefaultBarY = 450;
 
 void BarsSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     entities_ = &entities;
@@ -27,6 +27,7 @@ void BarsSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& even
 }
 
 void BarsSystem::FillBarsStates() {
+    // Cow counter reference
     state_name_converter_["TEN"] = BarState::PERCENTS_10;
     state_name_converter_["TWENTY"] = BarState::PERCENTS_20;
     state_name_converter_["THIRTY"] = BarState::PERCENTS_30;
@@ -102,6 +103,6 @@ void BarsSystem::Receive(const DamageTakenEvent& event) {
         ecs::Entity health_bar = bar_of_entity_[damaged_entity].bar_entity;
         int32_t health_id = static_cast<int32_t>(damaged_entity.GetComponent<Health>()->health_ / 10.0);
 
-        events_->Emit<SpriteSheetStateChangedEvent>(health_id, damaged_entity);
+        events_->Emit<SpriteSheetStateChangedEvent>(health_id, health_bar);
     }
 }

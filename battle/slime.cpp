@@ -18,7 +18,7 @@ static constexpr double kBasicSpeedDecrease = 0.5;
 
 void SlimeSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<CollisionEvent>(*this);
-    events.Subscribe<PlayerCommandEvent>(*this);
+    events.Subscribe<SpecialTriggerEvent>(*this);
 
     state_name_converter_["FLYING"] = SlimeStates::FLYING;
     state_name_converter_["ATTACHED"] = SlimeStates::ATTACHED;
@@ -89,12 +89,10 @@ void SlimeSystem::UpdateAttached(ecs::EntityManager& entities, ecs::TimeDelta dt
     }
 }
 
-void SlimeSystem::Receive(const PlayerCommandEvent& event) {
-    if (event.cmd_ == PlayerCommand::SPECIAL) {
-        ecs::Entity entity = event.entity_;
-        if (entity.GetComponent<SpecialAbility>()->type_ == SpecialAbility::Type::Slime) {
-            slime_queue_.push(event.entity_);
-        }
+void SlimeSystem::Receive(const SpecialTriggerEvent& event) {
+    ecs::Entity entity = event.entity_;
+    if (entity.GetComponent<SpecialAbility>()->type_ == SpecialAbility::Type::Slime) {
+        slime_queue_.push(event.entity_);
     }
 }
 
