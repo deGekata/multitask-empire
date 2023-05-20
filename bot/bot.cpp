@@ -11,8 +11,6 @@
 
 void BotSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<SpawnBotEvent>(*this);
-
-    FillPlayerStatesNameMap(&state_name_to_player_state_id_);
 }
 
 void BotSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) {
@@ -38,8 +36,7 @@ void BotSystem::ProcessQueue(ecs::EntityManager& entities, ecs::EventManager& ev
             *bot.GetComponent<Position>() = spawn_event.spawn_position_;
         }
 
-        events.Emit<SkinChangeRequest>(state_name_to_player_state_id_, static_cast<int>(PlayerCommand::IDLE),
-                                       spawn_event.bot_skin_, bot);
+        events.Emit<BattleAbleConfigChangeRequest>(spawn_event.bot_config_name_, bot);
         logger::Print("Set bot's skin\n");
 
         // events.Emit<PlayerCommandEvent>(PlayerCommand::IDLE, bot);

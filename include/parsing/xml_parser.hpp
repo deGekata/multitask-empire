@@ -8,12 +8,10 @@
 #include <parsing/abstract_parser.hpp>
 
 class XmlParser : public AbstractParser {
-public:
-
-    bool Parse(const std::string& xml_path, ecs::EntityManager* entities) override;
+private:
+    RET_CODE ParseBody(const std::string& xml_path, ecs::EntityManager* entities) override;
 
 private:
-    
     RET_CODE ParseTitle();
     RET_CODE ParseTexture(const std::string& xml_location, SpriteSheet* component);
     RET_CODE ParseSubTexture(SpriteSheet* component);

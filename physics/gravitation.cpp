@@ -11,7 +11,7 @@ void GravitationSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::Tim
 }
 
 void GravitationSystem::Receive(const PlayerCommandEvent& event) {
-    if (event.cmd_ == PlayerCommand::JUMP) {
+    if (event.cmd_.type_ == PlayerCommandType::Jump) {
         ecs::Entity jumper = event.entity_;
 
         if (jumper.HasComponent<Acceleration>()) {
@@ -30,7 +30,7 @@ void GravitationSystem::Receive(const LandingEvent& event) {
     if (lander.HasComponent<Velocity>()) {
         auto vel = lander.GetComponent<Velocity>();
         
-        vel->vx_ = 0;
+        // vel->vx_ = 0;
         vel->vy_ = 0;
     }
 }

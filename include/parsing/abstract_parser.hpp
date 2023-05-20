@@ -9,7 +9,7 @@ class AbstractParser {
 public:
 
     virtual ~AbstractParser();
-    virtual bool Parse(const std::string& file_path, ecs::EntityManager* entities) = 0;
+    bool Parse(const std::string& file_path, ecs::EntityManager* entities);
 
     enum class RET_CODE {
         PARSED,
@@ -19,6 +19,9 @@ public:
     };
 
 protected:
+   // todo: rename
+    virtual RET_CODE ParseBody(const std::string& file_path, ecs::EntityManager* entities) = 0;
+
     RET_CODE    Skip(const std::string& str);
     
     void        SkipSpaces();
@@ -26,9 +29,6 @@ protected:
 
     void        ShowFailedParseWarning(RET_CODE res);
 
-    void        InitParser(const std::string& path);
-    void        CloseParser();
-    
 protected:
     // todo: to iterator
     uint col_, line_;

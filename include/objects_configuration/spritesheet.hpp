@@ -18,7 +18,6 @@ public:
 
     void Receive(const SpriteSheetLoadRequest& event);
     void Receive(const SkinChangeRequest& event);
-
 private:
     void ChangeSkin(ecs::Entity entity_to_skin, const std::string& skin_path,
                     const std::map<std::string, int>& state_name_to_id, int init_state);

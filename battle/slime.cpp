@@ -90,7 +90,7 @@ void SlimeSystem::UpdateAttached(ecs::EntityManager& entities, ecs::TimeDelta dt
 }
 
 void SlimeSystem::Receive(const PlayerCommandEvent& event) {
-    if (event.cmd_ == PlayerCommand::SPECIAL) {
+    if (event.cmd_.type_ == PlayerCommandType::Special) {
         ecs::Entity entity = event.entity_;
         if (entity.GetComponent<SpecialAbility>()->type_ == SpecialAbility::Type::Slime) {
             slime_queue_.push(event.entity_);

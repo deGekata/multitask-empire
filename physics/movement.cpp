@@ -12,6 +12,8 @@ void MovementSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
 }
 
 void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) {
+    
+
     entities.Each<Position, Velocity, Acceleration>(
         [dt](ecs::Entity, Position& cords, Velocity& vel, Acceleration& acc) {
             if (IsEqual(cords.y_, 0.0)) {
@@ -26,7 +28,7 @@ void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& eve
         [dt, &events](ecs::Entity entity, Position& pos, Velocity& vel, Rotation& rotation) {
             pos.y_ = std::max(0.0, pos.y_ + vel.vy_ * dt);
             pos.x_ += vel.vx_ * dt;
-
+            // logger::Print("offset: {}\n", vel.vx_);
             if (vel.vx_ < 0) {
                 rotation.is_flipped_ = true;
             } else if (vel.vx_ > 0) {

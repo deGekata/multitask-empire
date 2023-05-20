@@ -16,9 +16,9 @@ void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs
 
 void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
     ecs::Entity entity = event.entity_;
-
-    switch (event.cmd_) {
-        case PlayerCommand::JUMP: {
+    
+    switch (event.cmd_.type_) {
+        case PlayerCommandType::Jump: {
             auto position = entity.GetComponent<Position>();
             if (IsEqual(position->y_, 0.0)) {
                 auto velocity = entity.GetComponent<Velocity>();
@@ -28,23 +28,33 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
             break;
         }
 
-        case PlayerCommand::WALK_LEFT: {
+        case PlayerCommandType::RunLeft: {
             auto velocity = entity.GetComponent<Velocity>();
             velocity->vx_ = -kMoveSpeed;
 
             break;
         }
 
-        case PlayerCommand::WALK_RIGHT: {
+        case PlayerCommandType::RunRight: {
             auto velocity = entity.GetComponent<Velocity>();
             velocity->vx_ = kMoveSpeed;
-
             break;
         }
 
-        case PlayerCommand::IDLE: {
+        case PlayerCommandType::StopRunningLeft: {
+            
             if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
-                entity.GetComponent<Velocity>()->vx_ = 0.0;
+                if(entity.GetComponent<Velocity>()->vx_ < 0)
+                    entity.GetComponent<Velocity>()->vx_ = 0.0;
+            }
+            break;
+        }
+
+        case PlayerCommandType::StopRunningRight: {
+            
+            if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
+                if(entity.GetComponent<Velocity>()->vx_ > 0)
+                    entity.GetComponent<Velocity>()->vx_ = 0.0;
             }
             break;
         }

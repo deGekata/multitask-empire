@@ -5,8 +5,42 @@
 
 using RetCode = typename AbstractParser::RET_CODE;
 
+static size_t GetFileSize(FILE* file);
+
 AbstractParser::~AbstractParser() {
 }
+
+bool AbstractParser::Parse(const std::string& file_path, ecs::EntityManager* entities) {
+
+    // todo: to ostream
+
+    FILE* parsed_file = fopen(file_path.c_str(), "r");
+    if (parsed_file == nullptr) {
+        logger::Print(kError, "unable to open file {} on parsing", file_path);
+        assert(0);
+    }
+
+    buffer_.resize(GetFileSize(parsed_file), 0);
+
+    fread(reinterpret_cast<void*>(const_cast<char*>(buffer_.c_str())), sizeof(char), buffer_.size(), parsed_file);
+
+    buf_iter_ = buffer_.begin();
+    buf_end_ = buffer_.end();
+
+    col_ = 0;
+    line_ = 0;
+
+    auto res = ParseBody(file_path, entities);
+
+    buffer_.resize(0);   
+    if(res != RET_CODE::PARSED && res != RET_CODE::PARSE_END) {
+        ShowFailedParseWarning(res);
+        return false;       
+    }
+
+    return true;
+}
+
 void AbstractParser::SkipSpaces() {
     while (buf_iter_ < buf_end_ && isspace(*buf_iter_)) {
         if (*buf_iter_ == '\n') {
@@ -56,7 +90,7 @@ RetCode AbstractParser::SkipUntilSymb(char symb) {
 }
 
 void AbstractParser::ShowFailedParseWarning(RetCode res) {
-    logger::Print(kWarning, "xml parsing failed on pos<{}, {}> because of the ", col_, line_);
+    logger::Print(kWarning, "parsing failed on pos<{}, {}> because of the ", col_, line_);
     if (res == RetCode::WRONG_PATTERN) {
         logger::Print("wrong pattern\n");
     } else if (res == RetCode::REACHED_BUFFER_END) {
@@ -74,29 +108,4 @@ static size_t GetFileSize(FILE* file) {
     fseek(file, 0, SEEK_SET);
 
     return file_size;
-}
-
-void AbstractParser::InitParser(const std::string& path) {
-
-    // todo: to ostream
-
-    FILE* parsed_file = fopen(path.c_str(), "r");
-    if (parsed_file == nullptr) {
-        logger::Print(kError, "unable to open file {} on parsing", path);
-        assert(0);
-    }
-
-    buffer_.resize(GetFileSize(parsed_file), 0);
-
-    fread(reinterpret_cast<void*>(const_cast<char*>(buffer_.c_str())), sizeof(char), buffer.size(), xml_file);
-
-    buf_iter_ = buffer_.begin();
-    buf_end_ = buffer_.end();
-
-    col_ = 0;
-    line_ = 0;
-}
-
-void AbstractParser::CloseParser() {
-    buffer_.resize(0);
 }

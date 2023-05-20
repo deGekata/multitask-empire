@@ -62,7 +62,7 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
 }
 
 void FireSystem::Receive(const PlayerCommandEvent& event) {
-    if (event.cmd_ == PlayerCommand::SPECIAL) {
+    if (event.cmd_.type_ == PlayerCommandType::Special) {
         ecs::Entity entity = event.entity_;
         if (entity.GetComponent<SpecialAbility>()->type_ == SpecialAbility::Type::Fireball) {
             fires_queue_.push(event.entity_);

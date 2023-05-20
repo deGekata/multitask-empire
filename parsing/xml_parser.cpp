@@ -189,15 +189,12 @@ RetCode XmlParser::ParseTexture(const std::string& xml_location, SpriteSheet* co
     return res;
 }
 
-bool XmlParser::Parse(const std::string& xml_path, ecs::EntityManager* entities) {
-
-    InitParser(xml_path);
+RetCode XmlParser::ParseBody(const std::string& xml_path, ecs::EntityManager* entities) {
 
     RetCode res = ParseTitle();
 
     if (res != RetCode::PARSED) {
-        ShowFailedParseWarning(res);
-        return false;
+        return res;
     }
 
     SpriteSheet component;
@@ -208,7 +205,7 @@ bool XmlParser::Parse(const std::string& xml_path, ecs::EntityManager* entities)
 
         if(res != RET_CODE::PARSED && res != RET_CODE::PARSE_END) {
             ShowFailedParseWarning(res);
-            return false;       
+            return res;       
         }
 
         component.texture_ = igraphicslib::Texture(component.img_path_.c_str());
@@ -233,5 +230,5 @@ bool XmlParser::Parse(const std::string& xml_path, ecs::EntityManager* entities)
 
     } while(res != RetCode::PARSE_END);
 
-    return true;
+    return RET_CODE::PARSED;
 }

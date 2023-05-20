@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include <graphics/aSprite.hpp>
 #include <graphics/aTexture.hpp>
@@ -27,7 +28,6 @@ struct SpriteSheet {
 };
 
 struct SpriteSheetStorageTag {};
-#include <map>
 
 struct ObjectSpriteSheet {
     SpriteSheet*        sprite_sheet_;

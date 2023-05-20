@@ -104,7 +104,7 @@ void AttackSystem::Receive(const PlayerInitiatedEvent& event) {
 }
 
 void AttackSystem::Receive(const PlayerCommandEvent& event) {
-    if ((event.cmd_ == PlayerCommand::ATTACK_ONE) || (event.cmd_ == PlayerCommand::ATTACK_TWO)) {
+    if (event.cmd_.type_ == PlayerCommandType::Attack) {
         attackers_queue_.push(event.entity_);
     }
 }

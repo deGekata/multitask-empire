@@ -24,7 +24,7 @@ void BlockSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::
 
 void BlockSystem::Receive(const PlayerCommandEvent& event) {
     ecs::Entity entity = event.entity_;
-    if ((event.cmd_ == PlayerCommand::BLOCK) && (!entity.HasComponent<BlockedTag>())) {
+    if ((event.cmd_.type_ == PlayerCommandType::Block) && (!entity.HasComponent<BlockedTag>())) {
         entity.Assign<BlockedTag>();
     } else if (entity.HasComponent<BlockedTag>()) {
         entity.Remove<BlockedTag>();

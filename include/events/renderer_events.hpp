@@ -34,6 +34,30 @@ struct SkinChangeRequest : public ecs::Event<SkinChangeRequest> {
     ecs::Entity                 entity_;
 };
 
+// todo: replace
+struct BattleAbleConfigChangeRequest : public ecs::Event<BattleAbleConfigChangeRequest> {
+    explicit BattleAbleConfigChangeRequest(std::string name, ecs::Entity entity) : 
+        config_path_(name), entity_(entity) {
+    }
+
+    BattleAbleConfigChangeRequest(const BattleAbleConfigChangeRequest& other) = default;
+    ~BattleAbleConfigChangeRequest() override = default;
+
+    std::string                 config_path_;
+    ecs::Entity                 entity_;
+};
+
+struct BattleAbleConfigLoadRequest : public ecs::Event<BattleAbleConfigLoadRequest> {
+
+    explicit BattleAbleConfigLoadRequest(const std::string& config_path) : config_path_(config_path) {
+    }
+
+    BattleAbleConfigLoadRequest(const BattleAbleConfigLoadRequest& other) = default;
+    ~BattleAbleConfigLoadRequest() override = default;
+
+    std::string config_path_;
+};
+
 struct SpriteSheetStateChangedEvent : public ecs::Event<SpriteSheetStateChangedEvent> {
 	explicit SpriteSheetStateChangedEvent(int state_id, ecs::Entity entity) : state_id_(state_id), entity_(entity){
     }

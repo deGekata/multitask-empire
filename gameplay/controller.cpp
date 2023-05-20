@@ -34,10 +34,10 @@ void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager& 
     }
 
     if (move_direction) {
-        events.Emit<PlayerCommandEvent>(PlayerCommand::WALK_LEFT, current);
+        // events.Emit<PlayerCommandEvent>(PlayerCommandType::RunLeft, current);
     }
     else {
-        events.Emit<PlayerCommandEvent>(PlayerCommand::WALK_RIGHT, current);
+        // events.Emit<PlayerCommandEvent>(PlayerCommandType::RunRight, current);
     }
 }
 
@@ -52,7 +52,7 @@ void ControllerSystem::SwitchGameState(ecs::EntityManager& entities, ecs::EventM
             break;
 
         case GameState::Knight:
-            events.Emit<SpawnBotEvent>(Position{500, 0}, "./assets/sprites/knight.png",
+            events.Emit<SpawnBotEvent>(Position{500, 0}, "./knight.wtf",
                                        &ControllerSystem::KnightBehaviour);
             break;
 
