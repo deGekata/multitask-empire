@@ -8,8 +8,8 @@
 
 #include <events/player_events.hpp>
 
-static constexpr double kJumpSpeed = 0.005;
-static constexpr double kMoveSpeed = 0.0005;
+static constexpr double kDefaultJumpSpeed = 0.005;
+static constexpr double kDefaultMoveSpeed = 0.0005;
 
 class MovementCommandsSystem : public ecs::System<MovementCommandsSystem>,
                                public ecs::Reciever<MovementCommandsSystem> {
@@ -18,6 +18,7 @@ public:
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
     void Receive(const PlayerCommandEvent& event);
+    void Receive(const PlayerInitiatedEvent& event);
 };
 
 #endif

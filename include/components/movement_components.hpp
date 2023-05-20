@@ -3,6 +3,14 @@
 
 #include <cstdint>
 
+struct MoveSpeed {
+    double value_;
+};
+
+struct JumpSpeed {
+    double value_;
+};
+
 struct Position {
     double x_;
     double y_;

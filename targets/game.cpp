@@ -13,6 +13,7 @@
 
 #include <battle/attack.hpp>
 #include <battle/block.hpp>
+#include <battle/curses.hpp>
 #include <battle/fire.hpp>
 #include <battle/slime.hpp>
 #include <battle/special.hpp>
@@ -67,6 +68,7 @@ public:
         systems_.Add<HealthSystem>();
         systems_.Add<AttackSystem>();
         systems_.Add<BlockSystem>();
+        systems_.Add<CursesSystem>();
         systems_.Add<FireSystem>();
         systems_.Add<SlimeSystem>();
         systems_.Add<SpecialSystem>();
