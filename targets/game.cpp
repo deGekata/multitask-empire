@@ -15,6 +15,7 @@
 #include <battle/block.hpp>
 #include <battle/curses.hpp>
 #include <battle/fire.hpp>
+#include <battle/potion.hpp>
 #include <battle/slime.hpp>
 #include <battle/special.hpp>
 #include <battle/health.hpp>
@@ -70,6 +71,7 @@ public:
         systems_.Add<BlockSystem>();
         systems_.Add<CursesSystem>();
         systems_.Add<FireSystem>();
+        systems_.Add<PotionSystem>();
         systems_.Add<SlimeSystem>();
         systems_.Add<SpecialSystem>();
 

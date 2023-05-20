@@ -47,6 +47,7 @@ struct SpecialAbility {
     enum class Type {
         Fireball,
         Slime,
+        Potion
     };
 
     Type type_;

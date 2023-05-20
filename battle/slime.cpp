@@ -29,7 +29,7 @@ void SlimeSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& eve
     state_name_converter_["ATTACHED"] = SlimeStates::ATTACHED;
 }
 
-void SlimeSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) {
+void SlimeSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta dt) {
     UpdateAttached(entities, dt);
 }
 
