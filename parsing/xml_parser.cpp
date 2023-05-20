@@ -1,69 +1,8 @@
-#include <spritesheet/xml_parser.hpp>
+#include <parsing/xml_parser.hpp>
 
-#include <spritesheet/spritesheet.hpp>
 #include <cstring>
 
-using RetCode = typename XmlParser::RET_CODE;
-
-static size_t GetFileSize(FILE* file) {
-    fseek(file, 0, SEEK_END);
-    auto file_size = static_cast<size_t>(ftell(file));
-    if (file_size == 0) {
-        // logger::print(ERROR, "xml file {} size is zero", xml_path);
-        assert(0);
-    }
-    fseek(file, 0, SEEK_SET);
-
-    return file_size;
-}
-
-void XmlParser::SkipSpaces() {
-    while (buf_iter_ < buf_end_ && isspace(*buf_iter_)) {
-        if (*buf_iter_ == '\n') {
-            line_++;
-            col_ = 0;
-        } else if (*buf_iter_ == '\t') {
-            col_ += 4;
-        } else {
-            col_++;
-        }
-        buf_iter_++;
-    }
-}
-
-// logger::print(WARNING, "xml file {} got invalid format");
-
-RetCode XmlParser::Skip(const std::string& str) {
-
-    if (buf_iter_ >= buf_end_) {
-        return RetCode::REACHED_BUFFER_END;
-    }
-
-    size_t str_len = strlen(str.c_str());
-    if (buf_end_ - buf_iter_ < static_cast<int>(str_len)) {
-        return RetCode::REACHED_BUFFER_END;
-    }
-
-    RetCode res = strncmp(&*buf_iter_, str.c_str(), str_len) == 0 ? RetCode::PARSED : RetCode::WRONG_PATTERN;
-    if (res == RetCode::WRONG_PATTERN)
-        return res;
-    buf_iter_ += static_cast<int>(str_len);
-    col_ += (str_len);
-
-    SkipSpaces();
-    return RetCode::PARSED;
-}
-
-RetCode XmlParser::SkipUntilSymb(char symb) {
-    while (buf_iter_ < buf_end_ && *buf_iter_ != symb) {
-        col_++;
-        buf_iter_++;
-    }
-    if (*buf_iter_ != symb)
-        return RetCode::WRONG_PATTERN;
-
-    return RetCode::PARSED;
-}
+using RetCode = typename AbstractParser::RET_CODE;
 
 // to avoid copypaste
 #define CHECK(call)                       \
@@ -250,33 +189,9 @@ RetCode XmlParser::ParseTexture(const std::string& xml_location, SpriteSheet* co
     return res;
 }
 
-void XmlParser::ShowFailedParseWarning(RetCode res) {
-    logger::Print(kWarning, "xml parsing failed on pos<{}, {}> because of the ", col_, line_);
-    if (res == RetCode::WRONG_PATTERN) {
-        logger::Print("wrong pattern\n");
-    } else if (res == RetCode::REACHED_BUFFER_END) {
-        logger::Print("end of the buffer has been reached\n");
-    }
-}
-
 bool XmlParser::Parse(const std::string& xml_path, ecs::EntityManager* entities) {
-    // todo: to ostream
 
-    FILE* xml_file = fopen(xml_path.c_str(), "r");
-    if (xml_file == nullptr) {
-        logger::Print(kError, "unable to open xml file {}", xml_path);
-        assert(0);
-    }
-
-    std::string buffer(GetFileSize(xml_file), 0);
-
-    fread(reinterpret_cast<void*>(const_cast<char*>(buffer.c_str())), sizeof(char), buffer.size(), xml_file);
-
-    buf_iter_ = buffer.begin();
-    buf_end_ = buffer.end();
-
-    col_ = 0;
-    line_ = 0;
+    InitParser(xml_path);
 
     RetCode res = ParseTitle();
 

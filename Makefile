@@ -2,7 +2,8 @@ TARGET_DIR := targets
 TEST_DIR := tests
 
 SRC_DIRS := src ecs signal player physics renderer logger geometry\
-graphics/SFML spritesheet utility bot collision gameplay battle
+graphics/SFML spritesheet utility bot collision gameplay battle\
+parsing
 
 VPATH += $(SRC_DIRS) $(TEST_DIR) $(TARGET_DIR)
 

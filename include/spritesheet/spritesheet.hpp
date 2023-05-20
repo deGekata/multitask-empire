@@ -5,7 +5,8 @@
 #include <ecs/system.hpp>
 #include <events/player_events.hpp>
 #include <events/renderer_events.hpp>
-#include <spritesheet/xml_parser.hpp>
+
+#include <parsing/xml_parser.hpp>
 
 class SpriteSheetSystem : public ecs::System<SpriteSheetSystem>, public ecs::Reciever<SpriteSheetSystem> {
 public:
