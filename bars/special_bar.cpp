@@ -53,7 +53,7 @@ void SpecialBarSystem::FillBarsPositions() {
 void SpecialBarSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
     entities.Each<Special>([this, &events](ecs::Entity entity, Special& special) {
         if (bar_of_entity_.contains(entity)) {
-            SpecialBarProperties properties = bar_of_entity_[entity];
+            SpecialBarProperties& properties = bar_of_entity_[entity];
 
             auto cur_state = static_cast<int32_t>(special.experience_ /
                                                   (101.0 / static_cast<double>(SpecialBarState::STATES_AMOUNT)));

@@ -4,8 +4,10 @@
 #include <ecs/config.hpp>
 #include <ecs/entity.hpp>
 
-struct BlockedTag {
-    ecs::TimeDelta remain_time_;
+struct BlockedTag {};
+
+struct BlockReserve {
+    double durability_;
 };
 
 struct DamagerTag {

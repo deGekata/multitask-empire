@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"/>
+<TextureAtlas imagePath="shield_states.png">
+<SubTexture name="DEACTIVATED0000" x="0" y="0" width="14" height="15" frameX="0" frameY="0" frameWidth="15" frameHeight="15" />
+<SubTexture name="ACTIVATED0000" x="14" y="0" width="14" height="15" frameX="0" frameY="0" frameWidth="15" frameHeight="15" />
+</TextureAtlas>

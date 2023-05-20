@@ -19,6 +19,7 @@
 #include <battle/health.hpp>
 
 #include <bars/special_bar.hpp>
+#include <bars/shield_bar.hpp>
 #include <bars/health_bar.hpp>
 
 #include <collision/collision.hpp>
@@ -72,6 +73,7 @@ public:
 
         systems_.Add<HealthBarSystem>();
         systems_.Add<SpecialBarSystem>();
+        systems_.Add<ShieldBarSystem>();
 
         systems_.Add<AttachSystem>();
 

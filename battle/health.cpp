@@ -39,6 +39,9 @@ void HealthSystem::Receive(const DamageTakenEvent& event) {
     ecs::Entity damaged_entity = event.damaged_entity_;
 
     if (damaged_entity.HasComponent<BlockedTag>()) {
+        auto shield = damaged_entity.GetComponent<BlockReserve>();
+        shield->durability_ -= event.damage_amount_;
+
         return;
     }
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"/>
+<TextureAtlas imagePath="shield_bar.png">
+<SubTexture name="ZERO0000" x="0" y="0" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+<SubTexture name="TEN0000" x="0" y="9" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+<SubTexture name="TWENTY0000" x="0" y="18" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+<SubTexture name="THIRTY0000" x="0" y="27" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+<SubTexture name="FOURTY0000" x="44" y="0" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+<SubTexture name="FIFTY0000" x="44" y="9" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+<SubTexture name="SIXTY0000" x="44" y="18" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+<SubTexture name="SEVENTY0000" x="44" y="27" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+<SubTexture name="EIGHTY0000" x="0" y="36" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+<SubTexture name="NINETY0000" x="44" y="36" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+<SubTexture name="HUNDRED0000" x="0" y="45" width="44" height="9" frameX="-7" frameY="-14" frameWidth="55" frameHeight="41" />
+</TextureAtlas>
