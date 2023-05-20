@@ -68,7 +68,7 @@ void ShieldBarSystem::Update(ecs::EntityManager& entities, ecs::EventManager& ev
             ShieldBarProperties& props = bar_of_entity_[entity];
 
             auto bar_state = static_cast<int32_t>(
-                block.durability_ / (kBlockMaxDurability / static_cast<double>(ShieldBarState::STATES_AMOUNT)));
+                block.durability_ / (kBlockMaxDurability / static_cast<double>(ShieldBarState::PERCENTS_100)));
             bool shield_state = entity.HasComponent<BlockedTag>();
 
             if (props.last_bar_state != bar_state) {

@@ -23,6 +23,7 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
+    void Receive(const ecs::EntityDestroyedEvent& event);
     void Receive(const SpecialTriggerEvent& event);
     void Receive(const CollisionEvent& event);
 
@@ -33,6 +34,8 @@ private:
     static Position GetAttachedPosition(Position owner_position);
 
     std::map<std::string, int> state_name_converter_;
+
+    std::map<ecs::Entity, ecs::Entity> attached_slimes_;
 
     ecs::EntityManager* entities_;
     ecs::EventManager* events_;

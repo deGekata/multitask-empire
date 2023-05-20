@@ -2,6 +2,8 @@
 
 #include <components/movement_components.hpp>
 
+static constexpr double kAttraction = 0.000000025;
+
 void GravitationSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerCommandEvent>(*this);
     events.Subscribe<LandingEvent>(*this);

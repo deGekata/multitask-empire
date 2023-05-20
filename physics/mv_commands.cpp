@@ -7,6 +7,9 @@
 
 #include <utility/utilities.hpp>
 
+static constexpr double kDefaultJumpSpeed = 0.004;
+static constexpr double kDefaultMoveSpeed = 0.0005;
+
 void MovementCommandsSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerCommandEvent>(*this);
     events.Subscribe<PlayerInitiatedEvent>(*this);

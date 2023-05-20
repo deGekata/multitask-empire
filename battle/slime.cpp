@@ -21,8 +21,9 @@ void SlimeSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& eve
     entities_ = &entities;
     events_ = &events;
 
-    events.Subscribe<CollisionEvent>(*this);
-    events.Subscribe<SpecialTriggerEvent>(*this);
+    events_->Subscribe<ecs::EntityDestroyedEvent>(*this);
+    events_->Subscribe<CollisionEvent>(*this);
+    events_->Subscribe<SpecialTriggerEvent>(*this);
 
     state_name_converter_["FLYING"] = SlimeStates::FLYING;
     state_name_converter_["ATTACHED"] = SlimeStates::ATTACHED;
@@ -64,15 +65,24 @@ void SlimeSystem::ProcessSlime(ecs::Entity owner_entity) {
 void SlimeSystem::UpdateAttached(ecs::EntityManager& entities, ecs::TimeDelta dt) {
     std::vector<ecs::Entity> slimes_to_destroy;
 
-    entities.Each<AttachedSlimeTag>([dt, &slimes_to_destroy](ecs::Entity slime, AttachedSlimeTag& attached) {
-        attached.time_left -= dt;
-        if (attached.time_left <= 0) {
-            slimes_to_destroy.push_back(slime);
-        }
-    });
+    entities.Each<AttachedSlimeTag, Attached>(
+        [this, dt, &slimes_to_destroy](ecs::Entity slime, AttachedSlimeTag& attached, Attached& owner) {
+            attached.time_left -= dt;
+            if (attached.time_left <= 0) {
+                slimes_to_destroy.push_back(slime);
+                attached_slimes_.erase(owner.owner);
+            }
+        });
 
     for (auto& slime : slimes_to_destroy) {
         slime.Destroy();
+    }
+}
+
+void SlimeSystem::Receive(const ecs::EntityDestroyedEvent& event) {
+    if (attached_slimes_.contains(event.entity_)) {
+        attached_slimes_[event.entity_].Destroy();
+        attached_slimes_.erase(event.entity_);
     }
 }
 
@@ -110,6 +120,8 @@ void SlimeSystem::Receive(const CollisionEvent& event) {
         auto power_recovery = [](ecs::Entity entity) {
             entity.GetComponent<AttackPower>()->power_ /= kBasicDamageDecrease;
         };
+
+        attached_slimes_[owner_entity] = slime_entity;
 
         events_->Emit<SpriteSheetStateChangedEvent>(SlimeStates::ATTACHED, slime_entity);
 
