@@ -24,6 +24,10 @@ Application* Application::App() {
 	return app;
 }
 
+igraphicslib::Window* Application::Window() {
+	return app->window_;
+}
+
 void Application::Run() {
 	assert(window_ != nullptr);
 	assert(event_manager_ != nullptr);

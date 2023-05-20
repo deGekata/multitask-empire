@@ -27,6 +27,7 @@ public:
 	~Application();
 
 	static Application* App();
+	static igraphicslib::Window* Window();
 
 	// One-shot
 	void Run();

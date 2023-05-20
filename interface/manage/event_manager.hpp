@@ -7,10 +7,9 @@
 namespace interface::manage {
 
 class BaseManager;
+using Priority = int64_t;
 
 class EventManager {
-	using Priority = int64_t;
-
 public:
 	EventManager();
 	
@@ -28,18 +27,18 @@ public:
 	EventManager* Release();
 
 	// Keyboard events
-	void ProcessKeyPress  (igraphicslib::KeyEventData key);
-	void ProcessKeyRelease(igraphicslib::KeyEventData key);
+	bool ProcessKeyPress  (igraphicslib::KeyEventData key);
+	bool ProcessKeyRelease(igraphicslib::KeyEventData key);
 
 	// Mosue events
-	void ProcessMouseMovement(igraphicslib::MouseMoveEventData move);
-	void ProcessWheelScroll(igraphicslib::MouseWheelEventData wheel);
+	bool ProcessMouseMovement(igraphicslib::MouseMoveEventData move);
+	bool ProcessWheelScroll(igraphicslib::MouseWheelEventData wheel);
 
-	void ProcessButtonPress  (igraphicslib::MouseButtonEventData button);
-	void ProcessButtonRelease(igraphicslib::MouseButtonEventData button);
+	bool ProcessButtonPress  (igraphicslib::MouseButtonEventData button);
+	bool ProcessButtonRelease(igraphicslib::MouseButtonEventData button);
 
 	// Timer event
-	void ProcessTimerTick(utility::Time time);
+	bool ProcessTimerTick(utility::Time time);
 
 private:
 	EventManager* previous_;

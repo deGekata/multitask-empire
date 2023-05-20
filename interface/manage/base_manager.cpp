@@ -12,58 +12,72 @@ void BaseManager::Unsubscribe(objects::IObject* object) {
 	});
 }
 
-void BaseManager::ProcessKeyPress(igraphicslib::KeyEventData key) {
+bool BaseManager::ProcessKeyPress(igraphicslib::KeyEventData key) {
 	for (auto& subscriber : subscribers_) {
 		if (bool stop = subscriber.second->OnKeyPress(key)) {
-			return;
+			return true;
 		}
 	}
+
+	return false;
 }
 
-void BaseManager::ProcessKeyRelease(igraphicslib::KeyEventData key) {
+bool BaseManager::ProcessKeyRelease(igraphicslib::KeyEventData key) {
 	for (auto& subscriber : subscribers_) {
 		if (bool stop = subscriber.second->OnKeyRelease(key)) {
-			return;
+			return true;
 		}
 	}
+
+	return false;
 }
 
-void BaseManager::ProcessMouseMovement(igraphicslib::MouseMoveEventData move) {
+bool BaseManager::ProcessMouseMovement(igraphicslib::MouseMoveEventData move) {
 	for (auto& subscriber : subscribers_) {
 		if (bool stop = subscriber.second->OnMouseMove(move)) {
-			return;
+			return true;
 		}
 	}
+
+	return false;
 }
 
-void BaseManager::ProcessButtonPress(igraphicslib::MouseButtonEventData button) {
+bool BaseManager::ProcessButtonPress(igraphicslib::MouseButtonEventData button) {
 	for (auto& subscriber : subscribers_) {
 		if (bool stop = subscriber.second->OnButtonPress(button)) {
-			return;
+			return true;
 		}
 	}
+
+	return false;
 }
 
-void BaseManager::ProcessButtonRelease(igraphicslib::MouseButtonEventData button) {
+bool BaseManager::ProcessButtonRelease(igraphicslib::MouseButtonEventData button) {
 	for (auto& subscriber : subscribers_) {
 		if (bool stop = subscriber.second->OnButtonRelease(button)) {
-			return;
+			return true;
 		}
 	}
+
+	return false;
 }
 
-void BaseManager::ProcessWheelScroll(igraphicslib::MouseWheelEventData wheel) {
+bool BaseManager::ProcessWheelScroll(igraphicslib::MouseWheelEventData wheel) {
 	for (auto& subscriber : subscribers_) {
 		if (bool stop = subscriber.second->OnWheelScroll(wheel)) {
-			return;
+			return true;
 		}
 	}
+
+	return false;
 }
 
-void BaseManager::ProcessTimerTick(utility::Time time) {
+bool BaseManager::ProcessTimerTick(utility::Time time) {
 	for (auto& subscriber : subscribers_) {
 		subscriber.second->OnTimerTick(time);
 	}
+
+	return true;
 }
 
 }  // namespace interface::manage

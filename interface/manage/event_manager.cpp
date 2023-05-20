@@ -33,56 +33,56 @@ EventManager* EventManager::Release() {
 	return std::exchange(previous_, nullptr);
 }
 
-void EventManager::ProcessKeyPress(igraphicslib::KeyEventData key) {
+bool EventManager::ProcessKeyPress(igraphicslib::KeyEventData key) {
 	if (current != this) {
-		return;
+		return false;
 	}
 
-	manager_impl_->ProcessKeyPress(key);
+	return manager_impl_->ProcessKeyPress(key);
 }
 
-void EventManager::ProcessKeyRelease(igraphicslib::KeyEventData key) {
+bool EventManager::ProcessKeyRelease(igraphicslib::KeyEventData key) {
 	if (current != this) {
-		return;
+		return false;
 	}
 
-	manager_impl_->ProcessKeyRelease(key);
+	return manager_impl_->ProcessKeyRelease(key);
 }
 
-void EventManager::ProcessMouseMovement(igraphicslib::MouseMoveEventData move) {
+bool EventManager::ProcessMouseMovement(igraphicslib::MouseMoveEventData move) {
 	if (current != this) {
-		return;
+		return false;
 	}
 
-	manager_impl_->ProcessMouseMovement(move);
+	return manager_impl_->ProcessMouseMovement(move);
 }
 
-void EventManager::ProcessButtonPress(igraphicslib::MouseButtonEventData button) {
+bool EventManager::ProcessButtonPress(igraphicslib::MouseButtonEventData button) {
 	if (current != this) {
-		return;
+		return false;
 	}
 
-	manager_impl_->ProcessButtonPress(button);
+	return manager_impl_->ProcessButtonPress(button);
 }
 
-void EventManager::ProcessButtonRelease(igraphicslib::MouseButtonEventData button) {
+bool EventManager::ProcessButtonRelease(igraphicslib::MouseButtonEventData button) {
 	if (current != this) {
-		return;
+		return false;
 	}
 
-	manager_impl_->ProcessButtonRelease(button);
+	return manager_impl_->ProcessButtonRelease(button);
 }
 
-void EventManager::ProcessWheelScroll(igraphicslib::MouseWheelEventData wheel) {
+bool EventManager::ProcessWheelScroll(igraphicslib::MouseWheelEventData wheel) {
 	if (current != this) {
-		return;
+		return false;
 	}
 
-	manager_impl_->ProcessWheelScroll(wheel);
+	return manager_impl_->ProcessWheelScroll(wheel);
 }
 
-void EventManager::ProcessTimerTick(utility::Time time) {
-	manager_impl_->ProcessTimerTick(time);
+bool EventManager::ProcessTimerTick(utility::Time time) {
+	return manager_impl_->ProcessTimerTick(time);
 }
 
 }  // namespace managers
