@@ -1,15 +1,15 @@
-#ifndef H_HEALTH_BAR
-#define H_HEALTH_BAR
+#ifndef H_SHIELD_BAR
+#define H_SHIELD_BAR
 
 #include <ecs/quick.hpp>
 
 #include <components/movement_components.hpp>
 
-#include <events/battle_events.hpp>
 #include <events/player_events.hpp>
 
-class HealthBarSystem : public ecs::System<HealthBarSystem>, public ecs::Reciever<HealthBarSystem> {
-    enum HealthBarState : int {
+class ShieldBarSystem : public ecs::System<ShieldBarSystem>, public ecs::Reciever<ShieldBarSystem> {
+    enum ShieldBarState : int {
+        PERCENTS_0,
         PERCENTS_10,
         PERCENTS_20,
         PERCENTS_30,
@@ -23,9 +23,18 @@ class HealthBarSystem : public ecs::System<HealthBarSystem>, public ecs::Recieve
         STATES_AMOUNT
     };
 
-    struct HealthBarProperties {
+    enum ShieldStates: int {
+        DEACTIVATED,
+        ACTIVATED
+    };
+
+    struct ShieldBarProperties {
         ecs::Entity bar_entity;
+        ecs::Entity shield_state_entity;
+
         bool is_enemy;
+        int32_t last_bar_state;
+        bool last_shield_state;
     };
 
 public:
@@ -34,7 +43,6 @@ public:
 
     void Receive(const ecs::EntityDestroyedEvent& event);
     void Receive(const PlayerInitiatedEvent& event);
-    void Receive(const DamageTakenEvent& event);
 
 private:
     void FillBarsStates();
@@ -43,9 +51,10 @@ private:
     std::vector<Position> allies_bars_positions_;
     std::vector<Position> enemies_bars_positions_;
 
-    std::map<std::string, int> state_name_converter_;
+    std::map<std::string, int> bar_name_converter_;
+    std::map<std::string, int> shield_name_converter_;
 
-    std::map<ecs::Entity, HealthBarProperties> bar_of_entity_;
+    std::map<ecs::Entity, ShieldBarProperties> bar_of_entity_;
 
     ecs::EntityManager* entities_;
     ecs::EventManager* events_;

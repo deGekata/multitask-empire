@@ -9,6 +9,7 @@
 
 void MovementCommandsSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerCommandEvent>(*this);
+    events.Subscribe<PlayerInitiatedEvent>(*this);
 }
 
 void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
@@ -22,22 +23,27 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
             auto position = entity.GetComponent<Position>();
             if (IsEqual(position->y_, 0.0)) {
                 auto velocity = entity.GetComponent<Velocity>();
+                auto jump_speed = entity.GetComponent<JumpSpeed>();
 
-                velocity->vy_ = kJumpSpeed;
+                velocity->vy_ = jump_speed->value_;
             }
             break;
         }
 
         case PlayerCommand::WALK_LEFT: {
             auto velocity = entity.GetComponent<Velocity>();
-            velocity->vx_ = -kMoveSpeed;
+            auto speed = entity.GetComponent<MoveSpeed>();
+
+            velocity->vx_ = -speed->value_;
 
             break;
         }
 
         case PlayerCommand::WALK_RIGHT: {
             auto velocity = entity.GetComponent<Velocity>();
-            velocity->vx_ = kMoveSpeed;
+            auto speed = entity.GetComponent<MoveSpeed>();
+
+            velocity->vx_ = speed->value_;
 
             break;
         }
@@ -53,4 +59,11 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
             break;
         }
     }
+}
+
+void MovementCommandsSystem::Receive(const PlayerInitiatedEvent& event) {
+    ecs::Entity player = event.entity_;
+
+    player.Assign<MoveSpeed>(MoveSpeed{kDefaultMoveSpeed});
+    player.Assign<JumpSpeed>(JumpSpeed{kDefaultJumpSpeed});
 }

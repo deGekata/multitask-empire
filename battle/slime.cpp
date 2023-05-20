@@ -5,6 +5,7 @@
 #include <components/graphic_components.hpp>
 #include <components/utility_components.hpp>
 
+#include <events/curses_events.hpp>
 #include <events/renderer_events.hpp>
 
 static constexpr double kBasicMissleWidth = 50.0;
@@ -13,10 +14,13 @@ static constexpr double kBasicMissleSpeed = 0.0005;
 
 static constexpr ecs::TimeDelta kBasicSlimeHoldTime = 5000000.0;
 
-static constexpr double kBasicDamageMultiplier = 0.1;
-static constexpr double kBasicSpeedDecrease = 0.5;
+static constexpr double kBasicDamageDecrease = 0.5;
+static constexpr double kBasicSpeedDecrease = 0.1;
 
-void SlimeSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+void SlimeSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
+    entities_ = &entities;
+    events_ = &events;
+
     events.Subscribe<CollisionEvent>(*this);
     events.Subscribe<SpecialTriggerEvent>(*this);
 
@@ -25,53 +29,36 @@ void SlimeSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
 }
 
 void SlimeSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) {
-    ProcessSlimes(entities, events);
-    ProcessAttach(events);
     UpdateAttached(entities, dt);
 }
 
-void SlimeSystem::ProcessSlimes(ecs::EntityManager& entities, ecs::EventManager& events) {
-    if (slime_queue_.empty()) {
-        return;
+void SlimeSystem::ProcessSlime(ecs::Entity owner_entity) {
+    ecs::Entity slime = entities_->Create();
+
+    auto firing_position = owner_entity.GetComponent<Position>();
+    auto firing_box = owner_entity.GetComponent<HitBox>();
+    auto firing_rotation = owner_entity.GetComponent<Rotation>();
+
+    Position missle_position = *firing_position;
+    Velocity missle_velocity = {-kBasicMissleSpeed, 0};
+
+    missle_position.y_ += kBasicMissleHeight;
+    if (!firing_rotation->is_flipped_) {
+        missle_position.x_ += firing_box->width_;
+        missle_velocity.vx_ *= -1;
+    } else {
+        missle_position.x_ -= firing_box->width_;
     }
 
-    for (auto slimer_entity = slime_queue_.front(); !slime_queue_.empty(); slime_queue_.pop()) {
-        ecs::Entity slime = entities.Create();
+    slime.AssignFromCopy<Rotation>(*firing_rotation);
+    slime.AssignFromCopy<Velocity>(missle_velocity);
+    slime.AssignFromCopy<Position>(missle_position);
 
-        auto firing_position = slimer_entity.GetComponent<Position>();
-        auto firing_box = slimer_entity.GetComponent<HitBox>();
-        auto firing_rotation = slimer_entity.GetComponent<Rotation>();
+    slime.Assign<HitBox>(kBasicMissleWidth, kBasicMissleHeight);
+    slime.Assign<FlyingSlimeTag>();
 
-        Position missle_position = *firing_position;
-        Velocity missle_velocity = {-kBasicMissleSpeed, 0};
-
-        missle_position.y_ += kBasicMissleHeight;
-        if (!firing_rotation->is_flipped_) {
-            missle_position.x_ += firing_box->width_;
-            missle_velocity.vx_ *= -1;
-        } else {
-            missle_position.x_ -= firing_box->width_;
-        }
-
-        slime.AssignFromCopy<Rotation>(*firing_rotation);
-        slime.AssignFromCopy<Velocity>(missle_velocity);
-        slime.AssignFromCopy<Position>(missle_position);
-
-        slime.Assign<HitBox>(kBasicMissleWidth, kBasicMissleHeight);
-        slime.Assign<FlyingSlimeTag>();
-
-        slime.Assign<RenderFrameData>(RenderFrameData{0, false});
-        events.Emit<SkinChangeRequest>(state_name_converter_, SlimeStates::FLYING, "./assets/sprites/slime.png", slime);
-    }
-}
-
-void SlimeSystem::ProcessAttach(ecs::EventManager& events) {
-    while (!state_change_queue_.empty()) {
-        ecs::Entity slime_to_change = state_change_queue_.front();
-        state_change_queue_.pop();
-
-        events.Emit<SpriteSheetStateChangedEvent>(SlimeStates::ATTACHED, slime_to_change);
-    }
+    slime.Assign<RenderFrameData>(RenderFrameData{0, false});
+    events_->Emit<SkinChangeRequest>(state_name_converter_, SlimeStates::FLYING, "./assets/sprites/slime.png", slime);
 }
 
 void SlimeSystem::UpdateAttached(ecs::EntityManager& entities, ecs::TimeDelta dt) {
@@ -92,7 +79,7 @@ void SlimeSystem::UpdateAttached(ecs::EntityManager& entities, ecs::TimeDelta dt
 void SlimeSystem::Receive(const SpecialTriggerEvent& event) {
     ecs::Entity entity = event.entity_;
     if (entity.GetComponent<SpecialAbility>()->type_ == SpecialAbility::Type::Slime) {
-        slime_queue_.push(event.entity_);
+        ProcessSlime(event.entity_);
     }
 }
 
@@ -114,7 +101,22 @@ void SlimeSystem::Receive(const CollisionEvent& event) {
         slime_entity.Assign<AttachedSlimeTag>(AttachedSlimeTag{kBasicSlimeHoldTime});
         slime_entity.Assign<Attached>(Attached{owner_entity, &GetAttachedPosition});
 
-        state_change_queue_.push(slime_entity);
+        owner_entity.GetComponent<MoveSpeed>()->value_ *= kBasicSpeedDecrease;
+        auto speed_recovery = [](ecs::Entity entity) {
+            entity.GetComponent<MoveSpeed>()->value_ /= kBasicSpeedDecrease;
+        };
+
+        owner_entity.GetComponent<AttackPower>()->power_ *= kBasicDamageDecrease;
+        auto power_recovery = [](ecs::Entity entity) {
+            entity.GetComponent<AttackPower>()->power_ /= kBasicDamageDecrease;
+        };
+
+        events_->Emit<SpriteSheetStateChangedEvent>(SlimeStates::ATTACHED, slime_entity);
+
+        events_->Emit<PassiveCurseEvent>(owner_entity,
+                                         PassiveCurseInfo{kBasicSlimeHoldTime, std::move(speed_recovery)});
+        events_->Emit<PassiveCurseEvent>(owner_entity,
+                                         PassiveCurseInfo{kBasicSlimeHoldTime, std::move(power_recovery)});
     }
 }
 

@@ -27,16 +27,15 @@ public:
     void Receive(const CollisionEvent& event);
 
 private:
-    void ProcessSlimes(ecs::EntityManager& entities, ecs::EventManager& events);
-    void ProcessAttach(ecs::EventManager& events);
+    void ProcessSlime(ecs::Entity owner_entity);
     void UpdateAttached(ecs::EntityManager& entities, ecs::TimeDelta dt);
 
     static Position GetAttachedPosition(Position owner_position);
 
     std::map<std::string, int> state_name_converter_;
 
-    std::queue<ecs::Entity> slime_queue_;
-    std::queue<ecs::Entity> state_change_queue_;
+    ecs::EntityManager* entities_;
+    ecs::EventManager* events_;
 };
 
 #endif
