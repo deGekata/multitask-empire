@@ -78,7 +78,7 @@ void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& event
 void PlayerSystem::Receive(const KeyPressedEvent& event) {
 
     PlayerCommand matched_cmd = key_to_cmd_matcher_[static_cast<uint>(event.data_.key)];
-    
+
     if (matched_cmd != PlayerCommand::INVALID) {                    
         commands_queue_.push_back(matched_cmd);
     }

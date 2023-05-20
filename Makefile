@@ -2,11 +2,12 @@ TARGET_DIR := targets
 TEST_DIR := tests
 
 SRC_DIRS := src ecs signal player physics renderer logger geometry\
-graphics/SFML spritesheet utility bot collision gameplay battle
+graphics/SFML spritesheet utility bot collision gameplay battle\
+interface interface/manage interface/objects
 
 VPATH += $(SRC_DIRS) $(TEST_DIR) $(TARGET_DIR)
 
-INC_DIRS := include
+INC_DIRS := . include
 BIN_DIR := bin
 BUILD_DIR := build
 

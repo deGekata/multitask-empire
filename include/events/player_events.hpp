@@ -11,6 +11,8 @@
 
 #include <components/player_components.hpp>
 
+#include <utility/time.hpp>
+
 enum class PlayerCommand : int {
     INVALID = -1,
     IDLE,
@@ -105,11 +107,11 @@ struct MouseWheelScrolledEvent : public ecs::Event<MouseWheelScrolledEvent> {
 };
 
 struct TimerTickedEvent : public ecs::Event<TimerTickedEvent> {
-    explicit TimerTickedEvent(igraphicslib::Event::Timepoint data)
+    explicit TimerTickedEvent(utility::Time data)
         : time_data(data) {
     }
 
-    igraphicslib::Event::Timepoint time_data;
+    utility::Time time_data;
 };
 
 #endif
