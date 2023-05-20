@@ -28,6 +28,7 @@ void HealthBarSystem::Configure(ecs::EntityManager& entities, ecs::EventManager&
 
 void HealthBarSystem::FillBarsStates() {
     // Cow counter reference
+    state_name_converter_["ZERO"] = HealthBarState::PERCENTS_0;
     state_name_converter_["TEN"] = HealthBarState::PERCENTS_10;
     state_name_converter_["TWENTY"] = HealthBarState::PERCENTS_20;
     state_name_converter_["THIRTY"] = HealthBarState::PERCENTS_30;
@@ -90,7 +91,7 @@ void HealthBarSystem::Receive(const PlayerInitiatedEvent& event) {
     entity_bar.AssignFromCopy<Rotation>(Rotation{is_rotated});
     entity_bar.Assign<RenderFrameData>(RenderFrameData{0, false});
 
-    events_->Emit<SkinChangeRequest>(state_name_converter_, HealthBarState::PERCENTS_100, "./assets/sprites/hpbar.png",
+    events_->Emit<SkinChangeRequest>(state_name_converter_, HealthBarState::PERCENTS_100, "./assets/sprites/health_bar.png",
                                      entity_bar);
 
     bar_of_entity_[event.entity_] = {entity_bar, is_rotated};
@@ -102,7 +103,7 @@ void HealthBarSystem::Receive(const DamageTakenEvent& event) {
     if ((damaged_entity.HasComponent<Health>()) && (bar_of_entity_.contains(damaged_entity))) {
         ecs::Entity health_bar = bar_of_entity_[damaged_entity].bar_entity;
         int32_t health_id = static_cast<int32_t>(damaged_entity.GetComponent<Health>()->health_ /
-                                                 (101.0 / static_cast<double>(STATES_AMOUNT)));
+                                                 (100.0 / static_cast<double>(HealthBarState::PERCENTS_100)));
 
         events_->Emit<SpriteSheetStateChangedEvent>(health_id, health_bar);
     }

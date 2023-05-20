@@ -24,27 +24,27 @@ void ControllerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& e
 
 void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager&, ecs::EventManager& events,
                                        ecs::TimeDelta dt) {
-    static ecs::TimeDelta time_since = 0;
-    static bool move_direction = false;
+    // static ecs::TimeDelta time_since = 0;
+    // static bool move_direction = false;
 
-    if ((time_since += dt) >= 1000000.0) {
-        move_direction = !move_direction;
+    // if ((time_since += dt) >= 1000000.0) {
+    //     move_direction = !move_direction;
 
-        time_since = 0;
-    }
+    //     time_since = 0;
+    // }
 
-    if (move_direction) {
-        events.Emit<PlayerCommandEvent>(PlayerCommand::WALK_LEFT, current);
-    } else {
-        events.Emit<PlayerCommandEvent>(PlayerCommand::WALK_RIGHT, current);
-    }
+    // if (move_direction) {
+    //     events.Emit<PlayerCommandEvent>(PlayerCommand::WALK_LEFT, current);
+    // } else {
+    //     events.Emit<PlayerCommandEvent>(PlayerCommand::WALK_RIGHT, current);
+    // }
 }
 
 void ControllerSystem::SwitchGameState(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
     switch (current_state_) {
         case GameState::Init:
             entities.Each<PlayerTag>([](ecs::Entity entity, PlayerTag&) {
-                entity.Assign<SpecialAbility>(SpecialAbility{SpecialAbility::Type::Slime});
+                entity.Assign<SpecialAbility>(SpecialAbility{SpecialAbility::Type::Fireball});
             });
 
             current_state_ = GameState::Knight;

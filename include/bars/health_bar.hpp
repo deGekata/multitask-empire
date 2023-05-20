@@ -10,6 +10,7 @@
 
 class HealthBarSystem : public ecs::System<HealthBarSystem>, public ecs::Reciever<HealthBarSystem> {
     enum HealthBarState : int {
+        PERCENTS_0,
         PERCENTS_10,
         PERCENTS_20,
         PERCENTS_30,

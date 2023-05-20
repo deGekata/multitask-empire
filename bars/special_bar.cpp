@@ -56,7 +56,7 @@ void SpecialBarSystem::Update(ecs::EntityManager& entities, ecs::EventManager& e
             SpecialBarProperties& properties = bar_of_entity_[entity];
 
             auto cur_state = static_cast<int32_t>(special.experience_ /
-                                                  (101.0 / static_cast<double>(SpecialBarState::STATES_AMOUNT)));
+                                                  (100.0 / static_cast<double>(SpecialBarState::SEVENTH)));
 
             if (cur_state != properties.last_state) {
                 events.Emit<SpriteSheetStateChangedEvent>(cur_state, properties.bar_entity);

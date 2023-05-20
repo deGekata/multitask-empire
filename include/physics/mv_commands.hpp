@@ -8,9 +8,6 @@
 
 #include <events/player_events.hpp>
 
-static constexpr double kDefaultJumpSpeed = 0.005;
-static constexpr double kDefaultMoveSpeed = 0.0005;
-
 class MovementCommandsSystem : public ecs::System<MovementCommandsSystem>,
                                public ecs::Reciever<MovementCommandsSystem> {
 public:
