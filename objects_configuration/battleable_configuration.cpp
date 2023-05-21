@@ -80,6 +80,5 @@ void BattleAbleObjectsConfigSystem::ChangeConfiguration(ecs::Entity entity, Batt
     PBattleAbleAttributes p_attrs;
     p_attrs.attr_ = &attrs;
 
-    logger::Print("kek wait\n\n\n\n\n\n\n");
     entity.AssignFromCopy<PBattleAbleAttributes>(p_attrs);
 }

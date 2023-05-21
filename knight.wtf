@@ -18,4 +18,4 @@ Attacks: {
     {"ATTACK_ONE", "Justice hit", "J", 20},
     {"ATTACK_TWO", "Berserk technique", "K", 30},
     {"ATTACK_THREE", "give me your blood", "L", 5}
-},
+}

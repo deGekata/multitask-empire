@@ -29,7 +29,6 @@ void BattleAbleStateSwitchSystem::Update(ecs::EntityManager& entities, ecs::Even
 
             if(attrs.next_active_state_ == PBattleAbleAttributes::kInvalidState && !anim_data->is_one_shot_) {
                 // todo: fix
-                
                 // todo: remove
                 if(attrs.next_passive_state_ == static_cast<int>(ActionCommandType::RunLeft)) {
                     entity.GetComponent<Rotation>()->is_flipped_ = true;
@@ -42,7 +41,8 @@ void BattleAbleStateSwitchSystem::Update(ecs::EntityManager& entities, ecs::Even
                 if(cmd.type_ == ActionCommandType::StopRunningLeft || cmd.type_ == ActionCommandType::StopRunningRight) {
                     events.Emit<SpriteSheetStateChangedEvent>(static_cast<int>(ActionCommandType::Idle), entity); 
                 }
-                else{
+                else if(cmd.type_ != ActionCommandType::Special && cmd.type_ != ActionCommandType::Block) {
+                    
                     events.Emit<SpriteSheetStateChangedEvent>(attrs.next_passive_state_, entity); 
                 }
             }
@@ -79,11 +79,11 @@ void BattleAbleStateSwitchSystem::Receive(const ActionCommandRequestEvent& event
     auto attrs = obj_entity.GetComponent<PBattleAbleAttributes>().Get();
     // auto anim_data = obj_entity.GetComponent<ObjectAnimationData>().Get();
 
-    if(cmd->type_ == ActionCommandType::Idle ||
+    if(cmd->type_ == ActionCommandType::Idle || cmd->type_ == ActionCommandType::Block || cmd->type_ == ActionCommandType::Special || 
        cmd->type_ == ActionCommandType::Block || cmd->type_ == ActionCommandType::RunLeft ||
        cmd->type_ == ActionCommandType::RunRight || cmd->type_ == ActionCommandType::StopRunningLeft ||
        cmd->type_ == ActionCommandType::StopRunningRight) {
-
+        
         attrs->next_passive_state_ = static_cast<int>(cmd->type_);
         
         // if(!anim_data->is_one_shot_) {

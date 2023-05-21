@@ -10,12 +10,12 @@ enum class ActionCommandType : int {
     RunRight,
     RunLeft,
     Jump,
-    Attack,
     Block,
     Special,
     Idle,
     StopRunningRight,
-    StopRunningLeft
+    StopRunningLeft,
+    Attack //! must be last
 };
 
 enum class PlayerCommandType : int {

@@ -40,7 +40,7 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
     ADD_ACTION_MATCH(Attack, K)
     ADD_ACTION_MATCH(Attack, L)
     ADD_ACTION_MATCH(Special, F)
-    ADD_ACTION_MATCH(Block, Q)
+    ADD_ACTION_MATCH(Block, B)
 
     ADD_CMD_MATCH(TextInsertRequest, T)
 
@@ -57,7 +57,7 @@ void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& event
         auto req = commands_queue_.front();
         commands_queue_.pop_back();
         
-        if(key_to_cmd_matcher_.count(req.key)) {
+        if(key_to_cmd_matcher_.count(req.key) > 0) {
             ecs::Entity cmd_ent = entities.Create();
 
             auto type = key_to_cmd_matcher_[req.key];
@@ -112,7 +112,7 @@ void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& event
             on_release_queue_.pop_back();
 
             //? extra logic
-            if(key_to_cmd_matcher_[req.key] == PlayerCommandType::Action) {
+            if(key_to_cmd_matcher_.count(req.key) > 0 && key_to_cmd_matcher_[req.key] == PlayerCommandType::Action) {
                 ActionCommandType action = key_to_action_matcher_[req.key];
 
                 if(action == ActionCommandType::RunLeft) {
