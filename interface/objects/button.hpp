@@ -1,22 +1,36 @@
-// Multitask-Empire
-#include <interface/objects/widget.hpp>
-#include <graphics/aText.hpp>
+// // Multitask-Empire
+// #include <interface/objects/image.hpp>
+// #include <interface/objects/label.hpp>
 
-#ifndef MULTITASK_EMPIRE_INTERFACE_OBJECTS_BUTTON_HPP
-#define MULTITASK_EMPIRE_INTERFACE_OBJECTS_BUTTON_HPP
+// // C++ standart library
+// #include <functional>
 
-namespace interface::objects {
+// #ifndef MULTITASK_EMPIRE_INTERFACE_OBJECTS_BUTTON_HPP
+// #define MULTITASK_EMPIRE_INTERFACE_OBJECTS_BUTTON_HPP
 
-class Button : public Widget {
-public:
-    Button(IWidget* parent, const geometry::Rect2<int32_t>& bounds, const igraphicslib::Text& text);
+// namespace interface::objects {
 
-    ~Button() override = default;
+// class Button : public Widget {
+// public:
+// 	explicit Button(IWidget* parent);
+//     explicit Button(const geometry::Rect2<uint32_t>& bounds);
+//     Button(IWidget* parent, const geometry::Rect2<uint32_t>& bounds);
 
-protected:
-	igraphicslib::Text text_;
-};
+//     void Draw() override;
 
-}  // namespace interface::objects
+//     void Setimage(const std::string& image);
+//     void SetButton(const std::string& label);
+//     void SetCallback(const std::function<void ()>& callback);
 
-#endif  // MULTITASK_EMPIRE_INTERFACE_OBJECTS_BUTTON_HPP
+//     ~Button() override = default;
+
+// protected:
+// 	Image* image_{nullptr};
+// 	Label* label_{nullptr};
+
+// 	std::function<void ()> callback_;
+// };
+
+// }  // namespace interface::objects
+
+// #endif  // MULTITASK_EMPIRE_INTERFACE_OBJECTS_BUTTON_HPP

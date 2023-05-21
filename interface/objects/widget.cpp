@@ -1,10 +1,17 @@
 #include <interface/objects/widget.hpp>
-#include "interface/application.hpp"
 
 namespace interface::objects {
 
-Widget::Widget(IWidget* parent, const geometry::Rect2<int32_t>& bounds) :
-	IWidget(parent, bounds) {
+Widget::Widget(IWidget* parent)
+	: IWidget(parent) {
+}
+
+Widget::Widget(const geometry::Rect2<uint32_t>& bounds)
+	: IWidget(bounds) {
+}
+
+Widget::Widget(IWidget* parent, const geometry::Rect2<uint32_t>& bounds)
+	: IWidget(parent, bounds) {
 }
 
 bool Widget::OnMouseMove(igraphicslib::MouseMoveEventData  mouse_data) {
@@ -85,8 +92,11 @@ void Widget::DragLeave() {
 }
 
 void Widget::DragMove(const geometry::Vector2<int32_t>& delta) {
-	bounds_.x += delta.x;
-	bounds_.y += delta.y;
+	int32_t new_x = static_cast<int32_t>(bounds_.x) + delta.x;
+	int32_t new_y = static_cast<int32_t>(bounds_.y) + delta.y;
+
+	bounds_.x = static_cast<uint32_t>(new_x);
+	bounds_.y = static_cast<uint32_t>(new_y);
 }
 
 void Widget::SetFocusIn()  {
@@ -97,7 +107,7 @@ void Widget::SetFocusOut() {
 	is_in_focus_ = false;
 }
 
-void SetFocusNextChild() {
+void Widget::SetFocusNextChild() {
 	// ???
 }
 
@@ -105,13 +115,17 @@ void Widget::SetFocusPrevChild() {
 	// ???
 }
 
-void Widget::Resize(int32_t width, int32_t height)    {
+void Widget::Resize(uint32_t width, uint32_t height)    {
 	bounds_.w = width;
 	bounds_.h = height;
 }
 
-void Widget::Resize(const geometry::Rect2<int32_t>& bounds) {
+void Widget::Resize(const geometry::Rect2<uint32_t>& bounds) {
 	bounds_ = bounds;
+}
+
+geometry::Rect2<uint32_t> Widget::Bounds() const {
+	return bounds_;
 }
 
 void Widget::AddChild(IWidget* child, manage::Priority priority) {
@@ -120,6 +134,18 @@ void Widget::AddChild(IWidget* child, manage::Priority priority) {
 
 void Widget::RemoveChild(IWidget* child) {
 	children_manager_.Unsubscribe(child);
+}
+
+geometry::Rect2<uint32_t> Widget::AbsoluteBounds() const {
+	geometry::Rect2<uint32_t> abs_bounds = bounds_;
+
+	IWidget* parent = parent_;
+	while (parent != nullptr) {
+		abs_bounds.x += parent->Bounds().x;
+		abs_bounds.y += parent->Bounds().y;
+	}
+
+	return abs_bounds;
 }
 
 }  // namespace interface::objects

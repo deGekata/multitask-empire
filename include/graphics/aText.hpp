@@ -5,12 +5,13 @@
 #include <graphics/color.hpp>
 
 namespace igraphicslib {
-extern const char* const kSystemFont;
+
+const char* const kSystemFont = "assets/fonts/OpenSans-Bold.ttf";
+
 using Rect = geometry::Rect2u;
 using Point = geometry::Point2i;
 
 class Text {
-
 public:
     enum styleFlags {
         Normal = 0,

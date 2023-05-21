@@ -58,13 +58,13 @@ $(BIN_DIR)/%.o: %.cpp
 
 .PHONY: run gdb valgrind prepare clean info
 
-run: all
+run:
 	@$(APPLICATION)
 
-gdb: all
+gdb:
 	@gdb $(APPLICATION)
 
-valgrind: all
+valgrind:
 	@valgrind --leak-check=full $(APPLICATION)
 
 prepare:

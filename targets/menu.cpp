@@ -1,14 +1,19 @@
 #include <interface/application.hpp>
-#include <interface/objects/button.hpp>
+
+#include <interface/objects/image.hpp>
+#include <interface/objects/label.hpp>
 
 int main() {
-	auto* window = new igraphicslib::Window(800, 600, "Test");
+	auto* window = new igraphicslib::Window(1920, 1080, "Test");
 	auto* app = new interface::Application(window);
 
-	auto* button = new interface::objects::Button(nullptr, 10, 10, 100, 100, igraphicslib::Text(""));
-	interface::manage::EventManager::Current()->Subscribe(button);
+	auto* image = new interface::objects::Image({0, 0, 1920, 1080}, "assets/images/menu_bg.png");
+	auto* label = new interface::objects::Label({500, 500, 100, 100}, "HUY TEBE A NE SKRIN");
 
 	app->Run();
+
+	delete image;
+	delete label;
 
 	delete window;
 	delete app;

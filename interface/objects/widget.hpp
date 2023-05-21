@@ -8,7 +8,9 @@ namespace interface::objects {
 
 class Widget : public IWidget {
 public:
-    explicit Widget(IWidget* parent = nullptr, const geometry::Rect2<int32_t>& bounds = {0, 0, 0, 0});
+    explicit Widget(IWidget* parent);
+    explicit Widget(const geometry::Rect2<uint32_t>& bounds);
+    Widget(IWidget* parent, const geometry::Rect2<uint32_t>& bounds);
 
     ~Widget() override = default;
 
@@ -46,12 +48,17 @@ public:
     void SetFocusPrevChild() override;
 
     // Bounds
-    void Resize(int32_t width, int32_t height)          override;
-    void Resize(const geometry::Rect2<int32_t>& bounds) override;
+    void Resize(uint32_t width, uint32_t height)         override;
+    void Resize(const geometry::Rect2<uint32_t>& bounds) override;
+
+    geometry::Rect2<uint32_t> Bounds() const override;
 
     // Children
     void AddChild(IWidget* child, manage::Priority priority) override;
     void RemoveChild(IWidget* child) override;
+
+protected:
+    geometry::Rect2<uint32_t> AbsoluteBounds() const;
 };
 
 }  // namespace interface::objects

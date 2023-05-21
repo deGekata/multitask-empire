@@ -10,12 +10,11 @@ namespace interface::objects {
 // Basic drawable
 class IWidget : public IObject {
 public:
-	explicit IWidget(IWidget* parent = nullptr, const geometry::Rect2<int32_t>& bounds = {0, 0, 0, 0});
+	explicit IWidget(IWidget* parent);
+	explicit IWidget(const geometry::Rect2<uint32_t>& bounds);
+	IWidget(IWidget* parent, const geometry::Rect2<uint32_t>& bounds);
 
 	~IWidget() override = default;
-
-	// Time Event
-	bool OnTimerTick(utility::Time time_data) override;
 
 	// Every widget knows how to draw itself
 	virtual void Draw() = 0;
@@ -37,8 +36,10 @@ public:
 	virtual void SetFocusPrevChild() = 0;
 
 	// Bounds
-	virtual void Resize(int32_t width, int32_t height)          = 0;
-	virtual void Resize(const geometry::Rect2<int32_t>& bounds) = 0;
+	virtual void Resize(uint32_t width, uint32_t height)         = 0;
+	virtual void Resize(const geometry::Rect2<uint32_t>& bounds) = 0;
+
+	virtual geometry::Rect2<uint32_t> Bounds() const = 0;
 
 	// Children
 	virtual void AddChild(IWidget* child, manage::Priority priority = 0) = 0;
@@ -53,7 +54,7 @@ protected:
     bool is_in_focus_;
     bool is_dragged_;
 
-    geometry::Rect2<int32_t> bounds_;
+    geometry::Rect2<uint32_t> bounds_;
 };
 
 }  // namespace interface::objects
