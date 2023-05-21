@@ -17,17 +17,7 @@ void BattleAbleStateSwitchSystem::Update(ecs::EntityManager& entities, ecs::Even
         auto anim_data = entity.GetComponent<ObjectAnimationData>().Get();
 
         if(attrs.next_passive_state_ != PBattleAbleAttributes::kInvalidState) {
-            
-            // todo: remove
-            if(attrs.next_passive_state_ == static_cast<int>(ActionCommandType::RunLeft)) {
-                entity.GetComponent<Rotation>()->is_flipped_ = true;
-                attrs.next_passive_state_ = static_cast<int>(ActionCommandType::RunRight);
-            }
-
-            if(attrs.next_passive_state_ == static_cast<int>(ActionCommandType::RunRight)) {
-                entity.GetComponent<Rotation>()->is_flipped_ = false;
-            }
-
+        
             ecs::Entity action = entities.Create();
 
             ActionCommand cmd = {.type_ = static_cast<ActionCommandType>(attrs.next_passive_state_)};
@@ -38,7 +28,23 @@ void BattleAbleStateSwitchSystem::Update(ecs::EntityManager& entities, ecs::Even
             entities.Destroy(action.GetId());
 
             if(attrs.next_active_state_ == PBattleAbleAttributes::kInvalidState && !anim_data->is_one_shot_) {
-                events.Emit<SpriteSheetStateChangedEvent>(attrs.next_passive_state_, entity); 
+                // todo: fix
+                
+                // todo: remove
+                if(attrs.next_passive_state_ == static_cast<int>(ActionCommandType::RunLeft)) {
+                    entity.GetComponent<Rotation>()->is_flipped_ = true;
+                    attrs.next_passive_state_ = static_cast<int>(ActionCommandType::RunRight);
+                }
+
+                if(attrs.next_passive_state_ == static_cast<int>(ActionCommandType::RunRight)) {
+                    entity.GetComponent<Rotation>()->is_flipped_ = false;
+                }
+                if(cmd.type_ == ActionCommandType::StopRunningLeft || cmd.type_ == ActionCommandType::StopRunningRight) {
+                    events.Emit<SpriteSheetStateChangedEvent>(static_cast<int>(ActionCommandType::Idle), entity); 
+                }
+                else{
+                    events.Emit<SpriteSheetStateChangedEvent>(attrs.next_passive_state_, entity); 
+                }
             }
 
             attrs.cur_passive_state_ = attrs.next_passive_state_;
@@ -67,7 +73,7 @@ void BattleAbleStateSwitchSystem::Receive(const ActionCommandRequestEvent& event
     if(obj_entity.HasComponent<ObjectAnimationData>() == 0) {
         return;
     }
-    
+
     auto cmd = action.GetComponent<ActionCommand>().Get();
 
     auto attrs = obj_entity.GetComponent<PBattleAbleAttributes>().Get();
@@ -75,7 +81,8 @@ void BattleAbleStateSwitchSystem::Receive(const ActionCommandRequestEvent& event
 
     if(cmd->type_ == ActionCommandType::Idle ||
        cmd->type_ == ActionCommandType::Block || cmd->type_ == ActionCommandType::RunLeft ||
-       cmd->type_ == ActionCommandType::RunRight) {
+       cmd->type_ == ActionCommandType::RunRight || cmd->type_ == ActionCommandType::StopRunningLeft ||
+       cmd->type_ == ActionCommandType::StopRunningRight) {
 
         attrs->next_passive_state_ = static_cast<int>(cmd->type_);
         
@@ -83,9 +90,6 @@ void BattleAbleStateSwitchSystem::Receive(const ActionCommandRequestEvent& event
         //     events_->Emit<SpriteSheetStateChangedEvent>(attrs->next_active_state_, true);
         //     events_->Emit<ActionCommandEvent>(action, obj_entity);
         // }
-    }
-    else if(cmd->type_ == ActionCommandType::StopRunningLeft || cmd->type_ == ActionCommandType::StopRunningRight) {
-        attrs->next_passive_state_ = static_cast<int>(ActionCommandType::Idle);
     }
     else {
         // if(cmd->type_ == ActionCommandType::Attack) {

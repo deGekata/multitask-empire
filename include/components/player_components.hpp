@@ -75,9 +75,9 @@ struct PBattleAbleAttributes {
     static const int kInvalidState = -1;
 
     BattleAbleAttributes* attr_;
-    int cur_passive_state_;
-    int next_passive_state_;
-    int next_active_state_;
+    int cur_passive_state_{kInvalidState};
+    int next_passive_state_{kInvalidState};
+    int next_active_state_{kInvalidState};
 };
 
 #endif

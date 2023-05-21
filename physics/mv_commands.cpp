@@ -11,7 +11,7 @@ static constexpr double kDefaultJumpSpeed = 0.004;
 static constexpr double kDefaultMoveSpeed = 0.0005;
 
 void MovementCommandsSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
-    events.Subscribe<PlayerCommandEvent>(*this);
+    events.Subscribe<ActionCommandEvent>(*this);
     events.Subscribe<PlayerInitiatedEvent>(*this);
 }
 
@@ -19,16 +19,13 @@ void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs
 }
 
 // todo: to action command
-void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
+void MovementCommandsSystem::Receive(const ActionCommandEvent& event) {
 
-    ecs::Entity cmd_ent = event.cmd_;
-
-    auto cmd_type = cmd_ent.GetComponent<PlayerCommand>().Get();
-    if(cmd_type->type_ != PlayerCommandType::Action) return;
+    ecs::Entity cmd_ent = event.action_;
 
     auto action_type = cmd_ent.GetComponent<ActionCommand>().Get();
 
-    ecs::Entity entity = event.entity_;
+    ecs::Entity entity = event.obj_entity_;
     
     switch (action_type->type_) {
         case ActionCommandType::Jump: {
@@ -62,8 +59,8 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
         case ActionCommandType::StopRunningLeft: {
             
             // if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
-                if(entity.GetComponent<Velocity>()->vx_ < 0)
-                    entity.GetComponent<Velocity>()->vx_ = 0.0;
+            if(entity.GetComponent<Velocity>()->vx_ < 0)
+                entity.GetComponent<Velocity>()->vx_ = 0.0;
             // }
             break;
         }
@@ -71,8 +68,8 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
         case ActionCommandType::StopRunningRight: {
             
             // if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
-                if(entity.GetComponent<Velocity>()->vx_ > 0)
-                    entity.GetComponent<Velocity>()->vx_ = 0.0;
+            if(entity.GetComponent<Velocity>()->vx_ > 0)
+                entity.GetComponent<Velocity>()->vx_ = 0.0;
             // }
             break;
         }

@@ -39,6 +39,8 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
     ADD_ACTION_MATCH(Attack, J)
     ADD_ACTION_MATCH(Attack, K)
     ADD_ACTION_MATCH(Attack, L)
+    ADD_ACTION_MATCH(Special, F)
+    ADD_ACTION_MATCH(Block, Q)
 
     ADD_CMD_MATCH(TextInsertRequest, T)
 
@@ -92,13 +94,6 @@ void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& event
                 }
 
                 events.Emit<ActionCommandRequestEvent>(cmd_ent, player_);
-
-                if(action == ActionCommandType::Jump) {
-                    logger::Print("jump\n");
-                }
-                else if(action == ActionCommandType::RunRight){
-                    logger::Print("RUn\n");
-                }
             }
 
             events.Emit<PlayerCommandEvent>(cmd_ent, player_);
