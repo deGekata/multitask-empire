@@ -63,6 +63,11 @@ public:
     // Parent
     IWidget* Parent() const override;
 
+    // Interaction
+    void SetOnHoverIn (std::function<void ()> on_hover_in)  override;
+    void SetOnHoverOut(std::function<void ()> on_hover_out) override;
+    void SetOnClick   (std::function<void ()> on_click)     override;
+
 protected:
     geometry::Rect2<uint32_t> AbsoluteBounds() const;
 };

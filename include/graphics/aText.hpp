@@ -6,7 +6,7 @@
 
 namespace igraphicslib {
 
-const char* const kSystemFont = "assets/fonts/OpenSans-Bold.ttf";
+const char* const kSystemFont = "assets/fonts/Pangolin-Regular.ttf";
 
 using Rect = geometry::Rect2u;
 using Point = geometry::Point2i;

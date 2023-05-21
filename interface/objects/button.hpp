@@ -2,9 +2,6 @@
 #include <interface/objects/image.hpp>
 #include <interface/objects/label.hpp>
 
-// C++ standart library
-#include <functional>
-
 #ifndef MULTITASK_EMPIRE_INTERFACE_OBJECTS_BUTTON_HPP
 #define MULTITASK_EMPIRE_INTERFACE_OBJECTS_BUTTON_HPP
 
@@ -18,19 +15,22 @@ public:
 
     void Draw() override;
 
-    bool OnButtonRelease(igraphicslib::MouseButtonEventData button_data) override;
+    void Resize(uint32_t width, uint32_t height)         override;
+    void Resize(const geometry::Rect2<uint32_t>& bounds) override;
 
     void SetImage(const std::string& image);
     void SetLabel(const std::string& label);
-    void SetCallback(const std::function<void ()>& callback);
+
+    // Label
+    void SetColor(const igraphicslib::Color& color);
+    void SetFont(const std::string& path);
+    void SetCharacterSize(uint32_t size);
 
     ~Button() override = default;
 
 protected:
 	Image* image_{nullptr};
 	Label* label_{nullptr};
-
-	std::function<void ()> callback_;
 };
 
 }  // namespace interface::objects

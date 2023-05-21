@@ -3,7 +3,7 @@ TEST_DIR := tests
 
 SRC_DIRS := src ecs signal player physics renderer logger geometry\
 graphics/SFML spritesheet utility bot collision gameplay battle\
-interface interface/manage interface/objects
+interface interface/manage interface/objects sound
 
 VPATH += $(SRC_DIRS) $(TEST_DIR) $(TARGET_DIR)
 
@@ -34,7 +34,7 @@ CXX_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 
 LD = ld
 
-DYNAMIC_LIBS := -lsfml-system -lsfml-window -lsfml-graphics -lfmt
+DYNAMIC_LIBS := -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lfmt
 
 LD_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
 -fcheck-new -fsized-deallocation -fstack-protector -fstrict-overflow\

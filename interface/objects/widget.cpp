@@ -19,6 +19,19 @@ bool Widget::OnMouseMove(igraphicslib::MouseMoveEventData  mouse_data) {
 		return false;
 	}
 
+	if (!Intersects(mouse_data.point)) {
+		if (is_hovered_ && on_hover_out_ != nullptr) {
+			is_hovered_ = false;
+			on_hover_out_();
+		}
+		return false;
+	}
+
+	if (!is_hovered_ && on_hover_in_ != nullptr) {
+		is_hovered_ = true;
+		on_hover_in_();
+	}
+
 	return children_manager_.ProcessMouseMovement(mouse_data);
 }
 
@@ -41,6 +54,14 @@ bool Widget::OnButtonPress(igraphicslib::MouseButtonEventData button_data) {
 bool Widget::OnButtonRelease(igraphicslib::MouseButtonEventData button_data) {
 	if (!is_shown_) {
 		return false;
+	}
+
+	if (!Intersects(button_data.point)) {
+		return false;
+	}
+
+	if (on_click_ != nullptr) {
+		on_click_();
 	}
 
 	return children_manager_.ProcessButtonRelease(button_data);
@@ -172,6 +193,18 @@ geometry::Rect2<uint32_t> Widget::AbsoluteBounds() const {
 
 IWidget* Widget::Parent() const {
 	return parent_;
+}
+
+void Widget::SetOnHoverIn(std::function<void ()> on_hover_in) {
+	on_hover_in_ = on_hover_in;
+}
+
+void Widget::SetOnHoverOut(std::function<void ()> on_hover_out) {
+	on_hover_out_ = on_hover_out;
+}
+
+void Widget::SetOnClick(std::function<void ()> on_click) {
+	on_click_ = on_click;
 }
 
 }  // namespace interface::objects
