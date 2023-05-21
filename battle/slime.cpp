@@ -16,7 +16,7 @@ static constexpr ecs::TimeDelta kBasicSlimeHoldTime = 1000000.0;
 static constexpr double kBasicDamageMultiplier = 0.1;
 static constexpr double kBasicSpeedDecrease = 0.5;
 
-void SlimeSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+void SlimeSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<CollisionEvent>(*this);
     events.Subscribe<PlayerCommandEvent>(*this);
 
@@ -60,7 +60,7 @@ void SlimeSystem::ProcessSlimes(ecs::EntityManager& entities, ecs::EventManager&
         slime.Assign<HitBox>(kBasicMissleWidth, kBasicMissleHeight);
         slime.Assign<FlyingSlimeTag>();
 
-        slime.Assign<RenderFrameData>(RenderFrameData{0, true});
+        // slime.Assign<RenderFrameData>(RenderFrameData{0, true});
         events.Emit<SkinChangeRequest>(state_name_converter_, SlimeStates::FLYING, "./assets/sprites/slime.png", slime);
     }
 }
@@ -90,7 +90,17 @@ void SlimeSystem::UpdateAttached(ecs::EntityManager& entities, ecs::TimeDelta dt
 }
 
 void SlimeSystem::Receive(const PlayerCommandEvent& event) {
-    if (event.cmd_.type_ == PlayerCommandType::Special) {
+
+    // todo: to extractActionCmd()
+    ecs::Entity cmd_ent = event.cmd_;
+
+    auto cmd_type = cmd_ent.GetComponent<PlayerCommand>().Get();
+    if(cmd_type->type_ != PlayerCommandType::Action) return;
+
+    ecs::Entity player_entity = event.entity_;
+    auto action_type = cmd_ent.GetComponent<ActionCommand>().Get();
+
+    if (action_type->type_ == ActionCommandType::Special) {
         ecs::Entity entity = event.entity_;
         if (entity.GetComponent<SpecialAbility>()->type_ == SpecialAbility::Type::Slime) {
             slime_queue_.push(event.entity_);

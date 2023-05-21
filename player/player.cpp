@@ -3,6 +3,8 @@
 #include <events/player_events.hpp>
 #include <events/renderer_events.hpp>
 
+#include <events/action_events.hpp>
+
 #include <components/movement_components.hpp>
 #include <components/player_components.hpp>
 #include <components/graphic_components.hpp>
@@ -33,8 +35,10 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
     ADD_ACTION_MATCH(RunRight, D)
     ADD_ACTION_MATCH(RunLeft, A)
     ADD_ACTION_MATCH(Jump, W)
-    // todo: Attack
-//    ADD_ACTION_MATCH(Jump, W)
+    ADD_ACTION_MATCH(Attack, H)
+    ADD_ACTION_MATCH(Attack, J)
+    ADD_ACTION_MATCH(Attack, K)
+    ADD_ACTION_MATCH(Attack, L)
 
     ADD_CMD_MATCH(TextInsertRequest, T)
 
@@ -42,6 +46,8 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
     events.Emit<PlayerInitiatedEvent>(player_);
     events.Emit<BattleAbleConfigChangeRequest>("./orc.wtf", player_);
 }
+
+// todo: refactor (0)___(0)
 
 void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
 
@@ -58,54 +64,82 @@ void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& event
                 if(action == ActionCommandType::RunLeft) {
                     
                     ecs::Entity cmd_ent = entities.Create();
-                    cmd_ent.Assign<PlayerCommand>(PlayerCommandType::Action);
-                    cmd_ent.Assign<ActionCommandType>(ActionCommandType::StopRunningLeft);
+                    
+                    PlayerCommand cmd = {.type_ = PlayerCommandType::Action};
+                    cmd_ent.Assign<PlayerCommand>(cmd);
 
+                    ActionCommand action_cmd = {.type_ = ActionCommandType::StopRunningLeft};
+                    cmd_ent.Assign<ActionCommand>(action_cmd);
+
+                    events.Emit<ActionCommandRequestEvent>(cmd_ent, player_);
                     events.Emit<PlayerCommandEvent>(cmd_ent, player_);
                 }
                 if(action == ActionCommandType::RunRight) {
                     
                     ecs::Entity cmd_ent = entities.Create();
-                    cmd_ent.Assign<PlayerCommand>(PlayerCommandType::Action);
-                    cmd_ent.Assign<ActionCommandType>(ActionCommandType::StopRunningRight);
+                    PlayerCommand cmd = {.type_ = PlayerCommandType::Action};
+                    cmd_ent.Assign<PlayerCommand>(cmd);
 
+                    ActionCommand action_cmd = {.type_ = ActionCommandType::StopRunningRight};
+                    cmd_ent.Assign<ActionCommand>(action_cmd);
+
+                    events.Emit<ActionCommandRequestEvent>(cmd_ent, player_);
                     events.Emit<PlayerCommandEvent>(cmd_ent, player_);
                 }
             }
         }
     }
 
-    if(!commands_queue_.empty()){
+    if(commands_queue_.empty()){
+        return;
+    }
 
-        while(!commands_queue_.empty()){
-            auto req = commands_queue_.front();
-            commands_queue_.pop_back();
-            
-            if(key_to_cmd_matcher_.count(req.key)) {
-                cmd.type_ = key_to_cmd_matcher_[req.key];
-            }
-            
-            auto attr_data = player_.GetComponent<PBattleAbleAttributes>().Get();
+    while(!commands_queue_.empty()){
+        auto req = commands_queue_.front();
+        commands_queue_.pop_back();
+        
+        if(key_to_cmd_matcher_.count(req.key)) {
+            ecs::Entity cmd_ent = entities.Create();
 
-            bool is_attack = false;
+            auto type = key_to_cmd_matcher_[req.key];
 
-            for(uint n_attack = 0; n_attack < attr_data->attr_->attacks_.size(); n_attack++) {
-                if(attr_data->attr_->attacks_[n_attack].binded_key_ == req.key) {
-                    cmd.type_ = PlayerCommandType::Attack;
-                    cmd.meta_ = n_attack; 
+            PlayerCommand cmd = {.type_ = type};
+            cmd_ent.Assign<PlayerCommand>(cmd);
 
-                    is_attack = true;
-                    break;
+            if(type == PlayerCommandType::Action) {
+
+                auto attr_data = player_.GetComponent<PBattleAbleAttributes>().Get();
+
+                ActionCommandType action = key_to_action_matcher_[req.key];
+
+                ActionCommand action_cmd = {.type_ = action};
+                cmd_ent.Assign<ActionCommand>(action_cmd);
+
+                if(action == ActionCommandType::Attack) {
+                    
+                    int attack_id = -1;
+
+                    for(uint n_attack = 0; n_attack < attr_data->attr_->attacks_.size(); n_attack++) {
+                        if(attr_data->attr_->attacks_[n_attack].binded_key_ == req.key) {
+                            attack_id = static_cast<int>(n_attack); 
+                            break;
+                        }
+                    }
+
+                    if(attack_id == -1) {
+                        logger::Print(kError, "unable to find attack, binded on key {}\n", static_cast<int>(req.key));
+                    }
+
+                    AttackId attack_id_cmp = {.id_ = static_cast<uint>(attack_id)};
+                    cmd_ent.Assign<AttackId>(attack_id_cmp);
                 }
-            }
-            if(is_attack) continue;
 
-            if(key_to_cmd_matcher_.count(req.key)) {
-                cmd.type_ = key_to_cmd_matcher_[req.key];
+                events.Emit<ActionCommandRequestEvent>(cmd_ent, player_);
             }
+
+            events.Emit<PlayerCommandEvent>(cmd_ent, player_);
+            entities.Destroy(cmd_ent.GetId());
         }
-
-        events.Emit<PlayerCommandEvent>(cmd, player_);
     }
 }
 
@@ -142,6 +176,5 @@ void PlayerSystem::Receive(const PlayerTextRequestEvent& event) {
     }
 }
 
-void PlayerSystem::Receive(const PlayerInitiatedEvent& event) {
-    ;
+void PlayerSystem::Receive(const PlayerInitiatedEvent&) {
 }

@@ -32,6 +32,10 @@ struct ActionCommand {
     ActionCommandType   type_;
 };
 
+struct AttackId {
+    uint id_;
+};
+
 struct BattleAbleAttributesStorageTag {};
 
 struct BattleAbleAttributes {
@@ -67,7 +71,13 @@ struct BattleAbleAttributes {
 };
 
 struct PBattleAbleAttributes {
+
+    static const int kInvalidState = -1;
+
     BattleAbleAttributes* attr_;
+    int cur_passive_state_;
+    int next_passive_state_;
+    int next_active_state_;
 };
 
 #endif

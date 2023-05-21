@@ -59,10 +59,18 @@ struct BattleAbleConfigLoadRequest : public ecs::Event<BattleAbleConfigLoadReque
 };
 
 struct SpriteSheetStateChangedEvent : public ecs::Event<SpriteSheetStateChangedEvent> {
-	explicit SpriteSheetStateChangedEvent(int state_id, ecs::Entity entity) : state_id_(state_id), entity_(entity){
+	explicit SpriteSheetStateChangedEvent(int state_id, ecs::Entity entity, bool is_one_shot = false) : state_id_(state_id), entity_(entity), is_one_shot_(is_one_shot) {
     }
 
     int         state_id_;
+    ecs::Entity entity_;
+    bool        is_one_shot_;
+};
+
+struct StateRenderedEvent : public ecs::Event<StateRenderedEvent> {
+	explicit StateRenderedEvent(ecs::Entity entity) : entity_(entity) {
+    }
+
     ecs::Entity entity_;
 };
 

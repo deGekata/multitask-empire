@@ -22,13 +22,13 @@ struct PlayerInitiatedEvent : public ecs::Event<PlayerInitiatedEvent> {
 };
 
 struct PlayerCommandEvent : public ecs::Event<PlayerCommandEvent> {
-    explicit PlayerCommandEvent(PlayerCommand cmd, ecs::Entity player_entity) : cmd_(cmd), entity_(player_entity) {
+    explicit PlayerCommandEvent(ecs::Entity cmd, ecs::Entity player_entity) : cmd_(cmd), entity_(player_entity) {
     }
 
     PlayerCommandEvent(const PlayerCommandEvent& other) = default;
     ~PlayerCommandEvent() override = default;
 
-    PlayerCommand cmd_;
+    ecs::Entity cmd_;
     ecs::Entity entity_;
 };
 

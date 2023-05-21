@@ -66,16 +66,16 @@ void BattleAbleObjectsConfigSystem::ChangeConfiguration(ecs::Entity entity, Batt
     }
 
     std::map<std::string, int> state_name_to_id_;
-    state_name_to_id_[attrs.basic_frames_.run_] = static_cast<int>(BattleAbleState::Run);
-    state_name_to_id_[attrs.basic_frames_.idle_] = static_cast<int>(BattleAbleState::Idle);
-    state_name_to_id_[attrs.basic_frames_.jump_] = static_cast<int>(BattleAbleState::Jump);
-    state_name_to_id_[attrs.basic_frames_.death_] = static_cast<int>(BattleAbleState::Death);
+
+    state_name_to_id_[attrs.basic_frames_.run_] = static_cast<int>(ActionCommandType::RunRight);
+    state_name_to_id_[attrs.basic_frames_.idle_] = static_cast<int>(ActionCommandType::Idle);
+    state_name_to_id_[attrs.basic_frames_.jump_] = static_cast<int>(ActionCommandType::Jump);
 
     for(uint n_attack = 0; n_attack < attrs.attacks_.size(); n_attack++) {
-        state_name_to_id_[attrs.attacks_[n_attack].xml_name_] = static_cast<int>(BattleAbleState::Attack) + n_attack;
+        state_name_to_id_[attrs.attacks_[n_attack].xml_name_] = static_cast<int>(ActionCommandType::Attack) + static_cast<int>(n_attack);
     }
     
-    events.Emit<SkinChangeRequest>(state_name_to_id_, static_cast<int>(BattleAbleState::Idle), attrs.sprite_sheet_path_, entity);
+    events.Emit<SkinChangeRequest>(state_name_to_id_, static_cast<int>(ActionCommandType::Idle), attrs.sprite_sheet_path_, entity);
     
     PBattleAbleAttributes p_attrs;
     p_attrs.attr_ = &attrs;

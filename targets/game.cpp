@@ -38,6 +38,7 @@
 
 #include <objects_configuration/spritesheet.hpp>
 #include <objects_configuration/battleable_configuration.hpp>
+#include <objects_configuration/battleable_state_switcher.hpp>
 
 #include <parsing/character_config_parser.hpp>
 
@@ -52,6 +53,7 @@ public:
         systems_.Add<RendererSystem>();
         systems_.Add<SpriteSheetSystem>();
         systems_.Add<BattleAbleObjectsConfigSystem>();
+        systems_.Add<BattleAbleStateSwitchSystem>();
         systems_.Add<TextInputSystem>();
 
         systems_.Add<MovementCommandsSystem>();

@@ -7,7 +7,7 @@
 
 #include <utility/utilities.hpp>
 
-void MovementCommandsSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+void MovementCommandsSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<PlayerCommandEvent>(*this);
 }
 
@@ -15,10 +15,18 @@ void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs
 }
 
 void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
+
+    ecs::Entity cmd_ent = event.cmd_;
+
+    auto cmd_type = cmd_ent.GetComponent<PlayerCommand>().Get();
+    if(cmd_type->type_ != PlayerCommandType::Action) return;
+
+    auto action_type = cmd_ent.GetComponent<ActionCommand>().Get();
+
     ecs::Entity entity = event.entity_;
     
-    switch (event.cmd_.type_) {
-        case PlayerCommandType::Jump: {
+    switch (action_type->type_) {
+        case ActionCommandType::Jump: {
             auto position = entity.GetComponent<Position>();
             if (IsEqual(position->y_, 0.0)) {
                 auto velocity = entity.GetComponent<Velocity>();
@@ -28,20 +36,20 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
             break;
         }
 
-        case PlayerCommandType::RunLeft: {
+        case ActionCommandType::RunLeft: {
             auto velocity = entity.GetComponent<Velocity>();
             velocity->vx_ = -kMoveSpeed;
 
             break;
         }
 
-        case PlayerCommandType::RunRight: {
+        case ActionCommandType::RunRight: {
             auto velocity = entity.GetComponent<Velocity>();
             velocity->vx_ = kMoveSpeed;
             break;
         }
 
-        case PlayerCommandType::StopRunningLeft: {
+        case ActionCommandType::StopRunningLeft: {
             
             if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
                 if(entity.GetComponent<Velocity>()->vx_ < 0)
@@ -50,7 +58,7 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
             break;
         }
 
-        case PlayerCommandType::StopRunningRight: {
+        case ActionCommandType::StopRunningRight: {
             
             if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
                 if(entity.GetComponent<Velocity>()->vx_ > 0)

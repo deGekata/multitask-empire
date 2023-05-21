@@ -41,6 +41,8 @@ struct ObjectAnimationData {
     uint n_sprite_sheet_state_;
     uint cur_frame_;
 
+    bool is_one_shot_;
+
     // @brief Updates frame and returns true if animation is ended
     bool UpdateFrame() {
         assert(sprite_sheet_.sprite_sheet_);
@@ -57,7 +59,6 @@ struct ObjectAnimationData {
 
 struct RenderFrameData {
     uint n_new_state_;
-    bool idle_request_;
 };
 
 #endif  // H_GRAPHIC_CMPNTS
