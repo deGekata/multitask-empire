@@ -53,9 +53,15 @@ public:
 
     geometry::Rect2<uint32_t> Bounds() const override;
 
+    bool Intersects(igraphicslib::Point point) override;
+    bool Intersects(geometry::Rect2<uint32_t> bounds) override;
+
     // Children
     void AddChild(IWidget* child, manage::Priority priority) override;
     void RemoveChild(IWidget* child) override;
+
+    // Parent
+    IWidget* Parent() const override;
 
 protected:
     geometry::Rect2<uint32_t> AbsoluteBounds() const;

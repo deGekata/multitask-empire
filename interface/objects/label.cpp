@@ -1,5 +1,4 @@
 #include <interface/objects/label.hpp>
-
 #include <interface/application.hpp>
 
 namespace interface::objects {

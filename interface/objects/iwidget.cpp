@@ -33,4 +33,8 @@ IWidget::IWidget(IWidget* parent, const geometry::Rect2<uint32_t>& bounds)
 	parent_->AddChild(this);
 }
 
+IWidget::~IWidget() {
+	delete this;
+}
+
 }  // namespace interface::objects

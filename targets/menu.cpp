@@ -2,21 +2,24 @@
 
 #include <interface/objects/image.hpp>
 #include <interface/objects/label.hpp>
+#include <interface/objects/button.hpp>
 
 int main() {
-	auto* window = new igraphicslib::Window(1920, 1080, "Test");
+	auto* window = new igraphicslib::Window(1920, 1080, "Multitask-Empire");
 	auto* app = new interface::Application(window);
 
-	auto* image = new interface::objects::Image({0, 0, 1920, 1080}, "assets/images/menu_bg.png");
-	auto* label = new interface::objects::Label({500, 500, 100, 100}, "HUY TEBE A NE SKRIN");
+	auto* image = new interface::objects::Image({0, 0, 1920, 1080}, "assets/images/menu_bg.jpg");
 
-	app->Run();
+	auto* button = new interface::objects::Button({100, 100, 500, 500});
+	button->SetLabel("Exit");
+	button->SetCallback([]() {
+		interface::Application::App()->Exit();
+	});
 
-	delete image;
-	delete label;
+	int ret = app->Run();
 
 	delete window;
 	delete app;
 
-	return 0;
+	return ret;
 }

@@ -28,7 +28,7 @@ igraphicslib::Window* Application::Window() {
 	return app->window_;
 }
 
-void Application::Run() {
+int Application::Run() {
 	assert(window_ != nullptr);
 	assert(event_manager_ != nullptr);
 
@@ -53,6 +53,8 @@ void Application::Run() {
 
 		utility::Delay(frame_delay - clock.getElapsedTime());
 	}
+
+	return 0;
 }
 
 void Application::Exit() {

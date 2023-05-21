@@ -14,7 +14,7 @@ public:
 	explicit IWidget(const geometry::Rect2<uint32_t>& bounds);
 	IWidget(IWidget* parent, const geometry::Rect2<uint32_t>& bounds);
 
-	~IWidget() override = default;
+	~IWidget() override;
 
 	// Every widget knows how to draw itself
 	virtual void Draw() = 0;
@@ -41,9 +41,15 @@ public:
 
 	virtual geometry::Rect2<uint32_t> Bounds() const = 0;
 
+	virtual bool Intersects(igraphicslib::Point point) = 0;
+	virtual bool Intersects(geometry::Rect2<uint32_t> bounds) = 0;
+
 	// Children
 	virtual void AddChild(IWidget* child, manage::Priority priority = 0) = 0;
 	virtual void RemoveChild(IWidget* child) = 0;
+
+	// Parent
+	virtual IWidget* Parent() const = 0;
 
 protected:
     manage::ChildrenManager children_manager_;

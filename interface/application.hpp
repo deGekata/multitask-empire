@@ -30,7 +30,7 @@ public:
 	static igraphicslib::Window* Window();
 
 	// One-shot
-	void Run();
+	int Run();
 
 	// One-shot
 	void Exit();

@@ -128,6 +128,27 @@ geometry::Rect2<uint32_t> Widget::Bounds() const {
 	return bounds_;
 }
 
+bool Widget::Intersects(igraphicslib::Point point) {
+	geometry::Rect2<uint32_t> abs_bounds = AbsoluteBounds();
+
+	if (static_cast<uint32_t>(point.x) <= abs_bounds.x ||
+		static_cast<uint32_t>(point.x) >= abs_bounds.x + abs_bounds.w) {
+		return false;
+	}
+
+	if (static_cast<uint32_t>(point.y) <= abs_bounds.y ||
+		static_cast<uint32_t>(point.y) >= abs_bounds.y + abs_bounds.h) {
+		return false;
+	}
+
+	return true;
+}
+
+bool Widget::Intersects(geometry::Rect2<uint32_t> bounds) {
+	return Intersects(bounds.GetCornerGG()) || Intersects(bounds.GetCornerGL()) ||
+	       Intersects(bounds.GetCornerLL()) || Intersects(bounds.GetCornerLG());
+}
+
 void Widget::AddChild(IWidget* child, manage::Priority priority) {
 	children_manager_.Subscribe(child, priority);
 }
@@ -143,9 +164,14 @@ geometry::Rect2<uint32_t> Widget::AbsoluteBounds() const {
 	while (parent != nullptr) {
 		abs_bounds.x += parent->Bounds().x;
 		abs_bounds.y += parent->Bounds().y;
+		parent = parent->Parent();
 	}
 
 	return abs_bounds;
+}
+
+IWidget* Widget::Parent() const {
+	return parent_;
 }
 
 }  // namespace interface::objects
