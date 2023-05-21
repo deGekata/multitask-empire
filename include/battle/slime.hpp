@@ -7,8 +7,8 @@
 
 #include <ecs/quick.hpp>
 
+#include <events/battle_events.hpp>
 #include <events/collision_events.hpp>
-#include <events/player_events.hpp>
 
 struct FlyingSlimeTag {};
 
@@ -23,20 +23,22 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Receive(const PlayerCommandEvent& event);
+    void Receive(const ecs::EntityDestroyedEvent& event);
+    void Receive(const SpecialTriggerEvent& event);
     void Receive(const CollisionEvent& event);
 
 private:
-    void ProcessSlimes(ecs::EntityManager& entities, ecs::EventManager& events);
-    void ProcessAttach(ecs::EventManager& events);
+    void ProcessSlime(ecs::Entity owner_entity);
     void UpdateAttached(ecs::EntityManager& entities, ecs::TimeDelta dt);
 
     static Position GetAttachedPosition(Position owner_position);
 
     std::map<std::string, int> state_name_converter_;
 
-    std::queue<ecs::Entity> slime_queue_;
-    std::queue<ecs::Entity> state_change_queue_;
+    std::map<ecs::Entity, ecs::Entity> attached_slimes_;
+
+    ecs::EntityManager* entities_;
+    ecs::EventManager* events_;
 };
 
 #endif

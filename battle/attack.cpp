@@ -5,9 +5,9 @@
 #include <components/utility_components.hpp>
 
 static constexpr double kBasicHealth = 100.0;
-static constexpr double kBasicAttackPower = 10.0;
+static constexpr double kBasicAttackPower = 7.5;
 
-static constexpr double kBasicAttackSpeed = 1.0;
+static constexpr double kBasicAttackSpeed = 0.7;
 static constexpr double kBasicAttackDistance = 50;
 
 void AttackSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {

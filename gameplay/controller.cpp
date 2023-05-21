@@ -23,11 +23,11 @@ void ControllerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& e
     }
 }
 
-void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager& entities, ecs::EventManager& events,
+void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager&, ecs::EventManager& events,
                                        ecs::TimeDelta dt) {
     static ecs::TimeDelta time_since = 0;
     static bool move_direction = false;
-    
+
     if ((time_since += dt) >= 1000000.0) {
         move_direction = !move_direction;
 
@@ -65,7 +65,7 @@ void ControllerSystem::SwitchGameState(ecs::EntityManager& entities, ecs::EventM
     switch (current_state_) {
         case GameState::Init:
             entities.Each<PlayerTag>([](ecs::Entity entity, PlayerTag&) {
-                entity.Assign<SpecialAbility>(SpecialAbility{SpecialAbility::Type::Fireball});
+                entity.Assign<SpecialAbility>(SpecialAbility{SpecialAbility::Type::Potion});
             });
 
             current_state_ = GameState::Knight;

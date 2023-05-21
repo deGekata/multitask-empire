@@ -36,7 +36,8 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
             .positions_[animation_data.cur_frame_];
 
     igraphicslib::Rect rect(frame_pos.x_, frame_pos.y_, frame_pos.w_, frame_pos.h_);
-    animation_data.sprite_sheet_.sprite_sheet_->sprite_.SetTexture(animation_data.sprite_sheet_.sprite_sheet_->texture_);
+    animation_data.sprite_sheet_.sprite_sheet_->sprite_.SetTexture(
+        animation_data.sprite_sheet_.sprite_sheet_->texture_);
     auto tmp = animation_data.sprite_sheet_.sprite_sheet_->sprite_.Crop(rect);
 
     int x_coord = static_cast<int>(cur_pos.x_) - frame_pos.x_offset_;
@@ -78,6 +79,12 @@ void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager& eve
             }
         });
 
+    entities.Each<TextRenderData, Position>([this](ecs::Entity, TextRenderData& text, Position& pos) {
+        text.text_.SetPosition(static_cast<uint32_t>(pos.x_), static_cast<uint32_t>(pos.y_));
+
+        window_.DrawText(text.text_);
+    });
+
     window_.Update();
     // std::this_thread::sleep_for(std::chrono::milliseconds(ANIMATION_FREEZE_TIME));
 }
@@ -87,7 +94,7 @@ void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager& eve
 // }
 
 void RendererSystem::Receive(const SpriteSheetStateChangedEvent& event) {
-    
+
     ecs::Entity changing_object = event.entity_;
     if (!changing_object.HasComponent<ObjectAnimationData>()) {
         return;

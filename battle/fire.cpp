@@ -11,10 +11,10 @@ static constexpr double kBasicMissleWidth = 50.0;
 static constexpr double kBasicMissleHeight = 50.0;
 static constexpr double kBasicMissleSpeed = 0.0005;
 
-static constexpr double kBasicFireballMultiplier = 2.0;
+static constexpr double kBasicFireballMultiplier = 0.01;
 
-void FireSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
-    events.Subscribe<PlayerCommandEvent>(*this);
+void FireSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+    events.Subscribe<SpecialTriggerEvent>(*this);
 
     state_name_converter_["FIRE"] = MissleStates::FLYING;
 }
@@ -55,26 +55,15 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
         missle.AssignFromCopy<AttackPower>(
             AttackPower{kBasicFireballMultiplier * firing_entity.GetComponent<AttackPower>()->power_});
 
-        // missle.Assign<RenderFrameData>(RenderFrameData{0, true});
+        missle.Assign<RenderFrameData>(RenderFrameData{0, false});
         events.Emit<SkinChangeRequest>(state_name_converter_, MissleStates::FLYING, "./assets/sprites/fireball.png",
                                        missle);
     }
 }
 
-void FireSystem::Receive(const PlayerCommandEvent& event) {
-
-    ecs::Entity cmd_ent = event.cmd_;
-
-    auto cmd_type = cmd_ent.GetComponent<PlayerCommand>().Get();
-    if(cmd_type->type_ != PlayerCommandType::Action) return;
-
-    ecs::Entity player_entity = event.entity_;
-    auto action_type = cmd_ent.GetComponent<ActionCommand>().Get();
-
-    if (action_type->type_ == ActionCommandType::Special) {
-        ecs::Entity entity = event.entity_;
-        if (entity.GetComponent<SpecialAbility>()->type_ == SpecialAbility::Type::Fireball) {
-            fires_queue_.push(event.entity_);
-        }
+void FireSystem::Receive(const SpecialTriggerEvent& event) {
+    ecs::Entity entity = event.entity_;
+    if (entity.GetComponent<SpecialAbility>()->type_ == SpecialAbility::Type::Fireball) {
+        fires_queue_.push(event.entity_);
     }
 }

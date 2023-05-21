@@ -13,9 +13,16 @@
 
 #include <battle/attack.hpp>
 #include <battle/block.hpp>
+#include <battle/curses.hpp>
 #include <battle/fire.hpp>
+#include <battle/potion.hpp>
 #include <battle/slime.hpp>
+#include <battle/special.hpp>
 #include <battle/health.hpp>
+
+#include <bars/special_bar.hpp>
+#include <bars/shield_bar.hpp>
+#include <bars/health_bar.hpp>
 
 #include <collision/collision.hpp>
 #include <collision/stopper.hpp>
@@ -65,16 +72,23 @@ public:
         systems_.Add<CollisionSystem>();
         systems_.Add<CollisionStopperSystem>();
 
+        systems_.Add<HealthSystem>();
         systems_.Add<AttackSystem>();
         systems_.Add<BlockSystem>();
+        systems_.Add<CursesSystem>();
         systems_.Add<FireSystem>();
+        systems_.Add<PotionSystem>();
         systems_.Add<SlimeSystem>();
-        systems_.Add<HealthSystem>();
+        systems_.Add<SpecialSystem>();
+
+        systems_.Add<HealthBarSystem>();
+        systems_.Add<SpecialBarSystem>();
+        systems_.Add<ShieldBarSystem>();
+
+        systems_.Add<AttachSystem>();
 
         systems_.Add<PlayerSystem>();
         systems_.Add<BotSystem>();
-
-        systems_.Add<AttachSystem>();
 
         systems_.Add<ControllerSystem>();
 

@@ -6,7 +6,7 @@
 
 #include <utility/utilities.hpp>
 
-void FrictionSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
+void FrictionSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
     // entities.Each<Velocity>([&events](ecs::Entity, Velocity& vel) {
     //     if ((!IsEqual(vel.vx_, 0.0)) && (std::abs(vel.vx_) <= kFrictionStopValue)) {
     //         vel.vx_ = 0.0;

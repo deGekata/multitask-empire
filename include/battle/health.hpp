@@ -1,6 +1,7 @@
 #ifndef H_HEALTH
 #define H_HEALTH
 
+#include <events/battle_events.hpp>
 #include <events/collision_events.hpp>
 
 #include <ecs/quick.hpp>
@@ -11,8 +12,10 @@ public:
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
     void Receive(const CollisionEvent& event);
+    void Receive(const DamageTakenEvent& event);
 
 private:
+    ecs::EventManager* events_;
 };
 
 #endif
