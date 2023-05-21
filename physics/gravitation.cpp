@@ -41,7 +41,7 @@ void GravitationSystem::Receive(const LandingEvent& event) {
     if (lander.HasComponent<Velocity>()) {
         auto vel = lander.GetComponent<Velocity>();
         
-        // vel->vx_ = 0;
+        vel->vx_ = 0;
         vel->vy_ = 0;
     }
 }

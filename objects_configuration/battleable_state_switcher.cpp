@@ -32,17 +32,16 @@ void BattleAbleStateSwitchSystem::Update(ecs::EntityManager& entities, ecs::Even
                 // todo: remove
                 if(attrs.next_passive_state_ == static_cast<int>(ActionCommandType::RunLeft)) {
                     entity.GetComponent<Rotation>()->is_flipped_ = true;
-                    attrs.next_passive_state_ = static_cast<int>(ActionCommandType::RunRight);
+                    events.Emit<SpriteSheetStateChangedEvent>(static_cast<int>(ActionCommandType::RunRight), entity); 
                 }
-
-                if(attrs.next_passive_state_ == static_cast<int>(ActionCommandType::RunRight)) {
+                else if(attrs.next_passive_state_ == static_cast<int>(ActionCommandType::RunRight)) {
                     entity.GetComponent<Rotation>()->is_flipped_ = false;
+                    events.Emit<SpriteSheetStateChangedEvent>(static_cast<int>(ActionCommandType::RunRight), entity); 
                 }
-                if(cmd.type_ == ActionCommandType::StopRunningLeft || cmd.type_ == ActionCommandType::StopRunningRight) {
+                else if(cmd.type_ == ActionCommandType::StopRunningLeft || cmd.type_ == ActionCommandType::StopRunningRight) {
                     events.Emit<SpriteSheetStateChangedEvent>(static_cast<int>(ActionCommandType::Idle), entity); 
                 }
                 else if(cmd.type_ != ActionCommandType::Special && cmd.type_ != ActionCommandType::Block) {
-                    
                     events.Emit<SpriteSheetStateChangedEvent>(attrs.next_passive_state_, entity); 
                 }
             }
@@ -55,7 +54,7 @@ void BattleAbleStateSwitchSystem::Update(ecs::EntityManager& entities, ecs::Even
 
             ActionCommand cmd = {.type_ = static_cast<ActionCommandType>(attrs.next_active_state_)};
             action.Assign<ActionCommand>(cmd);
-
+            
             events.Emit<ActionCommandEvent>(action, entity);
             entities.Destroy(action.GetId());
 
