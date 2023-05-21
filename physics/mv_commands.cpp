@@ -14,6 +14,7 @@ void MovementCommandsSystem::Configure(ecs::EntityManager& entities, ecs::EventM
 void MovementCommandsSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeDelta) {
 }
 
+// todo: to action command
 void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
 
     ecs::Entity cmd_ent = event.cmd_;
@@ -51,19 +52,19 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
 
         case ActionCommandType::StopRunningLeft: {
             
-            if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
+            // if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
                 if(entity.GetComponent<Velocity>()->vx_ < 0)
                     entity.GetComponent<Velocity>()->vx_ = 0.0;
-            }
+            // }
             break;
         }
 
         case ActionCommandType::StopRunningRight: {
             
-            if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
+            // if (IsEqual(entity.GetComponent<Position>()->y_, 0.0)) {
                 if(entity.GetComponent<Velocity>()->vx_ > 0)
                     entity.GetComponent<Velocity>()->vx_ = 0.0;
-            }
+            // }
             break;
         }
 

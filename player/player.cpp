@@ -51,49 +51,6 @@ void PlayerSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& ev
 
 void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
 
-    if(!on_release_queue_.empty()){
-
-        while(!on_release_queue_.empty()){
-            auto req = on_release_queue_.front();
-            on_release_queue_.pop_back();
-
-            //? extra logic
-            if(key_to_cmd_matcher_[req.key] == PlayerCommandType::Action) {
-                ActionCommandType action = key_to_action_matcher_[req.key];
-
-                if(action == ActionCommandType::RunLeft) {
-                    
-                    ecs::Entity cmd_ent = entities.Create();
-                    
-                    PlayerCommand cmd = {.type_ = PlayerCommandType::Action};
-                    cmd_ent.Assign<PlayerCommand>(cmd);
-
-                    ActionCommand action_cmd = {.type_ = ActionCommandType::StopRunningLeft};
-                    cmd_ent.Assign<ActionCommand>(action_cmd);
-
-                    events.Emit<ActionCommandRequestEvent>(cmd_ent, player_);
-                    events.Emit<PlayerCommandEvent>(cmd_ent, player_);
-                }
-                if(action == ActionCommandType::RunRight) {
-                    
-                    ecs::Entity cmd_ent = entities.Create();
-                    PlayerCommand cmd = {.type_ = PlayerCommandType::Action};
-                    cmd_ent.Assign<PlayerCommand>(cmd);
-
-                    ActionCommand action_cmd = {.type_ = ActionCommandType::StopRunningRight};
-                    cmd_ent.Assign<ActionCommand>(action_cmd);
-
-                    events.Emit<ActionCommandRequestEvent>(cmd_ent, player_);
-                    events.Emit<PlayerCommandEvent>(cmd_ent, player_);
-                }
-            }
-        }
-    }
-
-    if(commands_queue_.empty()){
-        return;
-    }
-
     while(!commands_queue_.empty()){
         auto req = commands_queue_.front();
         commands_queue_.pop_back();
@@ -135,10 +92,60 @@ void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& event
                 }
 
                 events.Emit<ActionCommandRequestEvent>(cmd_ent, player_);
+
+                if(action == ActionCommandType::Jump) {
+                    logger::Print("jump\n");
+                }
+                else if(action == ActionCommandType::RunRight){
+                    logger::Print("RUn\n");
+                }
             }
 
             events.Emit<PlayerCommandEvent>(cmd_ent, player_);
             entities.Destroy(cmd_ent.GetId());
+        }
+    }
+
+    if(on_release_queue_.empty()){
+        return;
+    }
+
+    if(!on_release_queue_.empty()){
+
+        while(!on_release_queue_.empty()){
+            auto req = on_release_queue_.front();
+            on_release_queue_.pop_back();
+
+            //? extra logic
+            if(key_to_cmd_matcher_[req.key] == PlayerCommandType::Action) {
+                ActionCommandType action = key_to_action_matcher_[req.key];
+
+                if(action == ActionCommandType::RunLeft) {
+                    
+                    ecs::Entity cmd_ent = entities.Create();
+                    
+                    PlayerCommand cmd = {.type_ = PlayerCommandType::Action};
+                    cmd_ent.Assign<PlayerCommand>(cmd);
+
+                    ActionCommand action_cmd = {.type_ = ActionCommandType::StopRunningLeft};
+                    cmd_ent.Assign<ActionCommand>(action_cmd);
+
+                    events.Emit<ActionCommandRequestEvent>(cmd_ent, player_);
+                    events.Emit<PlayerCommandEvent>(cmd_ent, player_);
+                }
+                if(action == ActionCommandType::RunRight) {
+                    
+                    ecs::Entity cmd_ent = entities.Create();
+                    PlayerCommand cmd = {.type_ = PlayerCommandType::Action};
+                    cmd_ent.Assign<PlayerCommand>(cmd);
+
+                    ActionCommand action_cmd = {.type_ = ActionCommandType::StopRunningRight};
+                    cmd_ent.Assign<ActionCommand>(action_cmd);
+
+                    events.Emit<ActionCommandRequestEvent>(cmd_ent, player_);
+                    events.Emit<PlayerCommandEvent>(cmd_ent, player_);
+                }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 
 #include <events/bot_events.hpp>
 #include <events/player_events.hpp>
+#include <events/action_events.hpp>
 
 #include <components/battle_components.hpp>
 #include <components/bot_components.hpp>
@@ -31,13 +32,32 @@ void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager& 
         move_direction = !move_direction;
 
         time_since = 0;
-    }
 
     if (move_direction) {
-        // events.Emit<PlayerCommandEvent>(PlayerCommandType::RunLeft, current);
+
+        ecs::Entity cmd_ent = entities.Create();
+        PlayerCommand cmd = {.type_ = PlayerCommandType::Action};
+        cmd_ent.Assign<PlayerCommand>(cmd);
+
+        ActionCommand action_cmd = {.type_ = ActionCommandType::RunLeft};
+        cmd_ent.Assign<ActionCommand>(action_cmd);
+
+        events.Emit<ActionCommandRequestEvent>(cmd_ent, current);
+        entities.Destroy(cmd_ent.GetId());
     }
     else {
-        // events.Emit<PlayerCommandEvent>(PlayerCommandType::RunRight, current);
+
+        ecs::Entity cmd_ent = entities.Create();
+        PlayerCommand cmd = {.type_ = PlayerCommandType::Action};
+        cmd_ent.Assign<PlayerCommand>(cmd);
+
+        ActionCommand action_cmd = {.type_ = ActionCommandType::RunRight};
+        cmd_ent.Assign<ActionCommand>(action_cmd);
+
+        events.Emit<ActionCommandRequestEvent>(cmd_ent, current);
+        entities.Destroy(cmd_ent.GetId());
+    }
+
     }
 }
 

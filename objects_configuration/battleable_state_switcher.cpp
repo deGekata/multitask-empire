@@ -1,6 +1,7 @@
 #include <objects_configuration/battleable_state_switcher.hpp>
 
 #include <components/graphic_components.hpp>
+#include <components/movement_components.hpp>
 
 void BattleAbleStateSwitchSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     
@@ -16,6 +17,16 @@ void BattleAbleStateSwitchSystem::Update(ecs::EntityManager& entities, ecs::Even
         auto anim_data = entity.GetComponent<ObjectAnimationData>().Get();
 
         if(attrs.next_passive_state_ != PBattleAbleAttributes::kInvalidState) {
+            
+            // todo: remove
+            if(attrs.next_passive_state_ == static_cast<int>(ActionCommandType::RunLeft)) {
+                entity.GetComponent<Rotation>()->is_flipped_ = true;
+                attrs.next_passive_state_ = static_cast<int>(ActionCommandType::RunRight);
+            }
+
+            if(attrs.next_passive_state_ == static_cast<int>(ActionCommandType::RunRight)) {
+                entity.GetComponent<Rotation>()->is_flipped_ = false;
+            }
 
             ecs::Entity action = entities.Create();
 
@@ -53,6 +64,10 @@ void BattleAbleStateSwitchSystem::Receive(const ActionCommandRequestEvent& event
     ecs::Entity action = event.action_;
     ecs::Entity obj_entity = event.obj_entity_;
 
+    if(obj_entity.HasComponent<ObjectAnimationData>() == 0) {
+        return;
+    }
+    
     auto cmd = action.GetComponent<ActionCommand>().Get();
 
     auto attrs = obj_entity.GetComponent<PBattleAbleAttributes>().Get();
@@ -75,17 +90,15 @@ void BattleAbleStateSwitchSystem::Receive(const ActionCommandRequestEvent& event
     else {
         // if(cmd->type_ == ActionCommandType::Attack) {
         //     // todo:
-        // }
+        // }Rotation
         attrs->next_active_state_ = static_cast<int>(cmd->type_);
 
         if(cmd->type_ == ActionCommandType::Attack) {
 
             auto offset = action.GetComponent<AttackId>().Get();
-            logger::Print("nigger\n");
             attrs->next_active_state_ += static_cast<int>(offset->id_);
         }
     }
-
 }
 
 void BattleAbleStateSwitchSystem::Receive(const StateRenderedEvent& event) {
