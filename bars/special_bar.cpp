@@ -84,7 +84,6 @@ void SpecialBarSystem::Receive(const PlayerInitiatedEvent& event) {
 
     entity_bar.AssignFromCopy<Position>(bar_position);
     entity_bar.AssignFromCopy<Rotation>(Rotation{is_rotated});
-    entity_bar.Assign<RenderFrameData>(RenderFrameData{0, false});
 
     events_->Emit<SkinChangeRequest>(state_name_converter_, SpecialBarState::FIRST, "./assets/sprites/special.png",
                                      entity_bar);

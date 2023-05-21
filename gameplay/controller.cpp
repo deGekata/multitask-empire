@@ -23,7 +23,7 @@ void ControllerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& e
     }
 }
 
-void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager&, ecs::EventManager& events,
+void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager& entities, ecs::EventManager& events,
                                        ecs::TimeDelta dt) {
     static ecs::TimeDelta time_since = 0;
     static bool move_direction = false;

@@ -134,11 +134,9 @@ void ShieldBarSystem::Receive(const PlayerInitiatedEvent& event) {
 
     entity_bar.AssignFromCopy<Position>(bar_position);
     entity_bar.AssignFromCopy<Rotation>(Rotation{is_rotated});
-    entity_bar.Assign<RenderFrameData>(RenderFrameData{0, false});
 
     entity_shield_state.AssignFromCopy<Position>(state_position);
     entity_shield_state.AssignFromCopy<Rotation>(Rotation{is_rotated});
-    entity_shield_state.Assign<RenderFrameData>(RenderFrameData{0, false});
 
     events_->Emit<SkinChangeRequest>(bar_name_converter_, ShieldBarState::PERCENTS_0, "./assets/sprites/shield_bar.png",
                                      entity_bar);

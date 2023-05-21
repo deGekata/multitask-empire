@@ -53,7 +53,9 @@ void MovementCommandsSystem::Receive(const PlayerCommandEvent& event) {
 
         case ActionCommandType::RunRight: {
             auto velocity = entity.GetComponent<Velocity>();
-            velocity->vx_ = kMoveSpeed;
+            auto speed = entity.GetComponent<MoveSpeed>();
+
+            velocity->vx_ = speed->value_;
             break;
         }
 

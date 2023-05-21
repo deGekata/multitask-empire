@@ -148,7 +148,6 @@ void PotionSystem::ProcessPotion(ecs::Entity thrower) {
 
     potion.Assign<FlyingPotionTag>(FlyingPotionTag{thrower});
 
-    potion.Assign<RenderFrameData>(RenderFrameData{0, false});
     events_->Emit<SkinChangeRequest>(state_name_converter_, MissleStates::FLYING, "./assets/sprites/potion.png",
                                      potion);
 }
