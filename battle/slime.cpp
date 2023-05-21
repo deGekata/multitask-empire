@@ -58,7 +58,6 @@ void SlimeSystem::ProcessSlime(ecs::Entity owner_entity) {
     slime.Assign<HitBox>(kBasicMissleWidth, kBasicMissleHeight);
     slime.Assign<FlyingSlimeTag>();
 
-    slime.Assign<RenderFrameData>(RenderFrameData{0, false});
     events_->Emit<SkinChangeRequest>(state_name_converter_, SlimeStates::FLYING, "./assets/sprites/slime.png", slime);
 }
 

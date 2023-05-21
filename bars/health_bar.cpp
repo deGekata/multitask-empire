@@ -89,7 +89,6 @@ void HealthBarSystem::Receive(const PlayerInitiatedEvent& event) {
 
     entity_bar.AssignFromCopy<Position>(bar_position);
     entity_bar.AssignFromCopy<Rotation>(Rotation{is_rotated});
-    entity_bar.Assign<RenderFrameData>(RenderFrameData{0, false});
 
     events_->Emit<SkinChangeRequest>(state_name_converter_, HealthBarState::PERCENTS_100, "./assets/sprites/health_bar.png",
                                      entity_bar);

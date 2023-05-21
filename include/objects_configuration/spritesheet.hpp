@@ -5,7 +5,8 @@
 #include <ecs/system.hpp>
 #include <events/player_events.hpp>
 #include <events/renderer_events.hpp>
-#include <spritesheet/xml_parser.hpp>
+
+#include <parsing/xml_parser.hpp>
 
 class SpriteSheetSystem : public ecs::System<SpriteSheetSystem>, public ecs::Reciever<SpriteSheetSystem> {
 public:
@@ -17,7 +18,6 @@ public:
 
     void Receive(const SpriteSheetLoadRequest& event);
     void Receive(const SkinChangeRequest& event);
-
 private:
     void ChangeSkin(ecs::Entity entity_to_skin, const std::string& skin_path,
                     const std::map<std::string, int>& state_name_to_id, int init_state);

@@ -2,6 +2,7 @@
 
 #include <events/bot_events.hpp>
 #include <events/player_events.hpp>
+#include <events/action_events.hpp>
 
 #include <components/battle_components.hpp>
 #include <components/bot_components.hpp>
@@ -22,7 +23,7 @@ void ControllerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& e
     }
 }
 
-void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager&, ecs::EventManager& events,
+void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager& entities, ecs::EventManager& events,
                                        ecs::TimeDelta dt) {
     static ecs::TimeDelta time_since = 0;
     static bool move_direction = false;
@@ -31,12 +32,32 @@ void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager&,
         move_direction = !move_direction;
 
         time_since = 0;
-    }
 
     if (move_direction) {
-        events.Emit<PlayerCommandEvent>(PlayerCommand::WALK_LEFT, current);
-    } else {
-        events.Emit<PlayerCommandEvent>(PlayerCommand::WALK_RIGHT, current);
+
+        ecs::Entity cmd_ent = entities.Create();
+        PlayerCommand cmd = {.type_ = PlayerCommandType::Action};
+        cmd_ent.Assign<PlayerCommand>(cmd);
+
+        ActionCommand action_cmd = {.type_ = ActionCommandType::RunLeft};
+        cmd_ent.Assign<ActionCommand>(action_cmd);
+
+        events.Emit<ActionCommandRequestEvent>(cmd_ent, current);
+        entities.Destroy(cmd_ent.GetId());
+    }
+    else {
+
+        ecs::Entity cmd_ent = entities.Create();
+        PlayerCommand cmd = {.type_ = PlayerCommandType::Action};
+        cmd_ent.Assign<PlayerCommand>(cmd);
+
+        ActionCommand action_cmd = {.type_ = ActionCommandType::RunRight};
+        cmd_ent.Assign<ActionCommand>(action_cmd);
+
+        events.Emit<ActionCommandRequestEvent>(cmd_ent, current);
+        entities.Destroy(cmd_ent.GetId());
+    }
+
     }
 }
 
@@ -51,7 +72,7 @@ void ControllerSystem::SwitchGameState(ecs::EntityManager& entities, ecs::EventM
             break;
 
         case GameState::Knight:
-            events.Emit<SpawnBotEvent>(Position{500, 0}, "./assets/sprites/knight.png",
+            events.Emit<SpawnBotEvent>(Position{500, 0}, "./knight.wtf",
                                        &ControllerSystem::KnightBehaviour);
             break;
 

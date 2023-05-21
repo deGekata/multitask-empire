@@ -10,7 +10,7 @@ static constexpr double kBasicAttackPower = 7.5;
 static constexpr double kBasicAttackSpeed = 0.7;
 static constexpr double kBasicAttackDistance = 50;
 
-void AttackSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+void AttackSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<PlayerInitiatedEvent>(*this);
     events.Subscribe<PlayerCommandEvent>(*this);
 }
@@ -104,7 +104,13 @@ void AttackSystem::Receive(const PlayerInitiatedEvent& event) {
 }
 
 void AttackSystem::Receive(const PlayerCommandEvent& event) {
-    if ((event.cmd_ == PlayerCommand::ATTACK_ONE) || (event.cmd_ == PlayerCommand::ATTACK_TWO)) {
-        attackers_queue_.push(event.entity_);
+    ecs::Entity cmd_ent = event.cmd_;
+    auto cmd_type = cmd_ent.GetComponent<PlayerCommand>().Get();
+
+    if (cmd_type->type_ == PlayerCommandType::Action) {
+        auto action_type = cmd_ent.GetComponent<ActionCommand>();
+
+        if(action_type->type_ == ActionCommandType::Attack)
+            attackers_queue_.push(event.entity_);
     }
 }

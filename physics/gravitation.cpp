@@ -13,7 +13,16 @@ void GravitationSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::Tim
 }
 
 void GravitationSystem::Receive(const PlayerCommandEvent& event) {
-    if (event.cmd_ == PlayerCommand::JUMP) {
+
+    ecs::Entity cmd_ent = event.cmd_;
+
+    auto cmd_type = cmd_ent.GetComponent<PlayerCommand>().Get();
+    if(cmd_type->type_ != PlayerCommandType::Action) return;
+
+    ecs::Entity player_entity = event.entity_;
+    auto action_type = cmd_ent.GetComponent<ActionCommand>().Get();
+
+    if (action_type->type_ == ActionCommandType::Jump) {
         ecs::Entity jumper = event.entity_;
 
         if (jumper.HasComponent<Acceleration>()) {

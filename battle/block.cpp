@@ -29,11 +29,19 @@ void BlockSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::
 }
 
 void BlockSystem::Receive(const PlayerCommandEvent& event) {
-    ecs::Entity entity = event.entity_;
-    if ((event.cmd_ == PlayerCommand::BLOCK) && (!entity.HasComponent<BlockedTag>())) {
-        entity.Assign<BlockedTag>();
-    } else if (entity.HasComponent<BlockedTag>()) {
-        entity.Remove<BlockedTag>();
+    
+    ecs::Entity cmd_ent = event.cmd_;
+
+    auto cmd_type = cmd_ent.GetComponent<PlayerCommand>().Get();
+    if(cmd_type->type_ != PlayerCommandType::Action) return;
+
+    ecs::Entity player_entity = event.entity_;
+    auto action_type = cmd_ent.GetComponent<ActionCommand>().Get();
+
+    if ((action_type->type_ == ActionCommandType::Block) && (!player_entity.HasComponent<BlockedTag>())) {
+        player_entity.Assign<BlockedTag>();
+    } else if (player_entity.HasComponent<BlockedTag>()) {
+        player_entity.Remove<BlockedTag>();
     }
 }
 

@@ -1,4 +1,4 @@
-#include <spritesheet/spritesheet.hpp>
+#include <objects_configuration/spritesheet.hpp>
 
 #include <filesystem>
 
@@ -58,7 +58,7 @@ void SpriteSheetSystem::ChangeSkin(ecs::Entity entity_to_skin, const std::string
         }
 
         int id = state_name_to_id.at(states_storage[n_state].name_);
-        
+
         animation_data.sprite_sheet_.id_to_n_state_mapping_[id] = n_state;
     }   
 

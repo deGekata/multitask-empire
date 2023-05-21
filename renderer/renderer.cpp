@@ -55,7 +55,7 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
     window_.DrawSprite({x_coord, y_coord}, tmp);
 }
 
-void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
+void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
     if (metrics::CheckDuration(rerender_timestamp_, metrics::kNSecForGapBetweenRenders)) {
         return;
     }
@@ -67,14 +67,14 @@ void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ec
 
     window_.Clear();
 
-    entities.Each<ObjectAnimationData, RenderFrameData, Position, Rotation>(
-        [this, is_frame_change](ecs::Entity, ObjectAnimationData& player_animation_data, RenderFrameData& frame_data,
-                                Position& cur_pos, Rotation& rotation) {
+    entities.Each<ObjectAnimationData, Position, Rotation>(
+        [this, &events, is_frame_change](ecs::Entity entity, ObjectAnimationData& player_animation_data, Position& cur_pos, Rotation& rotation) {
             LaunchAnimationFrame(player_animation_data, cur_pos, rotation.is_flipped_);
 
             if (is_frame_change) {
-                if (player_animation_data.UpdateFrame() && frame_data.idle_request_) {
-                    player_animation_data.n_sprite_sheet_state_ = frame_data.n_new_state_;
+                if (player_animation_data.UpdateFrame() && player_animation_data.is_one_shot_) {
+                    player_animation_data.is_one_shot_ = false;
+                    events.Emit<StateRenderedEvent>(entity);
                 }
             }
         });
@@ -111,9 +111,10 @@ void RendererSystem::Receive(const SpriteSheetStateChangedEvent& event) {
         logger::Print(kWarning, "there no spritesheet state, attached to value {}\n", event.state_id_);
         return;
     }
-
-    animation_storage->n_sprite_sheet_state_ = animation_storage->sprite_sheet_.id_to_n_state_mapping_[event.state_id_];
-    animation_storage->cur_frame_ = 0;
+    
+    animation_storage->n_sprite_sheet_state_    = animation_storage->sprite_sheet_.id_to_n_state_mapping_[event.state_id_];
+    animation_storage->cur_frame_               = 0;
+    animation_storage->is_one_shot_             = event.is_one_shot_;
 }
 
 /*
@@ -204,7 +205,7 @@ void RendererSystem::Recieve(const PlayerCommandEvent& event) {
 //     logger::Print(kInfo, "{} stopped moving\n", event.target_.GetId().GetIndex());
 // }
 
-void RendererSystem::Receive(const PlayerInitiatedEvent& event) {
+void RendererSystem::Receive(const PlayerInitiatedEvent&) {
     // RenderFrameData data = {
     //     .cur_player_state_     = PLAYER_CMD::IDLE,
     //     .entity_        = event.entity_,
@@ -213,11 +214,11 @@ void RendererSystem::Receive(const PlayerInitiatedEvent& event) {
     //     .is_flipped_    = false
     // };
 
-    RenderFrameData data = {.n_new_state_ = 0, .idle_request_ = true};
+    // RenderFrameData data = {.n_new_state_ = 0, .idle_request_ = true};
 
-    ecs::Entity entity = event.entity_;
+    // ecs::Entity entity = event.entity_;
 
-    entity.Assign<RenderFrameData>(data);
+    // entity.Assign<RenderFrameData>(data);
 }
 
 // void RendererSystem::Receive(const LandingEvent& event) {

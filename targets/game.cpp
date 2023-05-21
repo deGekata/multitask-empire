@@ -43,7 +43,11 @@
 #include <logger/logger.hpp>
 #include <logger/logger_ecs.hpp>
 
-#include <spritesheet/spritesheet.hpp>
+#include <objects_configuration/spritesheet.hpp>
+#include <objects_configuration/battleable_configuration.hpp>
+#include <objects_configuration/battleable_state_switcher.hpp>
+
+#include <parsing/character_config_parser.hpp>
 
 #include <utility/attach.hpp>
 
@@ -55,6 +59,8 @@ public:
         systems_.Add<KeyboardInputSystem>();
         systems_.Add<RendererSystem>();
         systems_.Add<SpriteSheetSystem>();
+        systems_.Add<BattleAbleObjectsConfigSystem>();
+        systems_.Add<BattleAbleStateSwitchSystem>();
         systems_.Add<TextInputSystem>();
 
         systems_.Add<MovementCommandsSystem>();
@@ -102,6 +108,7 @@ public:
     void Pool() {
         auto prev_timer = std::chrono::steady_clock::now();
 
+        
         while (GetState()) {
             auto new_timer = std::chrono::steady_clock::now();
             auto dt = std::chrono::duration_cast<std::chrono::nanoseconds>(new_timer - prev_timer);
@@ -113,6 +120,7 @@ public:
     }
 
     void Init() {
+
         auto* system = reinterpret_cast<KeyboardInputSystem*>(systems_.GetSystem<KeyboardInputSystem>());
         std::thread input_thread(&KeyboardInputSystem::Pool, system);
         std::thread main_thread(&Application::Pool, this);

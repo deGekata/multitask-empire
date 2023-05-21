@@ -55,7 +55,6 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
         missle.AssignFromCopy<AttackPower>(
             AttackPower{kBasicFireballMultiplier * firing_entity.GetComponent<AttackPower>()->power_});
 
-        missle.Assign<RenderFrameData>(RenderFrameData{0, false});
         events.Emit<SkinChangeRequest>(state_name_converter_, MissleStates::FLYING, "./assets/sprites/fireball.png",
                                        missle);
     }
