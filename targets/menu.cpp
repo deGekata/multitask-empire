@@ -26,10 +26,12 @@
 #include <battle/potion.hpp>
 #include <battle/slime.hpp>
 #include <battle/special.hpp>
+#include <battle/skill_change.hpp>
 #include <battle/health.hpp>
 
 #include <bars/special_bar.hpp>
 #include <bars/shield_bar.hpp>
+#include <bars/skill_bar.hpp>
 #include <bars/health_bar.hpp>
 
 #include <collision/collision.hpp>
@@ -92,10 +94,12 @@ public:
         systems_.Add<PotionSystem>();
         systems_.Add<SlimeSystem>();
         systems_.Add<SpecialSystem>();
+        systems_.Add<SkillChangeSystem>();
 
         systems_.Add<HealthBarSystem>();
         systems_.Add<SpecialBarSystem>();
         systems_.Add<ShieldBarSystem>();
+        systems_.Add<SkillBarSystem>();
 
         systems_.Add<AttachSystem>();
 
