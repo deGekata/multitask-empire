@@ -61,6 +61,14 @@ Check these example for better understanding: [knight](https://github.com/deGeka
 
 # Special abilities
 
+## Slime
+Slows down the enemy (or you).
+
+## Fireball
+Set The World on fire! Or just some extra damage.
+
+## Poison
+Makes enemy unable to neither block nor jump.
 
 # Rules
   + The only rule - you should kill the knight!
