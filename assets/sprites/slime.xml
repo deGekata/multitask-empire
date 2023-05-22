@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"/>
+<TextureAtlas imagePath="slime.png">
+<SubTexture name="FLYING0000" x="0" y="0" width="93" height="25" frameX="-2" frameY="0" frameWidth="95" frameHeight="25" />
+<SubTexture name="FLYING0001" x="93" y="0" width="95" height="25" frameX="0" frameY="0" frameWidth="95" frameHeight="25" />
+<SubTexture name="FLYING0002" x="0" y="25" width="93" height="25" frameX="-2" frameY="0" frameWidth="95" frameHeight="25" />
+<SubTexture name="FLYING0003" x="93" y="25" width="95" height="25" frameX="0" frameY="0" frameWidth="95" frameHeight="25" />
+<SubTexture name="ATTACHED0000" x="45" y="50" width="27" height="20" frameX="-12" frameY="-12" frameWidth="50" frameHeight="50" />
+<SubTexture name="ATTACHED0001" x="72" y="50" width="27" height="18" frameX="-12" frameY="-14" frameWidth="50" frameHeight="50" />
+<SubTexture name="ATTACHED0002" x="99" y="50" width="30" height="17" frameX="-11" frameY="-15" frameWidth="50" frameHeight="50" />
+<SubTexture name="ATTACHED0003" x="99" y="50" width="30" height="17" frameX="-11" frameY="-15" frameWidth="50" frameHeight="50" />
+<SubTexture name="ATTACHED0004" x="45" y="50" width="27" height="20" frameX="-12" frameY="-12" frameWidth="50" frameHeight="50" />
+<SubTexture name="ATTACHED0005" x="21" y="50" width="24" height="21" frameX="-14" frameY="-9" frameWidth="50" frameHeight="50" />
+<SubTexture name="ATTACHED0006" x="0" y="50" width="21" height="23" frameX="-15" frameY="-4" frameWidth="50" frameHeight="50" />
+<SubTexture name="ATTACHED0007" x="21" y="50" width="24" height="21" frameX="-14" frameY="-9" frameWidth="50" frameHeight="50" />
+</TextureAtlas>

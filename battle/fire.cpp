@@ -7,8 +7,14 @@
 
 #include <events/renderer_events.hpp>
 
+static constexpr double kBasicMissleWidth = 50.0;
+static constexpr double kBasicMissleHeight = 50.0;
+static constexpr double kBasicMissleSpeed = 0.0005;
+
+static constexpr double kBasicFireballMultiplier = 0.01;
+
 void FireSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
-    events.Subscribe<PlayerCommandEvent>(*this);
+    events.Subscribe<SpecialTriggerEvent>(*this);
 
     state_name_converter_["FIRE"] = MissleStates::FLYING;
 }
@@ -18,11 +24,10 @@ void FireSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events,
 }
 
 void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& events) {
-    if (fires_queue_.empty()) {
-        return;
-    }
+    while (!fires_queue_.empty()) {
+        ecs::Entity firing_entity = fires_queue_.front();
+        fires_queue_.pop();
 
-    for (auto firing_entity = fires_queue_.front(); !fires_queue_.empty(); fires_queue_.pop()) {
         ecs::Entity missle = entities.Create();
 
         auto firing_position = firing_entity.GetComponent<Position>();
@@ -30,7 +35,7 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
         auto firing_rotation = firing_entity.GetComponent<Rotation>();
 
         Position missle_position = *firing_position;
-        Velocity missle_velocity = {-kBasicMissleSpeed, 0};
+        Velocity missle_velocity = {-kBasicMissleSpeed, 0.0};
 
         missle_position.y_ += kBasicMissleHeight;
         if (!firing_rotation->is_flipped_) {
@@ -47,16 +52,17 @@ void FireSystem::ProcessFires(ecs::EntityManager& entities, ecs::EventManager& e
         missle.Assign<HitBox>(kBasicMissleWidth, kBasicMissleHeight);
 
         missle.AssignFromCopy<DamagerTag>(DamagerTag{firing_entity});
-        missle.AssignFromCopy<AttackPower>(*firing_entity.GetComponent<AttackPower>());
+        missle.AssignFromCopy<AttackPower>(
+            AttackPower{kBasicFireballMultiplier * firing_entity.GetComponent<AttackPower>()->power_});
 
-        missle.Assign<RenderFrameData>(RenderFrameData{0, true});
         events.Emit<SkinChangeRequest>(state_name_converter_, MissleStates::FLYING, "./assets/sprites/fireball.png",
                                        missle);
     }
 }
 
-void FireSystem::Receive(const PlayerCommandEvent& event) {
-    if (event.cmd_ == PlayerCommand::FIRE) {
+void FireSystem::Receive(const SpecialTriggerEvent& event) {
+    ecs::Entity entity = event.entity_;
+    if (entity.GetComponent<SpecialAbility>()->type_ == SpecialAbility::Type::Fireball) {
         fires_queue_.push(event.entity_);
     }
 }

@@ -70,6 +70,53 @@ template <> struct fmt::formatter<SpriteSheet> : formatter<string_view> {
     }
 };
 
+template <> struct fmt::formatter<BattleAbleAttributes::attackData> : formatter<string_view> {
+
+    template <typename FormatContext>
+    auto format(const BattleAbleAttributes::attackData& p, FormatContext& ctx) const -> decltype(ctx.out()) {
+
+        std::string format_str = fmt::format(fmt::runtime("[\"{}\", \"{}\", {}, {}]"),
+                        p.xml_name_, p.name_, static_cast<int>(p.binded_key_), p.damage_value_);
+        
+        return fmt::format_to(ctx.out(), fmt::runtime(format_str));
+    }
+};
+
+template <> struct fmt::formatter<BattleAbleAttributes> : formatter<string_view> {
+
+    template <typename FormatContext>
+    auto format(const BattleAbleAttributes& p, FormatContext& ctx) const -> decltype(ctx.out()) {
+        std::string format_str = fmt::format(fmt::runtime("\nname:              {}\n"
+                                                          "sprite_sheet_path:   {}\n"
+                                                          "xml_path:            {}\n\n"
+                                                          "hp_lvl:              {}\n"
+                                                          "jmp_ratio:           {}\n"
+                                                          "speed_ratio:         {}\n"),
+                                    p.name_, p.sprite_sheet_path_, p.xml_path_, p.hp_lvl_, p.jmp_ratio_, p.speed_ratio_);
+        
+        format_str += fmt::format(fmt::runtime(  "frames: [\n"
+                                                "\trun:     {}\n"
+                                                "\tidle:    {}\n"
+                                                "\tdeath:   {}\n"
+                                                "\tjump     {}\n"
+                                                "]\n"), p.basic_frames_.run_, p.basic_frames_.idle_, p.basic_frames_.death_, p.basic_frames_.jump_);
+
+        format_str += fmt::format(fmt::runtime("replics[\n"));
+        for(auto& replic : p.replics_) {
+            format_str += fmt::format(fmt::runtime("\t\"{}\"\n"), replic);
+        }
+        format_str += fmt::format(fmt::runtime( "]\n"
+                                                "attacks: [\n"));
+
+        for(auto& attack_data : p.attacks_) {
+            format_str += fmt::format(fmt::runtime("\t{}\n"), attack_data);
+        }    
+        format_str += fmt::format(fmt::runtime( "]\n"));
+
+        return fmt::format_to(ctx.out(), fmt::runtime(format_str));    
+    }
+};
+
 // template <> struct fmt::formatter<PendingMovementCommand>: formatter<string_view> {
 
 //     template <typename FormatContext>

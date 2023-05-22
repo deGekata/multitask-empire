@@ -6,6 +6,143 @@
 
 #include <audio/manage/audio_manager.hpp>
 
+#include <cassert>
+#include <cstdint>
+
+#include <iostream>
+#include <ostream>
+#include <string>
+#include <thread>
+#include <chrono>
+
+#include <ecs/quick.hpp>
+
+#include <bot/bot.hpp>
+
+#include <battle/attack.hpp>
+#include <battle/block.hpp>
+#include <battle/curses.hpp>
+#include <battle/fire.hpp>
+#include <battle/potion.hpp>
+#include <battle/slime.hpp>
+#include <battle/special.hpp>
+#include <battle/health.hpp>
+
+#include <bars/special_bar.hpp>
+#include <bars/shield_bar.hpp>
+#include <bars/health_bar.hpp>
+
+#include <collision/collision.hpp>
+#include <collision/stopper.hpp>
+
+#include <gameplay/controller.hpp>
+
+#include <physics/movement.hpp>
+#include <physics/mv_commands.hpp>
+#include <physics/friction.hpp>
+#include <physics/gravitation.hpp>
+
+#include <player/player.hpp>
+#include <player/input.hpp>
+#include <player/text_input.hpp>
+
+#include <renderer/renderer.hpp>
+
+#include <logger/logger.hpp>
+#include <logger/logger_ecs.hpp>
+
+#include <objects_configuration/spritesheet.hpp>
+#include <objects_configuration/battleable_configuration.hpp>
+#include <objects_configuration/battleable_state_switcher.hpp>
+
+#include <parsing/character_config_parser.hpp>
+
+#include <utility/attach.hpp>
+
+#include <audio/audio_system.hpp>
+class Application : public ecs::ECS {
+public:
+    Application() {
+        systems_.Add<EcsFullLogger>();
+
+
+		systems_.Add<AudioSystem>();
+        systems_.Add<KeyboardInputSystem>();
+        systems_.Add<RendererSystem>();
+        systems_.Add<SpriteSheetSystem>();
+        systems_.Add<BattleAbleObjectsConfigSystem>();
+        systems_.Add<BattleAbleStateSwitchSystem>();
+        systems_.Add<TextInputSystem>();
+
+        systems_.Add<MovementCommandsSystem>();
+
+        systems_.Add<GravitationSystem>();
+        systems_.Add<FrictionSystem>();
+        systems_.Add<MovementSystem>();
+
+        systems_.Add<CollisionSystem>();
+        systems_.Add<CollisionStopperSystem>();
+
+        systems_.Add<HealthSystem>();
+        systems_.Add<AttackSystem>();
+        systems_.Add<BlockSystem>();
+        systems_.Add<CursesSystem>();
+        systems_.Add<FireSystem>();
+        systems_.Add<PotionSystem>();
+        systems_.Add<SlimeSystem>();
+        systems_.Add<SpecialSystem>();
+
+        systems_.Add<HealthBarSystem>();
+        systems_.Add<SpecialBarSystem>();
+        systems_.Add<ShieldBarSystem>();
+
+        systems_.Add<AttachSystem>();
+
+        systems_.Add<PlayerSystem>();
+        systems_.Add<BotSystem>();
+
+        systems_.Add<ControllerSystem>();
+
+        systems_.Configure();
+
+        logger::Print(kInfo, "Application sucessfully created\n");
+    }
+
+    void Update(ecs::TimeDelta dt) {
+
+        systems_.UpdateAll(dt);
+    }
+
+    bool GetState() {
+        return true;
+    }
+
+    void Pool() {
+        auto prev_timer = std::chrono::steady_clock::now();
+
+        
+        while (GetState()) {
+            auto new_timer = std::chrono::steady_clock::now();
+            auto dt = std::chrono::duration_cast<std::chrono::nanoseconds>(new_timer - prev_timer);
+
+            Update(static_cast<double>(dt.count()) / 1000.0);
+
+            prev_timer = new_timer;
+        }
+    }
+
+    void Init() {
+
+        auto* system = reinterpret_cast<KeyboardInputSystem*>(systems_.GetSystem<KeyboardInputSystem>());
+        std::thread input_thread(&KeyboardInputSystem::Pool, system);
+        std::thread main_thread(&Application::Pool, this);
+
+        input_thread.join();
+        main_thread.join();
+    }
+    // bool running_;
+};
+
 int main() {
 	audio::manage::AudioManager audio_manager("sounds/", "music/");
 	audio_manager.MusicPlay();
@@ -77,9 +214,14 @@ int main() {
 	auto* play = new interface::objects::Button({810, 100, 180, 100});
 	play->SetLabel("Play");
 
-	play->SetOnClick([]() {
+	play->SetOnClick([&window, &audio_manager]() {
 		interface::Application::App()->Exit();
+		window.Hide();
+		audio_manager.MusicNextSong();
+		Application game;
+		game.Init();
 	});
+
 	play->SetOnHoverIn([play]() {
 		play->SetColor(igraphicslib::colors::kPink);
 	});

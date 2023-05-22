@@ -7,16 +7,11 @@
 #include <components/battle_components.hpp>
 
 #include <events/player_events.hpp>
+#include <events/action_events.hpp>
 
 #include <ecs/quick.hpp>
 
 class AttackSystem : public ecs::System<AttackSystem>, public ecs::Receiver<AttackSystem> {
-    static constexpr uint32_t kBasicHealth = 100;
-    static constexpr uint32_t kBasicAttackPower = 10;
-
-    static constexpr uint32_t kBasicAttackSpeed = 5;
-    static constexpr uint32_t kBasicAttackDistance = 20;
-
     struct AttackFrame {
         ecs::Entity entity_;
 
@@ -29,7 +24,7 @@ public:
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
     void Receive(const PlayerInitiatedEvent& event);
-    void Receive(const PlayerCommandEvent& event);
+    void Receive(const ActionCommandEvent& event);
 
 private:
     void ProcessAttackers(ecs::EntityManager& entities);

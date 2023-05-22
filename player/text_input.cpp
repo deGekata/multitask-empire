@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-void TextInputSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+void TextInputSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<PlayerCommandEvent>(*this);
     events_ = &events;
 }
@@ -11,7 +11,15 @@ void TextInputSystem::Update(ecs::EntityManager&, ecs::EventManager&, ecs::TimeD
 }
 
 void TextInputSystem::Receive(const PlayerCommandEvent& event) {
-    if (event.cmd_ == PlayerCommand::TEXT_INSERT_REQUEST) {
+
+    ecs::Entity cmd_ent = event.cmd_;
+
+    auto cmd_type = cmd_ent.GetComponent<PlayerCommand>().Get();
+    if(cmd_type->type_ != PlayerCommandType::Action) return;
+
+    if (cmd_type->type_ == PlayerCommandType::TextInsertRequest) {
+
+        // todo: to queue
         std::string cmd;
         std::cout << "> ";
 

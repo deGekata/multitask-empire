@@ -1,6 +1,7 @@
 #include <audio/manage/audio_manager.hpp>
 
 #include <filesystem>
+#include <iostream>
 
 namespace audio::manage {
 
@@ -11,6 +12,7 @@ AudioManager::AudioManager(const std::string& sound_folder, const std::string& m
 	, volume_(0.5) {
 
 	for (auto& sound : std::filesystem::directory_iterator(sound_folder_)) {
+		std::cout << sound.path() << "\n";
 		sounds_.insert({sound.path(), new Sound(sound.path())});
 	}
 

@@ -1,27 +1,68 @@
 #ifndef H_BATTLE_CMPNTS
 #define H_BATTLE_CMPNTS
 
+#include <functional>
+#include <list>
+
 #include <ecs/config.hpp>
 #include <ecs/entity.hpp>
+
+struct PassiveCurseInfo {
+    ecs::TimeDelta time_left_;
+    std::function<void(ecs::Entity)> remove_action_;
+};
+
+struct PassiveCursesStorage {
+    std::list<PassiveCurseInfo> storage_;
+};
+
+struct ActiveCurseInfo {
+    ecs::TimeDelta time_left_;
+    std::function<void(ecs::Entity)> periodic_action_;
+};
+
+struct ActiveCursesStorage {
+    std::list<ActiveCurseInfo> storage_;
+};
+
+struct BlockedTag {};
+
+struct BlockReserve {
+    double durability_;
+};
 
 struct DamagerTag {
     ecs::Entity creator_;
 };
 
 struct Health {
-    int32_t health_;
+    double health_;
+};
+
+struct Special {
+    double experience_;
+};
+
+struct SpecialAbility {
+    enum class Type {
+        Fireball,
+        Slime,
+        Potion
+    };
+
+    Type type_;
 };
 
 struct AttackSpeed {
-    int32_t speed_;
+    double speed_;
 };
 
 struct AttackDistance {
-    int32_t distance_;
+    double distance_;
 };
 
 struct AttackPower {
-    int32_t power_;
+    double power_;
 };
 
 #endif

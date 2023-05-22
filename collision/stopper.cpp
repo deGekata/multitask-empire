@@ -28,7 +28,7 @@ void CollisionStopperSystem::Receive(const CollisionEvent& collided_pair) {
     auto box_first = first_entity.GetComponent<HitBox>();
     auto box_second = second_entity.GetComponent<HitBox>();
 
-    int64_t delta_x = pos_second->x_ - pos_first->x_;
-    pos_second->x_ += ((box_first->width_ + box_second->width_) / 2) - delta_x;
-    pos_first->x_ -= ((box_first->width_ + box_second->width_) / 2) - delta_x;
+    double delta_x = pos_second->x_ - pos_first->x_;
+    pos_second->x_ += ((box_first->width_ + box_second->width_) / 2.0) - delta_x;
+    pos_first->x_ -= ((box_first->width_ + box_second->width_) / 2.0) - delta_x;
 }

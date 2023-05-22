@@ -58,10 +58,7 @@ void SpriteSheetSystem::ChangeSkin(ecs::Entity entity_to_skin, const std::string
         }
 
         int id = state_name_to_id.at(states_storage[n_state].name_);
-        if(animation_data.sprite_sheet_.id_to_n_state_mapping_.count(id) == 0){
-            //?
-            continue;
-        }
+        
         animation_data.sprite_sheet_.id_to_n_state_mapping_[id] = n_state;
     }   
 

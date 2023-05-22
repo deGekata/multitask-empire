@@ -62,6 +62,7 @@ void KeyboardInputSystem::Pool() {
         if (root_window_->PollEvent(event)) {
             if (event.type == igraphicslib::EventType::KeyPressed ||
                 event.type == igraphicslib::EventType::KeyReleased) {
+
                 events_queue_.push_back(event);
             }
         }

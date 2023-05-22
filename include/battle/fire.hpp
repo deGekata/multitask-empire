@@ -7,11 +7,7 @@
 
 #include <ecs/quick.hpp>
 
-#include <events/player_events.hpp>
-
-const uint32_t kBasicMissleWidth = 50;
-const uint32_t kBasicMissleHeight = 50;
-const int64_t kBasicMissleSpeed = 40;
+#include <events/battle_events.hpp>
 
 class FireSystem : public ecs::System<FireSystem>, public ecs::Receiver<FireSystem> {
     enum MissleStates : int { FLYING };
@@ -20,7 +16,7 @@ public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
-    void Receive(const PlayerCommandEvent& event);
+    void Receive(const SpecialTriggerEvent& event);
 
 private:
     void ProcessFires(ecs::EntityManager& entities, ecs::EventManager& events);

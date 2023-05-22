@@ -10,7 +10,6 @@
 
 #include <events/player_events.hpp>
 
-void FillPlayerStatesNameMap(std::map<std::string, int>* storage);
 
 class PlayerSystem : public ecs::System<PlayerSystem>, public ecs::Receiver<PlayerSystem> {
 public:
@@ -19,6 +18,8 @@ public:
 
     void Receive(const KeyPressedEvent& event);
     void Receive(const KeyReleasedEvent& event);
+
+    void Receive(const PlayerInitiatedEvent& event);
     void Receive(const PlayerTextRequestEvent& event);
 private:
     // int changed_state_;
@@ -27,9 +28,11 @@ private:
     ecs::EventManager* event_manager_;
 
     // Map which gives command by taking keyboard key
-    std::map<uint32_t, PlayerCommand> key_to_cmd_matcher_;   
-
-    std::deque<PlayerCommand> commands_queue_;
+    std::map<igraphicslib::KeyboardKey, PlayerCommandType> key_to_cmd_matcher_;   
+    std::map<igraphicslib::KeyboardKey, ActionCommandType> key_to_action_matcher_;
+    
+    std::deque<igraphicslib::KeyEventData> commands_queue_;
+    std::deque<igraphicslib::KeyEventData> on_release_queue_;
 };
 
 #endif  

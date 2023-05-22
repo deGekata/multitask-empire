@@ -1,0 +1,21 @@
+Name: "knight",
+SpriteSheetPath: "./assets/sprites/knight.png",
+XmlPath: "./assets/sprites/knight.xml",
+HpLvl: 120,
+JmpRatio: 1.5,
+SpeedRatio: 1.2,
+BasicFrames: {
+    Run: "WALK_RIGHT",
+    Idle: "IDLE",
+    Death: "DEATH",
+    Jump: "JUMP"
+},
+Replics: {
+    "suck my cock",
+    "u look like lopatin's mommy"
+},
+Attacks: {
+    {"ATTACK_ONE", "Justice hit", "J", 20},
+    {"ATTACK_TWO", "Berserk technique", "K", 30},
+    {"ATTACK_THREE", "give me your blood", "L", 5}
+}

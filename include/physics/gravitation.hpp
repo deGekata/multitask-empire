@@ -9,8 +9,6 @@
 #include <events/player_events.hpp>
 #include <events/gravitation_events.hpp>
 
-constexpr int64_t kAttraction = 20;
-
 class GravitationSystem : public ecs::System<GravitationSystem>, public ecs::Receiver<GravitationSystem> {
 public:
     void Configure(ecs::EntityManager& entities, ecs::EventManager& events) override;

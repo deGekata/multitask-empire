@@ -1,6 +1,8 @@
 #ifndef METRICS_H
 #define METRICS_H
 
+#include <ecs/config.hpp>
+
 #include <chrono>
 namespace metrics {
 

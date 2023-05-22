@@ -15,8 +15,8 @@ constexpr uint64_t kMaxEvents     = 8 * 1024;
 // TODO std::vector<bool>
 using ComponentMask = std::bitset<kMaxComponents>;
 
-// In seconds
-using TimeDelta = int64_t;
+// In nanoseconds
+using TimeDelta = double;
 
 };  // namespace ecs
 

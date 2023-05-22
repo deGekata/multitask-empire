@@ -13,37 +13,25 @@
 
 #include <utility/time.hpp>
 
-enum class PlayerCommand : int {
-    INVALID = -1,
-    IDLE,
-    WALK_LEFT,
-    WALK_RIGHT,
-    ATTACK_ONE,
-    ATTACK_TWO,
-    DEATH,
-    JUMP,
-    FIRE,
-    TEXT_INSERT_REQUEST
-};
-
 struct PlayerInitiatedEvent : public ecs::Event<PlayerInitiatedEvent> {
     explicit PlayerInitiatedEvent(ecs::Entity player_entity) : entity_(player_entity) {
     }
 
     PlayerInitiatedEvent(const PlayerInitiatedEvent& other) = default;
     ~PlayerInitiatedEvent() override = default;
-
+    
+    std::string player_name_;
     ecs::Entity entity_;
 };
 
 struct PlayerCommandEvent : public ecs::Event<PlayerCommandEvent> {
-    explicit PlayerCommandEvent(PlayerCommand cmd, ecs::Entity player_entity) : cmd_(cmd), entity_(player_entity) {
+    explicit PlayerCommandEvent(ecs::Entity cmd, ecs::Entity player_entity) : cmd_(cmd), entity_(player_entity) {
     }
 
     PlayerCommandEvent(const PlayerCommandEvent& other) = default;
     ~PlayerCommandEvent() override = default;
 
-    PlayerCommand cmd_;
+    ecs::Entity cmd_;
     ecs::Entity entity_;
 };
 

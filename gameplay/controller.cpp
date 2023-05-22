@@ -2,9 +2,14 @@
 
 #include <events/bot_events.hpp>
 #include <events/player_events.hpp>
+#include <events/action_events.hpp>
 
+#include <components/battle_components.hpp>
 #include <components/bot_components.hpp>
 #include <components/player_components.hpp>
+#include <components/collision_components.hpp>
+
+metrics::TimeStorage ControllerSystem::update_timestamp_ = metrics::CurTime();
 
 ControllerSystem::ControllerSystem() : current_state_(GameState::Init) {
 }
@@ -21,27 +26,81 @@ void ControllerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& e
     }
 }
 
-void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager&, ecs::EventManager& events,
+void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager& entities, ecs::EventManager& events,
                                        ecs::TimeDelta dt) {
-    static ecs::TimeDelta time_since = 0;
 
-    if ((time_since += dt) >= 1000) {
-        events.Emit<PlayerCommandEvent>(PlayerCommand::JUMP, current);
+    if(current.HasComponent<PBattleAbleAttributes>() == false) {
+        return;
+    }
 
-        time_since = 0;
+    auto attrs = current.GetComponent<PBattleAbleAttributes>().Get();
+    
+    ecs::Entity player = *(entities.GetEntitiesWithComponents<PlayerTag>().begin());
+
+    if(attrs->cur_active_state_ == PBattleAbleAttributes::kInvalidState){
+        
+        int cur_state = attrs->cur_passive_state_;
+
+        auto player_pos = player.GetComponent<Position>().Get();
+        auto bot_pos    = current.GetComponent<Position>().Get();
+
+        if(player_pos->x_ > bot_pos->x_ && current.GetComponent<Rotation>()->is_flipped_) {
+            current.GetComponent<Rotation>()->is_flipped_ = false;
+        }
+        if(player_pos->x_ < bot_pos->x_ && !current.GetComponent<Rotation>()->is_flipped_) {
+            current.GetComponent<Rotation>()->is_flipped_ = true;            
+        }
+
+        if(cur_state == static_cast<int>(ActionCommandType::RunLeft) || cur_state == static_cast<int>(ActionCommandType::RunRight)) {
+            
+            bool is_left = attrs->cur_passive_state_ == static_cast<int>(ActionCommandType::RunLeft);
+
+            // todo: remove
+            if(player_pos->x_ < bot_pos->x_ && player_pos->x_ + player.GetComponent<HitBox>()->width_ > bot_pos->x_ - (current.GetComponent<AttackDistance>()->distance_)) {
+                EmitNonArgsAction(current, ActionCommandType::StopRunningLeft, entities, events);
+            }
+            else if(player_pos->x_ > bot_pos->x_ && player_pos->x_ - player.GetComponent<HitBox>()->width_ < bot_pos->x_ + (current.GetComponent<AttackDistance>()->distance_)){
+                EmitNonArgsAction(current, ActionCommandType::StopRunningRight, entities, events);
+            }
+            // else if(is_left && player_pos->x_ > bot_pos->x_) {
+            //     EmitNonArgsAction(current, ActionCommandType::RunLeft, entities, events);
+            // }
+            // else if(!is_left && (player_pos->x_ < bot_pos->x_)) {
+            //     EmitNonArgsAction(current, ActionCommandType::RunRight, entities, events);
+            // }
+        }
+
+        else if(cur_state == static_cast<int>(ActionCommandType::Idle) && !metrics::CheckDuration(update_timestamp_, 3)) {
+
+            // if(fabs(player_pos->x_ - bot_pos->x_ + player.GetComponent<HitBox>()->width_) * 1.5 > current.GetComponent<AttackDistance>()->distance_) {
+            
+            if(player_pos->x_ + player.GetComponent<HitBox>()->width_ < bot_pos->x_ - current.GetComponent<AttackDistance>()->distance_) {
+                EmitNonArgsAction(current, ActionCommandType::RunLeft, entities, events);
+            }
+            else if(player_pos->x_ - player.GetComponent<HitBox>()->width_ > bot_pos->x_ + current.GetComponent<AttackDistance>()->distance_) {
+                EmitNonArgsAction(current, ActionCommandType::RunRight, entities, events);
+            }
+            
+            else {
+                EmitNonAttackAction(current, 0, entities, events);
+            }
+        }
     }
 }
 
-void ControllerSystem::SwitchGameState(ecs::EntityManager&, ecs::EventManager& events, ecs::TimeDelta) {
+void ControllerSystem::SwitchGameState(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
     switch (current_state_) {
         case GameState::Init:
-            events.Emit<SpawnBotEvent>(Position{500, 0}, "./assets/sprites/knight.png",
-                                       &ControllerSystem::KnightBehaviour);
+            entities.Each<PlayerTag>([](ecs::Entity entity, PlayerTag&) {
+                entity.Assign<SpecialAbility>(SpecialAbility{SpecialAbility::Type::Potion});
+            });
 
+            current_state_ = GameState::Knight;
             break;
 
         case GameState::Knight:
-            current_state_ = GameState::Final;
+            events.Emit<SpawnBotEvent>(Position{500, 0}, "./knight.wtf",
+                                       &ControllerSystem::KnightBehaviour);
             break;
 
         case GameState::Final:

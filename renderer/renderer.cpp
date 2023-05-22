@@ -14,17 +14,20 @@
 
 static constexpr double kSpriteScale = 3.0;
 
-RendererSystem::RendererSystem() : window_(1000, 800, "Simple") {
+RendererSystem::RendererSystem() : window_(1920, 1080, "chlen") {
 }
 
 void RendererSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<PlayerInitiatedEvent>(*this);
+    events.Subscribe<SpriteSheetStateChangedEvent>(*this);
     window_.Show();
 
     events.Emit<WindowInitiatedEvent>(&window_);
 
     rerender_timestamp_ = metrics::CurTime();
     sprite_frame_change_timestamp_ = metrics::CurTime();
+
+    background_texture_ = igraphicslib::Texture("background.png");
 }
 
 void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos,
@@ -35,7 +38,8 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
             .positions_[animation_data.cur_frame_];
 
     igraphicslib::Rect rect(frame_pos.x_, frame_pos.y_, frame_pos.w_, frame_pos.h_);
-    animation_data.sprite_sheet_.sprite_sheet_->sprite_.SetTexture(animation_data.sprite_sheet_.sprite_sheet_->texture_);
+    animation_data.sprite_sheet_.sprite_sheet_->sprite_.SetTexture(
+        animation_data.sprite_sheet_.sprite_sheet_->texture_);
     auto tmp = animation_data.sprite_sheet_.sprite_sheet_->sprite_.Crop(rect);
 
     int x_coord = static_cast<int>(cur_pos.x_) - frame_pos.x_offset_;
@@ -50,10 +54,10 @@ void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_d
         tmp.SetScale(kSpriteScale, kSpriteScale);
     }
 
-    window_.DrawSprite({x_coord, y_coord}, tmp);
+    window_.DrawSprite({x_coord, y_coord - 60}, tmp);
 }
 
-void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta) {
+void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
     if (metrics::CheckDuration(rerender_timestamp_, metrics::kNSecForGapBetweenRenders)) {
         return;
     }
@@ -65,17 +69,26 @@ void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ec
 
     window_.Clear();
 
-    entities.Each<ObjectAnimationData, RenderFrameData, Position, Rotation>(
-        [this, is_frame_change](ecs::Entity, ObjectAnimationData& player_animation_data, RenderFrameData& frame_data,
-                                Position& cur_pos, Rotation& rotation) {
+    background_sprite_.SetTexture(background_texture_);
+    window_.DrawSprite({0, 0}, background_sprite_);
+
+    entities.Each<ObjectAnimationData, Position, Rotation>(
+        [this, &events, is_frame_change](ecs::Entity entity, ObjectAnimationData& player_animation_data, Position& cur_pos, Rotation& rotation) {
             LaunchAnimationFrame(player_animation_data, cur_pos, rotation.is_flipped_);
 
             if (is_frame_change) {
-                if (player_animation_data.UpdateFrame() && frame_data.idle_request_) {
-                    player_animation_data.n_sprite_sheet_state_ = frame_data.n_new_state_;
+                if (player_animation_data.UpdateFrame() && player_animation_data.is_one_shot_) {
+                    player_animation_data.is_one_shot_ = false;
+                    events.Emit<StateRenderedEvent>(entity);
                 }
             }
         });
+
+    entities.Each<TextRenderData, Position>([this](ecs::Entity, TextRenderData& text, Position& pos) {
+        text.text_.SetPosition(static_cast<uint32_t>(pos.x_), static_cast<uint32_t>(pos.y_));
+
+        window_.DrawText(text.text_);
+    });
 
     window_.Update();
     // std::this_thread::sleep_for(std::chrono::milliseconds(ANIMATION_FREEZE_TIME));
@@ -86,7 +99,7 @@ void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ec
 // }
 
 void RendererSystem::Receive(const SpriteSheetStateChangedEvent& event) {
-    
+
     ecs::Entity changing_object = event.entity_;
     if (!changing_object.HasComponent<ObjectAnimationData>()) {
         return;
@@ -103,11 +116,11 @@ void RendererSystem::Receive(const SpriteSheetStateChangedEvent& event) {
         logger::Print(kWarning, "there no spritesheet state, attached to value {}\n", event.state_id_);
         return;
     }
-
-    animation_storage->n_sprite_sheet_state_ = animation_storage->sprite_sheet_.id_to_n_state_mapping_[event.state_id_];
-    animation_storage->cur_frame_ = 0;
+    
+    animation_storage->n_sprite_sheet_state_    = animation_storage->sprite_sheet_.id_to_n_state_mapping_[event.state_id_];
+    animation_storage->cur_frame_               = 0;
+    animation_storage->is_one_shot_             = event.is_one_shot_;
 }
-
 
 /*
 void RendererSystem::Receive(const PlayerCommandEvent& event) {
@@ -197,7 +210,7 @@ void RendererSystem::Receive(const PlayerCommandEvent& event) {
 //     logger::Print(kInfo, "{} stopped moving\n", event.target_.GetId().GetIndex());
 // }
 
-void RendererSystem::Receive(const PlayerInitiatedEvent& event) {
+void RendererSystem::Receive(const PlayerInitiatedEvent&) {
     // RenderFrameData data = {
     //     .cur_player_state_     = PLAYER_CMD::IDLE,
     //     .entity_        = event.entity_,
@@ -206,11 +219,11 @@ void RendererSystem::Receive(const PlayerInitiatedEvent& event) {
     //     .is_flipped_    = false
     // };
 
-    RenderFrameData data = {.n_new_state_ = 0, .idle_request_ = true};
+    // RenderFrameData data = {.n_new_state_ = 0, .idle_request_ = true};
 
-    ecs::Entity entity = event.entity_;
+    // ecs::Entity entity = event.entity_;
 
-    entity.Assign<RenderFrameData>(data);
+    // entity.Assign<RenderFrameData>(data);
 }
 
 // void RendererSystem::Receive(const LandingEvent& event) {

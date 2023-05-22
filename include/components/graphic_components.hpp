@@ -2,10 +2,13 @@
 #define H_GRAPHIC_CMPNTS
 
 #include <string>
+#include <map>
 #include <vector>
+#include <map>
 
 #include <graphics/aSprite.hpp>
 #include <graphics/aTexture.hpp>
+#include <graphics/aText.hpp>
 
 struct SpriteSheet {
     struct StateFrame {
@@ -27,7 +30,6 @@ struct SpriteSheet {
 };
 
 struct SpriteSheetStorageTag {};
-#include <map>
 
 struct ObjectSpriteSheet {
     SpriteSheet*        sprite_sheet_;
@@ -40,6 +42,8 @@ struct ObjectAnimationData {
     
     uint n_sprite_sheet_state_;
     uint cur_frame_;
+
+    bool is_one_shot_;
 
     // @brief Updates frame and returns true if animation is ended
     bool UpdateFrame() {
@@ -57,7 +61,10 @@ struct ObjectAnimationData {
 
 struct RenderFrameData {
     uint n_new_state_;
-    bool idle_request_;
+};
+
+struct TextRenderData {
+    igraphicslib::Text text_;
 };
 
 #endif  // H_GRAPHIC_CMPNTS
