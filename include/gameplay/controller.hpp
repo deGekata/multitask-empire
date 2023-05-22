@@ -21,6 +21,7 @@ private:
     GameState current_state_;
 
     static metrics::TimeStorage update_timestamp_;
+    static metrics::TimeStorage block_timestamp_;
 };
 
 #endif

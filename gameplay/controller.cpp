@@ -10,6 +10,7 @@
 #include <components/collision_components.hpp>
 
 metrics::TimeStorage ControllerSystem::update_timestamp_ = metrics::CurTime();
+metrics::TimeStorage ControllerSystem::block_timestamp_ = metrics::CurTime();
 
 ControllerSystem::ControllerSystem() : current_state_(GameState::Init) {
 }
@@ -56,27 +57,35 @@ void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager& 
             bool is_left = attrs->cur_passive_state_ == static_cast<int>(ActionCommandType::RunLeft);
 
             // todo: remove
-            if(player_pos->x_ < bot_pos->x_ && player_pos->x_ + player.GetComponent<HitBox>()->width_ > bot_pos->x_ - (current.GetComponent<AttackDistance>()->distance_)) {
+            if(player_pos->x_ < bot_pos->x_ && player_pos->x_ + player.GetComponent<HitBox>()->width_ - 70> bot_pos->x_ - (current.GetComponent<AttackDistance>()->distance_)) {
                 EmitNonArgsAction(current, ActionCommandType::StopRunningLeft, entities, events);
             }
-            else if(player_pos->x_ > bot_pos->x_ && player_pos->x_ - player.GetComponent<HitBox>()->width_ < bot_pos->x_ + (current.GetComponent<AttackDistance>()->distance_)){
+            else if(player_pos->x_ > bot_pos->x_ && player_pos->x_ - player.GetComponent<HitBox>()->width_ + 70 < bot_pos->x_ + (current.GetComponent<AttackDistance>()->distance_)){
                 EmitNonArgsAction(current, ActionCommandType::StopRunningRight, entities, events);
             }
         }
 
         else if(cur_state == static_cast<int>(ActionCommandType::Idle) && !metrics::CheckDuration(update_timestamp_, 3)) {
 
-            // if(fabs(player_pos->x_ - bot_pos->x_ + player.GetComponent<HitBox>()->width_) * 1.5 > current.GetComponent<AttackDistance>()->distance_) {
-            
+            if(current.HasComponent<BlockedTag>()) {
+                current.Remove<BlockedTag>();
+            }
+
             if(player_pos->x_ + player.GetComponent<HitBox>()->width_ < bot_pos->x_ - current.GetComponent<AttackDistance>()->distance_) {
                 EmitNonArgsAction(current, ActionCommandType::RunLeft, entities, events);
             }
-            else if(player_pos->x_ - player.GetComponent<HitBox>()->width_ > bot_pos->x_ + current.GetComponent<AttackDistance>()->distance_) {
+            else if(player_pos->x_ - player.GetComponent<HitBox>()->width_  > bot_pos->x_ + current.GetComponent<AttackDistance>()->distance_) {
                 EmitNonArgsAction(current, ActionCommandType::RunRight, entities, events);
             }
             
             else {
                 EmitNonAttackAction(current, 0, entities, events);
+            }
+        }
+
+        else if(cur_state == static_cast<int>(ActionCommandType::Idle) && !metrics::CheckDuration(block_timestamp_, 1.5)) {
+            if(!current.HasComponent<BlockedTag>()) {
+                current.Assign<BlockedTag>();
             }
         }
     }

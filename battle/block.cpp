@@ -6,7 +6,7 @@ static constexpr double kBlockMaxDurability = 50.0;
 static constexpr double kDurabilityIncreasePerDt = 1e-5;
 
 void BlockSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
-    events.Subscribe<PlayerCommandEvent>(*this);
+    events.Subscribe<ActionCommandEvent>(*this);
     events.Subscribe<PlayerInitiatedEvent>(*this);
 }
 
@@ -28,15 +28,11 @@ void BlockSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::
     }
 }
 
-void BlockSystem::Receive(const PlayerCommandEvent& event) {
+void BlockSystem::Receive(const ActionCommandEvent& event) {
     
-    ecs::Entity cmd_ent = event.cmd_;
-
-    auto cmd_type = cmd_ent.GetComponent<PlayerCommand>().Get();
-    if(cmd_type->type_ != PlayerCommandType::Action) return;
-
-    ecs::Entity player_entity = event.entity_;
-    auto action_type = cmd_ent.GetComponent<ActionCommand>().Get();
+    ecs::Entity action = event.action_;
+    ecs::Entity player_entity = event.obj_entity_;
+    auto action_type = action.GetComponent<ActionCommand>().Get();
 
     if ((action_type->type_ == ActionCommandType::Block) && (!player_entity.HasComponent<BlockedTag>())) {
         player_entity.Assign<BlockedTag>();
