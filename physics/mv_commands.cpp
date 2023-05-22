@@ -27,6 +27,7 @@ void MovementCommandsSystem::Receive(const ActionCommandEvent& event) {
 
     ecs::Entity entity = event.obj_entity_;
     
+
     switch (action_type->type_) {
         case ActionCommandType::Jump: {
             auto position = entity.GetComponent<Position>();
@@ -52,6 +53,7 @@ void MovementCommandsSystem::Receive(const ActionCommandEvent& event) {
             auto velocity = entity.GetComponent<Velocity>();
             auto speed = entity.GetComponent<MoveSpeed>();
 
+            logger::Print("asdsd: {}\n", speed->value_);
             velocity->vx_ = speed->value_;
             break;
         }

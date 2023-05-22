@@ -27,6 +27,8 @@ void MovementSystem::Update(ecs::EntityManager& entities, ecs::EventManager& eve
     entities.Each<Position, Velocity, Rotation>(
         [dt, &events](ecs::Entity entity, Position& pos, Velocity& vel, Rotation& rotation) {
             pos.y_ = std::max(0.0, pos.y_ + vel.vy_ * dt);
+
+            // logger::Print("nigger: {}\n", vel.vx_);
             pos.x_ += vel.vx_ * dt;
             // logger::Print("offset: {}\n", vel.vx_);
             if (vel.vx_ < 0) {

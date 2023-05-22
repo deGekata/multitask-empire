@@ -35,13 +35,16 @@ void GravitationSystem::Receive(const LandingEvent& event) {
     ecs::Entity lander = event.target_;
 
     if (lander.HasComponent<Acceleration>()) {
-        lander.GetComponent<Acceleration>()->ay_ = 0;
+        // lander.GetComponent<Acceleration>()->ay_ = 0;
     }
 
     if (lander.HasComponent<Velocity>()) {
         auto vel = lander.GetComponent<Velocity>();
         
-        vel->vx_ = 0;
+        if(!lander.HasComponent<PBattleAbleAttributes>()){
+            vel->vx_ = 0;
+        }
+        
         vel->vy_ = 0;
     }
 }
