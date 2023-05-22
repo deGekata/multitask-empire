@@ -1,9 +1,9 @@
-#ifndef MULTITASK_EMPIRE_SOUND_SOUND_HPP
-#define MULTITASK_EMPIRE_SOUND_SOUND_HPP
+#ifndef MULTITASK_EMPIRE_AUDIO_SOUND_HPP
+#define MULTITASK_EMPIRE_AUDIO_SOUND_HPP
 
 #include <SFML/Audio.hpp>
 
-namespace sound {
+namespace audio {
 
 class Sound {
 public:
@@ -23,6 +23,6 @@ private:
 	sf::Sound sound_;
 };
 
-}  // namespace sound
+}  // namespace audio
 
-#endif  // MULTITASK_EMPIRE_SOUND_SOUND_HPP
+#endif  // MULTITASK_EMPIRE_AUDIO_SOUND_HPP

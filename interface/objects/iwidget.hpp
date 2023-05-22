@@ -58,6 +58,7 @@ public:
 	virtual void SetOnHoverIn (std::function<void ()> on_hover_in)  = 0;
 	virtual void SetOnHoverOut(std::function<void ()> on_hover_out) = 0;
 	virtual void SetOnClick   (std::function<void ()> on_click)     = 0;
+	virtual void SetOnTick    (std::function<void ()> on_tick)      = 0;
 
 protected:
     manage::ChildrenManager children_manager_;
@@ -74,6 +75,7 @@ protected:
     std::function<void ()> on_hover_in_;
     std::function<void ()> on_hover_out_;
     std::function<void ()> on_click_;
+    std::function<void ()> on_tick_;
 };
 
 }  // namespace interface::objects

@@ -88,7 +88,7 @@ bool Widget::OnTimerTick(utility::Time time_data) {
 		return false;
 	}
 
-	Draw();
+	on_tick_();
 	return true | children_manager_.ProcessTimerTick(time_data);
 }
 
@@ -205,6 +205,10 @@ void Widget::SetOnHoverOut(std::function<void ()> on_hover_out) {
 
 void Widget::SetOnClick(std::function<void ()> on_click) {
 	on_click_ = on_click;
+}
+
+void Widget::SetOnTick(std::function<void ()> on_tick) {
+	on_tick_ = on_tick;
 }
 
 }  // namespace interface::objects

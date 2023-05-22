@@ -23,8 +23,9 @@ Image::Image(IWidget* parent, const geometry::Rect2<uint32_t>& bounds, const std
 
 void Image::Draw() {
     geometry::Rect2<uint32_t> abs_bounds = AbsoluteBounds();
-    igraphicslib::Sprite sprite(texture_, abs_bounds);
     igraphicslib::Point point = {static_cast<int32_t>(abs_bounds.x), static_cast<int32_t>(abs_bounds.y)};
+    abs_bounds.x = abs_bounds.y = 0;
+    igraphicslib::Sprite sprite(texture_, abs_bounds);
     Application::Window()->DrawSprite(point, sprite);
 }
 

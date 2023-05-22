@@ -1,9 +1,9 @@
-#ifndef MULTITASK_EMPIRE_SOUND_MUSIC_HPP
-#define MULTITASK_EMPIRE_SOUND_MUSIC_HPP
+#ifndef MULTITASK_EMPIRE_AUDIO_MUSIC_HPP
+#define MULTITASK_EMPIRE_AUDIO_MUSIC_HPP
 
 #include <SFML/Audio.hpp>
 
-namespace sound {
+namespace audio {
 
 class Music {
 public:
@@ -22,6 +22,6 @@ private:
 	sf::Music music_;
 };
 
-}  // namespace sound
+}  // namespace audio
 
-#endif  // MULTITASK_EMPIRE_SOUND_MUSIC_HPP
+#endif  // MULTITASK_EMPIRE_AUDIO_MUSIC_HPP

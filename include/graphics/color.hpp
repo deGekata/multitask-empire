@@ -159,6 +159,7 @@ const Color kLGray = 0xD0D0D0FF;
 const Color kYellow = 0xFFFF00FF;
 const Color kMagenta = 0xFF00FFFF;
 const Color kCyan = 0x00FFFFFF;
+const Color kPink = 0xFF66C4FF;
 }  // namespace Colors
 }  // namespace igraphicslib
 

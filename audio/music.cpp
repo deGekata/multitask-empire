@@ -1,6 +1,6 @@
-#include <sound/music.hpp>
+#include <audio/music.hpp>
 
-namespace sound {
+namespace audio {
 
 Music::Music(const std::string& path) {
 	music_.openFromFile(path);
@@ -26,4 +26,4 @@ float Music::GetVolume() {
 	return music_.getVolume();
 }
 
-}  // namespace sound
+}  // namespace audio

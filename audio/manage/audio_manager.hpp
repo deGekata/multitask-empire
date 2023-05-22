@@ -1,19 +1,21 @@
-#ifndef MULTITASK_EMPIRE_SOUND_AUDIO_MUSIC_HPP
-#define MULTITASK_EMPIRE_SOUND_AUDIO_MUSIC_HPP
+#ifndef MULTITASK_EMPIRE_AUDIO_AUDIO_MANAGER_HPP
+#define MULTITASK_EMPIRE_AUDIO_AUDIO_MANAGER_HPP
 
 // Multitask-Empire
-#include <sound/sound.hpp>
-#include <sound/music.hpp>
+#include <audio/sound.hpp>
+#include <audio/music.hpp>
 
 // Containers
 #include <map>
 #include <vector>
 
-namespace sound::manage {
+namespace audio::manage {
 
 class AudioManager {
 public:
 	AudioManager(const std::string& sound_folder, const std::string& music_folder);
+
+	~AudioManager();
 
 	// Music
 	void MusicPlay();
@@ -33,16 +35,16 @@ public:
 
 private:
 	std::string sound_folder_;
-	std::map<std::string, Sound> sounds_;
+	std::map<std::string, Sound*> sounds_;
 	std::string cur_sound_;
 
 	std::string music_folder_;
-	std::vector<Music> music_;
+	std::vector<Music*> music_;
 	size_t current_song_;
 
 	float volume_;
 };
 
-}  // namespace sound::manage
+}  // namespace audio::manage
 
-#endif  // MULTITASK_EMPIRE_SOUND_AUDIO_MUSIC_HPP
+#endif  // MULTITASK_EMPIRE_AUDIO_AUDIO_MANAGER_HPP
