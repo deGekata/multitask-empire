@@ -15,5 +15,14 @@
 
 # Rules
   + You should kill knight!
-  + You're able to jump (W), move left/right (L/R), change your special ability (Tab), use your special ability (F).
+
+# Game controls
+  + W - Jump
+  + A/D - Move left/right
+  + Tab - change special ability
+  + F - use of special ability
+
+# Details of implementation
+  + We use our own stdlike library with such classes as vector, function etc.
+  + We use ECS conception to implement gameplay mechanics 
 
