@@ -11,7 +11,7 @@ static constexpr double kBasicMissleWidth = 50.0;
 static constexpr double kBasicMissleHeight = 50.0;
 static constexpr double kBasicMissleSpeed = 0.0005;
 
-static constexpr double kBasicFireballMultiplier = 0.01;
+static constexpr double kBasicFireballMultiplier = 0.001;
 
 void FireSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
     events.Subscribe<SpecialTriggerEvent>(*this);
