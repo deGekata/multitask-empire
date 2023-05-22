@@ -40,6 +40,11 @@ iterate over the results doing physics calculations on the sets of components fo
 # Stdlike
 Throughout all of the project we use our own implementation od such standart classes as vector, function etc.
 
+# Config System
+You can use our config system in order to implement your own custom character.
+Check these example for better understanding: [knight](https://github.com/deGekata/multitask-empire/blob/master/knight.wtf),
+[orc](https://github.com/deGekata/multitask-empire/blob/master/orc.wtf).
+
 # Game controls
   + W - Jump <br/>
 ![](https://github.com/deGekata/multitask-empire/blob/master/assets/gifs/jump.gif)
