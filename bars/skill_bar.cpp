@@ -67,13 +67,15 @@ void SkillBarSystem::Receive(const PlayerInitiatedEvent& event) {
     if (event.entity_.HasComponent<BotBehaviour>()) {
         bar_position = enemies_bars_positions_.back();
         enemies_bars_positions_.pop_back();
+
+        is_rotated = true;
     } else {
         bar_position = allies_bars_positions_.back();
         allies_bars_positions_.pop_back();
     }
 
     entity_bar.AssignFromCopy<Position>(bar_position);
-    entity_bar.AssignFromCopy<Rotation>(Rotation{is_rotated});
+    entity_bar.AssignFromCopy<Rotation>(Rotation{false});
 
     events_->Emit<SkinChangeRequest>(state_name_converter_, 2, "./assets/sprites/skill_bar.png", entity_bar);
 
