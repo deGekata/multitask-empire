@@ -9,6 +9,7 @@
 #include <components/player_components.hpp>
 #include <components/collision_components.hpp>
 
+#include <components/graphic_components.hpp>
 metrics::TimeStorage ControllerSystem::update_timestamp_ = metrics::CurTime();
 metrics::TimeStorage ControllerSystem::block_timestamp_ = metrics::CurTime();
 
@@ -93,20 +94,62 @@ void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager& 
 
 void ControllerSystem::SwitchGameState(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
     switch (current_state_) {
-        case GameState::Init:
+        case GameState::Init:{
             entities.Each<PlayerTag>([](ecs::Entity entity, PlayerTag&) {
                 entity.Assign<SpecialAbility>(SpecialAbility{SpecialAbility::Type::Potion});
             });
 
-            current_state_ = GameState::Knight;
-            break;
 
-        case GameState::Knight:
+            ecs::Entity backgr = entities.Create();
+
+            BackgroundR comp = {.texture_ = igraphicslib::Texture("background.png")};
+            backgr.Assign<BackgroundR>(comp);
+
+            current_state_ = GameState::Knight1;
+            break;
+        }
+
+        case GameState::Knight1: {
             events.Emit<SpawnBotEvent>(Position{500, 0}, "./knight.wtf",
                                        &ControllerSystem::KnightBehaviour);
-            break;
 
-        case GameState::Final:
+            auto back_entity = *(entities.GetEntitiesWithComponents<BackgroundR>().begin());
+            back_entity.Remove<BackgroundR>();
+            BackgroundR comp = {.texture_ = igraphicslib::Texture("background.png")};
+            back_entity.Assign<BackgroundR>(comp);
+
+            current_state_ = GameState::Knight2;
             break;
+        }
+
+        case GameState::Knight2: {
+            events.Emit<SpawnBotEvent>(Position{500, 0}, "./father_knight.wtf",
+                                       &ControllerSystem::KnightBehaviour);
+
+            auto back_entity = *(entities.GetEntitiesWithComponents<BackgroundR>().begin());
+            back_entity.Remove<BackgroundR>();
+            BackgroundR comp = {.texture_ = igraphicslib::Texture("background1.png")};
+            back_entity.Assign<BackgroundR>(comp);
+
+            current_state_ = GameState::Knight3;
+            break;
+        }
+
+        case GameState::Knight3: {
+            events.Emit<SpawnBotEvent>(Position{500, 0}, "./mother_knight.wtf",
+                                       &ControllerSystem::KnightBehaviour);
+
+            auto back_entity = *(entities.GetEntitiesWithComponents<BackgroundR>().begin());
+            back_entity.Remove<BackgroundR>();
+            BackgroundR comp = {.texture_ = igraphicslib::Texture("background.png")};
+            back_entity.Assign<BackgroundR>(comp);
+
+            current_state_ = GameState::Final;
+            break;
+        }
+
+        case GameState::Final:{
+            break;
+        }
     }
 }

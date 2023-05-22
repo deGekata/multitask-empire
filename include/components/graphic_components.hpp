@@ -36,6 +36,11 @@ struct ObjectSpriteSheet {
     std::map<int, uint> id_to_n_state_mapping_;
 };
 
+struct BackgroundR {
+    
+    igraphicslib::Texture texture_;
+};
+
 struct ObjectAnimationData {
     // todo: rename
     ObjectSpriteSheet sprite_sheet_;

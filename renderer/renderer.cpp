@@ -26,8 +26,6 @@ void RendererSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
 
     rerender_timestamp_ = metrics::CurTime();
     sprite_frame_change_timestamp_ = metrics::CurTime();
-
-    background_texture_ = igraphicslib::Texture("background.png");
 }
 
 void RendererSystem::LaunchAnimationFrame(const ObjectAnimationData& animation_data, const Position& cur_pos,
@@ -69,8 +67,14 @@ void RendererSystem::Update(ecs::EntityManager& entities, ecs::EventManager& eve
 
     window_.Clear();
 
-    background_sprite_.SetTexture(background_texture_);
-    window_.DrawSprite({0, 0}, background_sprite_);
+    entities.Each<BackgroundR>(
+        [this](ecs::Entity entity, BackgroundR& data) {
+            
+        igraphicslib::Sprite sprite;
+
+        sprite.SetTexture(data.texture_);
+        // window_.DrawSprite({0, 0}, sprite);
+    });
 
     entities.Each<ObjectAnimationData, Position, Rotation>(
         [this, &events, is_frame_change](ecs::Entity entity, ObjectAnimationData& player_animation_data, Position& cur_pos, Rotation& rotation) {

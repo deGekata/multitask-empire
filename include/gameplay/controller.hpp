@@ -5,7 +5,7 @@
 #include <utility/metric.hpp>
 
 class ControllerSystem : public ecs::System<ControllerSystem> {
-    enum class GameState { Init, Knight, Final };
+    enum class GameState { Init, Knight1, Knight2, Knight3, Final };
 
 public:
     ControllerSystem();

@@ -49,9 +49,6 @@ private:
     PlayerCommand cur_player_state_; // todo: change
 
     std::map<PlayerCommand, std::string> command_converter_;
-
-    igraphicslib::Texture background_texture_;
-    igraphicslib::Sprite  background_sprite_;
 };
 
 #endif
