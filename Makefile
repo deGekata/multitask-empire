@@ -24,7 +24,7 @@ OBJ := $(addprefix $(BIN_DIR)/, $(patsubst %.cpp, %.o, $(notdir $(SRC))))
 CXX := clang++
 
 CXX_FLAGS := $(addprefix -I, $(INC_DIRS)) $(addprefix -I, $(SRC_DIRS))\
--ggdb3 -std=c++20 -O3 -pthread -fsized-deallocation -Weverything\
+-ggdb3 -std=c++20 -O0 -pthread -fsized-deallocation -Weverything\
 -Wno-switch-enum -Wno-signed-enum-bitfield -Wno-deprecated-register\
 -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++11-compat-pedantic\
 -Wno-nested-anon-types -Wno-gnu-anonymous-struct -Wno-missing-prototypes\
