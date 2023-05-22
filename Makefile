@@ -3,7 +3,7 @@ TEST_DIR := tests
 
 SRC_DIRS := src ecs signal player physics renderer logger geometry\
 graphics/SFML objects_configuration utility bot collision gameplay battle bars\
-parsing sound
+parsing events
 
 VPATH += $(SRC_DIRS) $(TEST_DIR) $(TARGET_DIR)
 

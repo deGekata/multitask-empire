@@ -7,6 +7,7 @@
 #include <components/battle_components.hpp>
 
 #include <events/player_events.hpp>
+#include <events/action_events.hpp>
 
 #include <ecs/quick.hpp>
 
@@ -23,7 +24,7 @@ public:
     void Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta dt) override;
 
     void Receive(const PlayerInitiatedEvent& event);
-    void Receive(const PlayerCommandEvent& event);
+    void Receive(const ActionCommandEvent& event);
 
 private:
     void ProcessAttackers(ecs::EntityManager& entities);

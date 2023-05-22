@@ -2,9 +2,13 @@
 
 #include <filesystem>
 
-void BattleAbleObjectsConfigSystem::Configure(ecs::EntityManager&, ecs::EventManager& events) {
+void BattleAbleObjectsConfigSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<BattleAbleConfigChangeRequest, BattleAbleObjectsConfigSystem>(*this);
     events.Subscribe<BattleAbleConfigLoadRequest, BattleAbleObjectsConfigSystem>(*this);
+
+    // todo: remove
+    events_ = &events;
+    entities_ = &entities;
 }
 
 void BattleAbleObjectsConfigSystem::Update(ecs::EntityManager& entities, ecs::EventManager& events, ecs::TimeDelta) {
@@ -32,10 +36,10 @@ void BattleAbleObjectsConfigSystem::Update(ecs::EntityManager& entities, ecs::Ev
             LoadConfig(req.config_path_, entities);
         }
 
+        logger::Print("{}\n", req.config_path_);
         // todo: refactor
         entities.Each<BattleAbleAttributesStorageTag, BattleAbleAttributes>(
         [this, &req, &events](ecs::Entity, BattleAbleAttributesStorageTag&, BattleAbleAttributes& attrs) {
-
             if (attrs.config_path_ == req.config_path_) {
                 ChangeConfiguration(req.entity_, attrs, events);
             }
@@ -46,7 +50,31 @@ void BattleAbleObjectsConfigSystem::Update(ecs::EntityManager& entities, ecs::Ev
 }
 
 void BattleAbleObjectsConfigSystem::Receive(const BattleAbleConfigChangeRequest& event) {
-    requests_.push(event);
+
+    ecs::Entity obj_ent = event.entity_;
+
+    bool is_changed = false;
+
+    entities_->Each<BattleAbleAttributesStorageTag, BattleAbleAttributes>(
+    [&event, &is_changed](ecs::Entity, BattleAbleAttributesStorageTag&, BattleAbleAttributes& attrs) {
+
+        if (attrs.config_path_ == event.config_path_) {
+            is_changed = true;
+        }
+    });
+
+    if(!is_changed) {
+        LoadConfig(event.config_path_, *entities_);
+    }
+
+    logger::Print("{}\n", event.config_path_);
+    // todo: refactor
+    entities_->Each<BattleAbleAttributesStorageTag, BattleAbleAttributes>(
+    [this, &event](ecs::Entity, BattleAbleAttributesStorageTag&, BattleAbleAttributes& attrs) {
+        if (attrs.config_path_ == event.config_path_) {
+            ChangeConfiguration(event.entity_, attrs, *events_);
+        }
+    });
 }
 
 void BattleAbleObjectsConfigSystem::Receive(const BattleAbleConfigLoadRequest& event) {

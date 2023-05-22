@@ -75,8 +75,12 @@ struct PBattleAbleAttributes {
     static const int kInvalidState = -1;
 
     BattleAbleAttributes* attr_;
+
+    // todo: to actioncOMMANDtype
     int cur_passive_state_{kInvalidState};
     int next_passive_state_{kInvalidState};
+
+    int cur_active_state_{kInvalidState};
     int next_active_state_{kInvalidState};
 };
 

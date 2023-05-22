@@ -12,7 +12,7 @@ static constexpr double kBasicAttackDistance = 50;
 
 void AttackSystem::Configure(ecs::EntityManager& entities, ecs::EventManager& events) {
     events.Subscribe<PlayerInitiatedEvent>(*this);
-    events.Subscribe<PlayerCommandEvent>(*this);
+    events.Subscribe<ActionCommandEvent>(*this);
 }
 
 void AttackSystem::Update(ecs::EntityManager& entities, ecs::EventManager&, ecs::TimeDelta dt) {
@@ -103,14 +103,12 @@ void AttackSystem::Receive(const PlayerInitiatedEvent& event) {
     entity.Assign<AttackPower>(AttackPower{kBasicAttackPower});
 }
 
-void AttackSystem::Receive(const PlayerCommandEvent& event) {
-    ecs::Entity cmd_ent = event.cmd_;
-    auto cmd_type = cmd_ent.GetComponent<PlayerCommand>().Get();
+void AttackSystem::Receive(const ActionCommandEvent& event) {
 
-    if (cmd_type->type_ == PlayerCommandType::Action) {
-        auto action_type = cmd_ent.GetComponent<ActionCommand>();
+    ecs::Entity cmd_ent = event.action_;
+    auto cmd_type = cmd_ent.GetComponent<ActionCommand>().Get();
 
-        if(action_type->type_ == ActionCommandType::Attack)
-            attackers_queue_.push(event.entity_);
+    if (cmd_type->type_ == ActionCommandType::Attack) {
+        attackers_queue_.push(event.obj_entity_);
     }
 }
