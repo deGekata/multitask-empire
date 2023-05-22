@@ -108,7 +108,7 @@ void AttackSystem::Receive(const ActionCommandEvent& event) {
     ecs::Entity cmd_ent = event.action_;
     auto cmd_type = cmd_ent.GetComponent<ActionCommand>().Get();
 
-    if (cmd_type->type_ == ActionCommandType::Attack) {
+    if (cmd_type->type_ >= ActionCommandType::Attack) {
         attackers_queue_.push(event.obj_entity_);
     }
 }

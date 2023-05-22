@@ -37,6 +37,7 @@ void AudioSystem::Receive(const PlaySoundEvent& event) {
 void AudioSystem::Receive(const ActionCommandEvent& event) {
 
     ecs::Entity action = event.action_;
+
     switch(action.GetComponent<ActionCommand>().Get()->type_) {
         
         case ActionCommandType::Special: {
@@ -50,6 +51,13 @@ void AudioSystem::Receive(const ActionCommandEvent& event) {
         case ActionCommandType::Jump: {
             manager_.SoundPlay("sounds/jump.wav");
             break;
+        }
+
+        default: {
+            if(static_cast<int>(action.GetComponent<ActionCommand>().Get()->type_) >= static_cast<int>(ActionCommandType::Attack)) {
+                manager_.SoundPlay("sounds/attack.wav");
+                break;
+            }
         }
     }
 }

@@ -62,12 +62,6 @@ void ControllerSystem::KnightBehaviour(ecs::Entity current, ecs::EntityManager& 
             else if(player_pos->x_ > bot_pos->x_ && player_pos->x_ - player.GetComponent<HitBox>()->width_ < bot_pos->x_ + (current.GetComponent<AttackDistance>()->distance_)){
                 EmitNonArgsAction(current, ActionCommandType::StopRunningRight, entities, events);
             }
-            // else if(is_left && player_pos->x_ > bot_pos->x_) {
-            //     EmitNonArgsAction(current, ActionCommandType::RunLeft, entities, events);
-            // }
-            // else if(!is_left && (player_pos->x_ < bot_pos->x_)) {
-            //     EmitNonArgsAction(current, ActionCommandType::RunRight, entities, events);
-            // }
         }
 
         else if(cur_state == static_cast<int>(ActionCommandType::Idle) && !metrics::CheckDuration(update_timestamp_, 3)) {

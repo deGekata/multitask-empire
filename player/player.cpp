@@ -70,7 +70,7 @@ void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& event
             if(type == PlayerCommandType::Action) {
 
                 auto attr_data = player_.GetComponent<PBattleAbleAttributes>().Get();
-
+                
                 ActionCommandType action = key_to_action_matcher_[req.key];
 
                 ActionCommand action_cmd = {.type_ = action};
@@ -82,15 +82,18 @@ void PlayerSystem::Update(ecs::EntityManager& entities, ecs::EventManager& event
 
                     for(uint n_attack = 0; n_attack < attr_data->attr_->attacks_.size(); n_attack++) {
                         if(attr_data->attr_->attacks_[n_attack].binded_key_ == req.key) {
+
+                            logger::Print("ngeux\n");
                             attack_id = static_cast<int>(n_attack); 
                             break;
                         }
                     }
 
                     if(attack_id == -1) {
-                        logger::Print(kError, "unable to find attack, binded on key {}\n", static_cast<int>(req.key));
+                        logger::Print(kWarning, "unable to find attack, binded on key {}\n", static_cast<int>(req.key));
+                        return;
                     }
-
+                    
                     AttackId attack_id_cmp = {.id_ = static_cast<uint>(attack_id)};
                     cmd_ent.Assign<AttackId>(attack_id_cmp);
                 }
