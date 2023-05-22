@@ -10,7 +10,7 @@
 static constexpr uint32_t kMaxBarsAmount = 2;
 
 static constexpr uint32_t kBarHeight = 250;
-static constexpr uint32_t kBarWidth = 1070;
+static constexpr uint32_t kBarWidth = 770;
 
 static constexpr uint32_t kDefaultBarX = 350;
 static constexpr uint32_t kDefaultBarY = 550;
