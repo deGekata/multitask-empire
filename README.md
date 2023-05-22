@@ -41,11 +41,18 @@ iterate over the results doing physics calculations on the sets of components fo
 Throughout all of the project we use our own implementation od such standart classes as vector, function etc.
 
 # Game controls
-  + W - Jump
-  + A/D - Move left/right
-  + Tab - change special ability
-  + F - use of special ability
-  + B - block (only works when standing)
+  + W - Jump <br/>
+![](https://github.com/deGekata/multitask-empire/blob/master/assets/gifs/jump.gif)
+  + A/D - Move left/right <br/>
+![](https://github.com/deGekata/multitask-empire/blob/master/assets/gifs/walk.gif)
+  + Tab - change special ability <br/>
+![](https://github.com/deGekata/multitask-empire/blob/master/assets/gifs/spells.gif)
+  + F - use of special ability <br/>
+![potion](https://github.com/deGekata/multitask-empire/blob/master/assets/gifs/potion.gif)
+![fireball](https://github.com/deGekata/multitask-empire/blob/master/assets/gifs/fireball.gif)
+![slime](https://github.com/deGekata/multitask-empire/blob/master/assets/gifs/slime.gif)
+  + B - block (only works when standing) <br/>
+![potion](https://github.com/deGekata/multitask-empire/blob/master/assets/gifs/block.gif)
 
 # Special abilities
 
