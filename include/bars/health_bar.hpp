@@ -26,6 +26,7 @@ class HealthBarSystem : public ecs::System<HealthBarSystem>, public ecs::Receive
 
     struct HealthBarProperties {
         ecs::Entity bar_entity;
+
         bool is_enemy;
     };
 

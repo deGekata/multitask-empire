@@ -73,6 +73,8 @@ void HealthBarSystem::Receive(const ecs::EntityDestroyedEvent& event) {
 }
 
 void HealthBarSystem::Receive(const PlayerInitiatedEvent& event) {
+    ecs::Entity player = event.entity_;
+
     ecs::Entity entity_bar = entities_->Create();
 
     Position bar_position;
@@ -87,11 +89,16 @@ void HealthBarSystem::Receive(const PlayerInitiatedEvent& event) {
         allies_bars_positions_.pop_back();
     }
 
+    if (player.HasComponent<BattleAbleAttributes>()) {
+        igraphicslib::Text bar_text(player.GetComponent<BattleAbleAttributes>()->name_.c_str());
+        entity_bar.Assign<TextRenderData>(TextRenderData{bar_text});
+    }
+
     entity_bar.AssignFromCopy<Position>(bar_position);
     entity_bar.AssignFromCopy<Rotation>(Rotation{is_rotated});
 
-    events_->Emit<SkinChangeRequest>(state_name_converter_, HealthBarState::PERCENTS_100, "./assets/sprites/health_bar.png",
-                                     entity_bar);
+    events_->Emit<SkinChangeRequest>(state_name_converter_, HealthBarState::PERCENTS_100,
+                                     "./assets/sprites/health_bar.png", entity_bar);
 
     bar_of_entity_[event.entity_] = {entity_bar, is_rotated};
 }
