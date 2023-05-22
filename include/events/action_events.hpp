@@ -27,4 +27,7 @@ struct ActionCommandRequestEvent : public ecs::Event<ActionCommandRequestEvent> 
     ecs::Entity obj_entity_;
 };
 
+void EmitNonArgsAction(ecs::Entity obj_entity, ActionCommandType cmd, ecs::EntityManager& entities, ecs::EventManager& events);
+void EmitNonAttackAction(ecs::Entity obj_entity, uint attack_id, ecs::EntityManager& entities, ecs::EventManager& events);
+
 #endif // H_ACTION_EVENTS

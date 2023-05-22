@@ -47,6 +47,9 @@ void BattleAbleStateSwitchSystem::Update(ecs::EntityManager& entities, ecs::Even
             }
 
             attrs.cur_passive_state_ = attrs.next_passive_state_;
+            if(cmd.type_ == ActionCommandType::StopRunningLeft || cmd.type_ == ActionCommandType::StopRunningRight) {
+                attrs.cur_passive_state_ = static_cast<int>(ActionCommandType::Idle);
+            }
             attrs.next_passive_state_ = PBattleAbleAttributes::kInvalidState;
         }
         if(attrs.next_active_state_ != PBattleAbleAttributes::kInvalidState && !anim_data->is_one_shot_) {

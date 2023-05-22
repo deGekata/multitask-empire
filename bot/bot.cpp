@@ -2,6 +2,7 @@
 
 #include <events/player_events.hpp>
 #include <events/renderer_events.hpp>
+#include <events/action_events.hpp>
 
 #include <components/bot_components.hpp>
 #include <components/movement_components.hpp>
@@ -38,6 +39,8 @@ void BotSystem::ProcessQueue(ecs::EntityManager& entities, ecs::EventManager& ev
         }
 
         events.Emit<BattleAbleConfigChangeRequest>(spawn_event.bot_config_name_, bot);
+        EmitNonArgsAction(bot, ActionCommandType::Idle, entities, events);
+
         logger::Print("Set bot's skin\n");
 
         // events.Emit<PlayerCommandEvent>(PlayerCommand::IDLE, bot);

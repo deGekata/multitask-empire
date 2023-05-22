@@ -25,6 +25,9 @@ private:
     CharacterConfigParser   parser_;
     std::queue<BattleAbleConfigChangeRequest> requests_;
     std::queue<BattleAbleConfigLoadRequest> load_requests_;
+
+    ecs::EventManager* events_;
+    ecs::EntityManager* entities_;
 };
 
 #endif // BATTLEABLE_CONFIG_H
