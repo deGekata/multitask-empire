@@ -81,14 +81,14 @@ public:
         systems_.Add<SlimeSystem>();
         systems_.Add<SpecialSystem>();
 
-        systems_.Add<HealthBarSystem>();
-        systems_.Add<SpecialBarSystem>();
-        systems_.Add<ShieldBarSystem>();
-
         systems_.Add<AttachSystem>();
 
         systems_.Add<PlayerSystem>();
         systems_.Add<BotSystem>();
+
+        systems_.Add<HealthBarSystem>();
+        systems_.Add<SpecialBarSystem>();
+        systems_.Add<ShieldBarSystem>();
 
         systems_.Add<ControllerSystem>();
 
